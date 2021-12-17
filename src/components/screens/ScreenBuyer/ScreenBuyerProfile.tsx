@@ -29,10 +29,8 @@ export const ScreenBuyerProfile: React.FC<Props> = ({
               name="cog-outline"
               color={Colors.white}
               size={32}
-              style={styles.iconCog}
               onPress={handleProfileSettingsNavigation}
             />
-            <Icon name="message-outline" color={Colors.white} size={32} />
           </View>
         </View>
         <View style={styles.profileSection}>
@@ -75,9 +73,6 @@ const styles = StyleSheet.create({
   },
   iconsWrapper: {
     flexDirection: 'row',
-    marginRight: 20,
-  },
-  iconCog: {
     marginRight: 20,
   },
   profileSection: {
