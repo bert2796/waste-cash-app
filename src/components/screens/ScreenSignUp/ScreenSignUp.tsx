@@ -37,6 +37,7 @@ export const ScreenSignUp: React.FC<Props> = ({
   }, [setIsDialogSignInVisible, navigation]);
 
   const handleSignUp = ({
+    junkShopName,
     firstName,
     lastName,
     address,
@@ -48,6 +49,7 @@ export const ScreenSignUp: React.FC<Props> = ({
     password,
     role,
   }: {
+    junkShopName: string;
     firstName: string;
     lastName: string;
     address: string;
@@ -70,6 +72,7 @@ export const ScreenSignUp: React.FC<Props> = ({
     } else {
       // register
       Auth.register({
+        junkShopName,
         firstName,
         lastName,
         address,

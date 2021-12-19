@@ -58,7 +58,16 @@ export const signIn = createAsyncThunk(
         CommonActions.reset({
           index: 1,
           routes: [
-            { name: appRole === UserRoles.BUYER ? 'BuyerHome' : 'SellerHome' },
+            {
+              name:
+                appRole === UserRoles.BUYER
+                  ? 'BuyerHome'
+                  : appRole === UserRoles.SELLER
+                  ? 'SellerHome'
+                  : appRole === UserRoles.JUNKSHOP
+                  ? 'ShopHome'
+                  : '',
+            },
           ],
         }),
       );

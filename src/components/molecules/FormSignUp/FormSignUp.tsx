@@ -10,6 +10,7 @@ interface Props {
   isJunkShop: boolean;
   isLoading: boolean;
   onSignUp: ({
+    junkShopName,
     firstName,
     lastName,
     address,
@@ -21,6 +22,7 @@ interface Props {
     password,
     role,
   }: {
+    junkShopName: string;
     firstName: string;
     lastName: string;
     address: string;
@@ -194,6 +196,7 @@ export const FormSignUp: React.FC<Props> = ({
 
   const handleSignUp = React.useCallback(() => {
     const data = {
+      junkShopName,
       firstName,
       lastName,
       address,
@@ -210,6 +213,7 @@ export const FormSignUp: React.FC<Props> = ({
 
     inputPassword.current.blur();
   }, [
+    junkShopName,
     firstName,
     lastName,
     address,

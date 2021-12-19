@@ -20,6 +20,7 @@ export const login = async (params: { username: string; password: string }) => {
 };
 
 export const register = async (params: {
+  junkShopName: string;
   firstName: string;
   lastName: string;
   address: string;

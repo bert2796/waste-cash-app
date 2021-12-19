@@ -17,6 +17,9 @@ import {
   SellerStackParam,
   SellerMainTabParam,
   SellerNotificationTabParam,
+  ShopStackParam,
+  ShopMainTabParam,
+  ShopNotificationTabParam,
 } from '../../types';
 import { navigationRef } from '@state/navigation';
 import { ScreenInitialLoading } from '@screens/ScreenInitialLoading/ScreenInitialLoading';
@@ -48,6 +51,12 @@ import ContainerSellerProfileSettings from '@containers/ContainerSellerProfileSe
 import ContainerSellerViewOffers from '@containers/ContainerSellerViewOffers';
 import ContainerSellerViewProduct from '@containers/ContainerSellerViewProduct';
 
+// Shop
+import { ScreenShopMessages } from '@screens/ScreenShop/ScreenShopMessages';
+import { ScreenShopNotifications } from '@screens/ScreenShop/ScreenShopNotifications';
+import ContainerShopProfile from '@containers/ContainerShopProfile';
+import ContainerShopProfileSettings from '@containers/ContainerShopProfileSettings';
+
 interface Props {
   error: string;
   isAuth: boolean;
@@ -69,6 +78,10 @@ const SellerStack = createStackNavigator<SellerStackParam>();
 const SellerMainTab = createBottomTabNavigator<SellerMainTabParam>();
 const SellerNotificationTab =
   createMaterialTopTabNavigator<SellerNotificationTabParam>();
+const ShopStack = createStackNavigator<ShopStackParam>();
+const ShopMainTab = createBottomTabNavigator<ShopMainTabParam>();
+const ShopNotificationTab =
+  createMaterialTopTabNavigator<ShopNotificationTabParam>();
 
 export const Navigation: React.FC<Props> = ({
   error,
@@ -300,6 +313,69 @@ export const Navigation: React.FC<Props> = ({
     </SellerMainTab.Navigator>
   );
 
+  // Shop Screen
+  const ShopNotification = () => (
+    <ShopNotificationTab.Navigator
+      screenOptions={{
+        swipeEnabled: false,
+        tabBarActiveTintColor: Colors.green500,
+        tabBarInactiveTintColor: Colors.black,
+        tabBarIndicatorStyle: styles.notificationTabIndicator,
+      }}
+    >
+      <ShopNotificationTab.Screen
+        name="NotificationTab"
+        component={ScreenShopNotifications}
+        options={{ title: 'Notifications' }}
+      />
+      <ShopNotificationTab.Screen
+        name="MessageTab"
+        component={ScreenShopMessages}
+        options={{ title: 'Messages' }}
+      />
+    </ShopNotificationTab.Navigator>
+  );
+
+  const ShopHome = () => (
+    <ShopMainTab.Navigator
+      screenOptions={{
+        tabBarInactiveTintColor: Colors.black,
+        tabBarActiveTintColor: Colors.green500,
+      }}
+    >
+      <ShopMainTab.Screen
+        name="Notification"
+        component={ShopNotification}
+        options={{
+          tabBarLabel: 'Notifications',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Icon
+              name={focused ? 'notifications' : 'notifications-outline'}
+              color={color}
+              size={size}
+            />
+          ),
+          headerTitleAlign: 'center',
+        }}
+      />
+      <ShopMainTab.Screen
+        name="Profile"
+        component={ContainerShopProfile}
+        options={{
+          headerShown: false,
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ color, size, focused }) => (
+            <Icon
+              name={focused ? 'person' : 'person-outline'}
+              color={color}
+              size={size}
+            />
+          ),
+        }}
+      />
+    </ShopMainTab.Navigator>
+  );
+
   // display loading screen if app is not yet initialized
   if (!isInitialize) {
     return <ScreenInitialLoading />;
@@ -379,6 +455,24 @@ export const Navigation: React.FC<Props> = ({
                 name="SellerViewProduct"
                 component={ContainerSellerViewProduct}
                 options={{ headerTitle: '' }}
+              />
+            </Stack.Group>
+          )}
+
+          {isAuth && role === UserRoles.JUNKSHOP && (
+            <Stack.Group>
+              <ShopStack.Screen
+                name="ShopHome"
+                component={ShopHome}
+                options={{ headerShown: false }}
+              />
+              <ShopStack.Screen
+                name="ShopProfileSettings"
+                component={ContainerShopProfileSettings}
+                options={{
+                  headerTitle: 'Profile Settings',
+                  headerTitleAlign: 'center',
+                }}
               />
             </Stack.Group>
           )}

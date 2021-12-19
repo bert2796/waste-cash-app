@@ -179,3 +179,18 @@ export type SellerNotificationTabParam = {
   NotificationTab: undefined;
   MessageTab: undefined;
 };
+
+export type ShopStackParam = {
+  ShopHome: undefined;
+  ShopProfileSettings: undefined;
+};
+
+export type ShopMainTabParam = {
+  Notification: undefined;
+  Profile: undefined;
+};
+
+export type ShopNotificationTabParam = {
+  NotificationTab: undefined;
+  MessageTab: undefined;
+};
