@@ -19,6 +19,7 @@ import { counterSlice } from './counter';
 import { notificationSlice } from './notification';
 import { productSlice } from './product';
 import { productOfferSlice } from './productOffer';
+import { shopSlice } from './shop';
 import { userSlice } from './user';
 
 const persistConfig = {
@@ -37,6 +38,7 @@ const persistConfig = {
     'notification',
     'product',
     'productOffer',
+    'shopSlice',
   ],
 };
 
@@ -47,6 +49,7 @@ const rootReducer = combineReducers({
   notification: notificationSlice.reducer,
   product: productSlice.reducer,
   productOffer: productOfferSlice.reducer,
+  shop: shopSlice.reducer,
   user: userSlice.reducer,
   network,
 });

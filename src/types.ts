@@ -57,6 +57,7 @@ export interface IUser {
   mobile: number;
   email: string;
   username: string;
+  junkShopName?: string;
   role: UserRoles;
 }
 
@@ -108,6 +109,14 @@ export interface IProductOfferState {
   error: string;
   success: string;
   isLoading: boolean;
+}
+
+export interface IShopState {
+  isLoading: boolean;
+  error: string;
+  success: string;
+  data: IUser;
+  list: IUser[];
 }
 
 export interface IUserState {

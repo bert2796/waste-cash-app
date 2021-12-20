@@ -32,19 +32,19 @@ import ContainerSignIn from '@containers/ContainerSignIn';
 import ContainerSignUp from '@containers/ContainerSignUp';
 
 // Buyer
-import { ScreenBuyerNotifications } from '@screens/ScreenBuyer/ScreenBuyerNotifications';
 import { ScreenBuyerMessages } from '@screens/ScreenBuyer/ScreenBuyerMessages';
-import { ScreenBuyerShops } from '@screens/ScreenBuyer/ScreenBuyerShops';
 import ContainerBuyerChatProduct from '@containers/ContainerBuyerChatProduct';
+import ContainerBuyerNotifications from '@containers/ContainerBuyerNotifications';
 import ContainerBuyerProducts from '@containers/ContainerBuyerProducts';
 import ContainerBuyerProfile from '@containers/ContainerBuyerProfile';
 import ContainerBuyerProfileSettings from '@containers/ContainerBuyerProfileSettings';
+import ContainerBuyerShops from '@containers/ContainerBuyerShops';
 import ContainerBuyerViewProduct from '@containers/ContainerBuyerViewProduct';
 
 // Seller
 import { ScreenSellerMessages } from '@screens/ScreenSeller/ScreenSellerMessages';
 import ContainerSellerCreateProduct from '@containers/ContainerSellerCreateProduct';
-import ContainerSellerNotification from '@containers/ContainerSellerNotification';
+import ContainerSellerNotifications from 'containers/ContainerSellerNotifications';
 import ContainerSellerProducts from '@containers/ContainerSellerProducts';
 import ContainerSellerProfile from '@containers/ContainerSellerProfile';
 import ContainerSellerProfileSettings from '@containers/ContainerSellerProfileSettings';
@@ -53,7 +53,7 @@ import ContainerSellerViewProduct from '@containers/ContainerSellerViewProduct';
 
 // Shop
 import { ScreenShopMessages } from '@screens/ScreenShop/ScreenShopMessages';
-import { ScreenShopNotifications } from '@screens/ScreenShop/ScreenShopNotifications';
+import ContainerShopNotifications from '@containers/ContainerShopNotifications';
 import ContainerShopProfile from '@containers/ContainerShopProfile';
 import ContainerShopProfileSettings from '@containers/ContainerShopProfileSettings';
 
@@ -149,7 +149,7 @@ export const Navigation: React.FC<Props> = ({
     >
       <BuyerNotificationTab.Screen
         name="NotificationTab"
-        component={ScreenBuyerNotifications}
+        component={ContainerBuyerNotifications}
         options={{ title: 'Notifications' }}
       />
       <BuyerNotificationTab.Screen
@@ -185,7 +185,7 @@ export const Navigation: React.FC<Props> = ({
       />
       <BuyerMainTab.Screen
         name="Shop"
-        component={ScreenBuyerShops}
+        component={ContainerBuyerShops}
         options={{
           title: 'Junk Shop',
           tabBarLabel: 'Junk Shop',
@@ -244,7 +244,7 @@ export const Navigation: React.FC<Props> = ({
     >
       <SellerNotificationTab.Screen
         name="NotificationTab"
-        component={ContainerSellerNotification}
+        component={ContainerSellerNotifications}
         options={{ title: 'Notifications' }}
       />
       <SellerNotificationTab.Screen
@@ -325,7 +325,7 @@ export const Navigation: React.FC<Props> = ({
     >
       <ShopNotificationTab.Screen
         name="NotificationTab"
-        component={ScreenShopNotifications}
+        component={ContainerShopNotifications}
         options={{ title: 'Notifications' }}
       />
       <ShopNotificationTab.Screen

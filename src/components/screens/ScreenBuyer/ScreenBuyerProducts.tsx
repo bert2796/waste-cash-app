@@ -74,7 +74,6 @@ export const ScreenBuyerProducts: React.FC<Props> = ({
 
   // Get Product List
   React.useEffect(() => {
-    console.log('get product list');
     handleGetProductList();
   }, [handleGetProductList]);
 
