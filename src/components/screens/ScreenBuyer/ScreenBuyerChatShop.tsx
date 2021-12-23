@@ -4,20 +4,15 @@ import { View, StyleSheet } from 'react-native';
 import { Colors, Text } from 'react-native-paper';
 import { Chat, MessageType } from '@flyerhq/react-native-chat-ui';
 
-import { IProduct, BuyerStackParam, ProductStatus } from '../../../types';
+import { BuyerStackParam } from '../../../types';
 
 interface Props {
-  productData: IProduct;
   navigation: NavigationProp<BuyerStackParam>;
-  route: RouteProp<BuyerStackParam, 'BuyerChatProduct'>;
+  route: RouteProp<BuyerStackParam, 'BuyerChatShop'>;
 }
 
-export const ScreenBuyerChatProduct: React.FC<Props> = ({
-  productData,
-  navigation,
-  route,
-}) => {
-  const { seller } = route.params;
+export const ScreenBuyerChatShop: React.FC<Props> = ({ navigation, route }) => {
+  const { shop } = route.params;
 
   const [messages, setMessages] = React.useState<MessageType.Any[]>([]);
 
@@ -43,30 +38,15 @@ export const ScreenBuyerChatProduct: React.FC<Props> = ({
   );
 
   React.useLayoutEffect(() => {
-    navigation.setOptions({ title: `@${seller.username}` });
-  }, [navigation, seller]);
+    navigation.setOptions({ title: shop.junkShopName });
+  }, [navigation, shop]);
 
   return (
     <View style={styles.container}>
-      {/* <View style={styles.productInfoSection}>
-        <View style={styles.productInfoContainer}>
-          <Image
-            source={require('../../../assets/images/placeholder-cover.jpg')}
-            style={styles.productImage}
-          />
-          <View style={styles.productContent}>
-            <Title>{productData.name}</Title>
-            <Text>{`\u20B1 ${numeral(productData.price).format(
-              '0,0.00',
-            )}`}</Text>
-          </View>
-        </View>
-      </View> */}
       <Chat
         messages={messages}
         onSendPress={handleSendMessage}
         user={{ id: '123' }}
-        // customBottomComponent={() => <Text>Sample</Text>}
       />
     </View>
   );

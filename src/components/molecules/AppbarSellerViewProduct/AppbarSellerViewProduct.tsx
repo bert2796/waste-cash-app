@@ -3,11 +3,13 @@ import { View, StyleSheet } from 'react-native';
 import { Colors, Appbar, Button } from 'react-native-paper';
 
 interface Props {
+  isButtonOfferDisabled: boolean;
   onPressChat?: () => void;
   onPressOffer: () => void;
 }
 
 export const AppbarSellerViewProduct: React.FC<Props> = ({
+  isButtonOfferDisabled,
   onPressChat,
   onPressOffer,
 }) => (
@@ -25,6 +27,7 @@ export const AppbarSellerViewProduct: React.FC<Props> = ({
         icon="cash-multiple"
         onPress={onPressOffer}
         labelStyle={styles.buttonOfferLabel}
+        disabled={isButtonOfferDisabled}
       >
         Offers
       </Button>

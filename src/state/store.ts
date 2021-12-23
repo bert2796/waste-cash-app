@@ -42,6 +42,14 @@ const persistConfig = {
   ],
 };
 
+const authPersistConfig = {
+  key: 'user',
+  // Storage Method (React Native)
+  storage: AsyncStorage,
+  whitelist: ['token'],
+  blacklist: ['isLoading', 'error', 'data'],
+};
+
 const rootReducer = combineReducers({
   app: appSlice.reducer,
   category: categorySlice.reducer,
@@ -50,7 +58,7 @@ const rootReducer = combineReducers({
   product: productSlice.reducer,
   productOffer: productOfferSlice.reducer,
   shop: shopSlice.reducer,
-  user: userSlice.reducer,
+  user: persistReducer(authPersistConfig, userSlice.reducer),
   network,
 });
 

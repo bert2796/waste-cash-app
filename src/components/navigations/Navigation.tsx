@@ -32,6 +32,7 @@ import ContainerSignIn from '@containers/ContainerSignIn';
 import ContainerSignUp from '@containers/ContainerSignUp';
 
 // Buyer
+import { ScreenBuyerChatShop } from '@screens/ScreenBuyer/ScreenBuyerChatShop';
 import { ScreenBuyerMessages } from '@screens/ScreenBuyer/ScreenBuyerMessages';
 import ContainerBuyerChatProduct from '@containers/ContainerBuyerChatProduct';
 import ContainerBuyerNotifications from '@containers/ContainerBuyerNotifications';
@@ -417,6 +418,10 @@ export const Navigation: React.FC<Props> = ({
               <BuyerStack.Screen
                 name="BuyerChatProduct"
                 component={ContainerBuyerChatProduct}
+              />
+              <BuyerStack.Screen
+                name="BuyerChatShop"
+                component={ScreenBuyerChatShop}
               />
             </Stack.Group>
           )}

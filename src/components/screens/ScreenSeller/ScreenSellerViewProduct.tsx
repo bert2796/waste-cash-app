@@ -64,6 +64,7 @@ export const ScreenSellerViewProduct: React.FC<Props> = ({
         <>
           <AppbarSellerViewProduct
             onPressOffer={handleOnViewOffersNavigation}
+            isButtonOfferDisabled={!productData.offers.length}
           />
           <ScrollView
             style={styles.scrollContent}

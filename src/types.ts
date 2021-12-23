@@ -152,6 +152,7 @@ export type LoggedoutStackParam = {
 };
 
 export type BuyerStackParam = {
+  BuyerChatShop: { shop: IUser };
   BuyerChatProduct: { seller: IUser };
   BuyerHome: undefined;
   BuyerProfileSettings: undefined;

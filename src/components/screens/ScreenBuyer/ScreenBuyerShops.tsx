@@ -20,6 +20,11 @@ export const ScreenBuyerShops: React.FC<Props> = ({
   onGetShopList,
   navigation,
 }) => {
+  const handleOnPressShop = React.useCallback(
+    (shop: IUser) => navigation.navigate('BuyerChatShop', { shop }),
+    [navigation],
+  );
+
   const handleGetShopList = React.useCallback(
     () => onGetShopList(),
     [onGetShopList],
@@ -57,7 +62,7 @@ export const ScreenBuyerShops: React.FC<Props> = ({
 
       {!isLoading && Boolean(shopList.length) && (
         <>
-          <FlatListShop data={shopList} />
+          <FlatListShop data={shopList} onPressShop={handleOnPressShop} />
         </>
       )}
     </View>
