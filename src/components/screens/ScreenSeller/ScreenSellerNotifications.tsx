@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationProp } from '@react-navigation/native';
 import { View, StyleSheet } from 'react-native';
-import { Colors, Text } from 'react-native-paper';
+import { Colors } from 'react-native-paper';
 
 import { INotification, SellerStackParam } from '../../../types';
 import { FlatListNotification } from '@molecules/FlatListNotification/FlatListNotification';

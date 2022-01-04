@@ -1,11 +1,22 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Colors, Text } from 'react-native-paper';
+import { Colors } from 'react-native-paper';
 
-export const ScreenShopMessages: React.FC = () => {
+import { IConversationSummary, IUser } from '../../../types';
+import { FlatListMessage } from '@molecules/FlatListMessage/FlastListMessage';
+
+interface Props {
+  conversationList: IConversationSummary[];
+  user: IUser;
+}
+
+export const ScreenShopMessages: React.FC<Props> = ({
+  conversationList,
+  user,
+}) => {
   return (
     <View style={styles.container}>
-      <Text>Messages</Text>
+      <FlatListMessage data={conversationList} me={user} />
     </View>
   );
 };

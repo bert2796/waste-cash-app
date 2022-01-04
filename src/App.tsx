@@ -11,7 +11,9 @@ import { ScreenInitialLoading } from '@screens/ScreenInitialLoading/ScreenInitia
 import ContainerNavigation from '@containers/ContainerNavigation';
 
 const App: React.FC = () => {
-  const socket = io.connect('wss://waste-cash.com');
+  // const socket = io.connect('wss://waste-cash.com');
+
+  const socket = io.connect('ws://10.0.2.2:3000');
 
   return (
     <Provider store={store}>

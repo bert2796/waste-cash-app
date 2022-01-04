@@ -11,12 +11,12 @@ import isToday from 'dayjs/plugin/isToday';
 
 import { INotification } from '../../../types';
 
+dayjs.extend(isToday);
+
 interface Props {
   data: INotification[];
   onSeenNotification: (notification: INotification) => void;
 }
-
-dayjs.extend(isToday);
 
 const extractTitle = (event: string): string => {
   let title = '';
@@ -41,12 +41,14 @@ export const FlatListNotification: React.FC<Props> = ({
           title={extractTitle(item.event)}
           description={item.description}
           left={() => (
-            <Avatar.Icon
-              icon="tag"
-              color={Colors.green700}
-              size={45}
-              style={{ backgroundColor: Colors.green100 }}
-            />
+            <View style={styles.avatarContainer}>
+              <Avatar.Icon
+                icon="tag"
+                color={Colors.green700}
+                size={45}
+                style={{ backgroundColor: Colors.green100 }}
+              />
+            </View>
           )}
           right={() => (
             <Text style={item.isSeen ? styles.seen : styles.unseen}>
@@ -77,10 +79,11 @@ const styles = StyleSheet.create({
   flatList: {
     marginBottom: -20,
   },
-  item: {
-    marginBottom: 20,
-    marginLeft: 20,
-    marginRight: 20,
+  avatarContainer: {
+    margin: 5,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   unseen: {
     color: Colors.black,

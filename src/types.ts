@@ -16,6 +16,27 @@ export interface ICategory {
   slug: string;
 }
 
+export interface IConversation {
+  id: number;
+}
+
+export interface IConversationSummary {
+  id: number;
+  message: Partial<IMessage>;
+  sender: Partial<IUser>;
+  recipient: Partial<IUser>;
+}
+
+export interface IMessage {
+  id: number;
+  content: string;
+  conversation: IConversation;
+  isSeen: boolean;
+  sender: IUser;
+  recipient: IUser;
+  createdAt: string;
+}
+
 export interface INotification {
   id: number;
   description: string;
@@ -85,6 +106,13 @@ export interface ICategoryState {
   list: ICategory[];
 }
 
+export interface IConversationState {
+  error: string;
+  isLoading: boolean;
+  list: IConversationSummary[];
+  messages: IMessage[];
+}
+
 export interface ICounterState {
   value: number;
 }
@@ -132,6 +160,12 @@ export interface ICreateProductResponse extends IProduct {}
 export interface ICreateProductOfferResponse extends IProductOffer {}
 
 export interface IGetCategoryResponse extends ICategory {}
+
+export interface IGetConversationResponse extends IConversation {}
+
+export interface IGetConversationMessageResponse extends IMessage {}
+
+export interface IGetConversationSummaryResponse extends IConversationSummary {}
 
 export interface IGetNotificationResponse extends INotification {}
 

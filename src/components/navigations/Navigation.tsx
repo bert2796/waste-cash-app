@@ -1,4 +1,5 @@
 import React from 'react';
+import { Socket } from 'socket.io-client';
 import { View, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -9,6 +10,7 @@ import { Colors } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {
+  IMessage,
   UserRoles,
   LoggedoutStackParam,
   BuyerStackParam,
@@ -33,8 +35,8 @@ import ContainerSignUp from '@containers/ContainerSignUp';
 
 // Buyer
 import { ScreenBuyerChatShop } from '@screens/ScreenBuyer/ScreenBuyerChatShop';
-import { ScreenBuyerMessages } from '@screens/ScreenBuyer/ScreenBuyerMessages';
 import ContainerBuyerChatProduct from '@containers/ContainerBuyerChatProduct';
+import ContainerBuyerMessages from '@containers/ContainerBuyerMessages';
 import ContainerBuyerNotifications from '@containers/ContainerBuyerNotifications';
 import ContainerBuyerProducts from '@containers/ContainerBuyerProducts';
 import ContainerBuyerProfile from '@containers/ContainerBuyerProfile';
@@ -43,8 +45,8 @@ import ContainerBuyerShops from '@containers/ContainerBuyerShops';
 import ContainerBuyerViewProduct from '@containers/ContainerBuyerViewProduct';
 
 // Seller
-import { ScreenSellerMessages } from '@screens/ScreenSeller/ScreenSellerMessages';
 import ContainerSellerCreateProduct from '@containers/ContainerSellerCreateProduct';
+import ContainerSellerMessages from '@containers/ContainerSellerMessages';
 import ContainerSellerNotifications from 'containers/ContainerSellerNotifications';
 import ContainerSellerProducts from '@containers/ContainerSellerProducts';
 import ContainerSellerProfile from '@containers/ContainerSellerProfile';
@@ -53,7 +55,7 @@ import ContainerSellerViewOffers from '@containers/ContainerSellerViewOffers';
 import ContainerSellerViewProduct from '@containers/ContainerSellerViewProduct';
 
 // Shop
-import { ScreenShopMessages } from '@screens/ScreenShop/ScreenShopMessages';
+import ContainerShopMessages from '@containers/ContainerShopMessages';
 import ContainerShopNotifications from '@containers/ContainerShopNotifications';
 import ContainerShopProfile from '@containers/ContainerShopProfile';
 import ContainerShopProfileSettings from '@containers/ContainerShopProfileSettings';
@@ -63,10 +65,13 @@ interface Props {
   isAuth: boolean;
   isConnected: boolean | null;
   isInitialize: boolean;
+  hasUnseenConversation: boolean;
   hasUnseenNotification: boolean;
   role: UserRoles;
+  onAddMessage: (params: IMessage) => void;
   onAppInitialize: () => void;
   onSetAppError: (error: string | null) => void;
+  socket: Socket;
 }
 
 const Stack = createStackNavigator();
@@ -89,10 +94,13 @@ export const Navigation: React.FC<Props> = ({
   isAuth,
   isInitialize,
   isConnected,
+  hasUnseenConversation,
   hasUnseenNotification,
   role,
+  onAddMessage,
   onAppInitialize,
   onSetAppError,
+  socket,
 }) => {
   const [isAppErrorDialogVisible, setIsAppErrorDialogVisible] =
     React.useState(false);
@@ -118,6 +126,29 @@ export const Navigation: React.FC<Props> = ({
     () => setIsNetworkDCSNackbarVisible(false),
     [setIsNetworkDCSNackbarVisible],
   );
+
+  const hasNotificationBadge = React.useMemo(
+    () => hasUnseenConversation || hasUnseenNotification,
+    [hasUnseenConversation, hasUnseenNotification],
+  );
+
+  // Socket
+  React.useEffect(() => {
+    const hasCreateMessageListener = socket.hasListeners('createMessage');
+
+    if (!hasCreateMessageListener) {
+      console.log('Added createMessage listener');
+      socket.on('createMessage', (payload: IMessage) => {
+        console.log(`createMessage: ${payload}`);
+        onAddMessage(payload);
+      });
+    }
+
+    return () => {
+      // destroy current listener to avoid duplication of listener when this component rerender
+      socket.off('createMessage');
+    };
+  }, [socket, onAddMessage]);
 
   // initialize
   React.useEffect(() => {
@@ -155,7 +186,7 @@ export const Navigation: React.FC<Props> = ({
       />
       <BuyerNotificationTab.Screen
         name="MessageTab"
-        component={ScreenBuyerMessages}
+        component={ContainerBuyerMessages}
         options={{ title: 'Messages' }}
       />
     </BuyerNotificationTab.Navigator>
@@ -205,6 +236,7 @@ export const Navigation: React.FC<Props> = ({
         component={BuyerNotification}
         options={{
           tabBarLabel: 'Notifications',
+          ...(hasNotificationBadge && { tabBarBadge: ' ' }),
           tabBarIcon: ({ color, size, focused }) => (
             <Icon
               name={focused ? 'notifications' : 'notifications-outline'}
@@ -250,7 +282,7 @@ export const Navigation: React.FC<Props> = ({
       />
       <SellerNotificationTab.Screen
         name="MessageTab"
-        component={ScreenSellerMessages}
+        component={ContainerSellerMessages}
         options={{ title: 'Messages' }}
       />
     </SellerNotificationTab.Navigator>
@@ -286,7 +318,7 @@ export const Navigation: React.FC<Props> = ({
           headerTitleAlign: 'center',
           title: 'Notifications',
           tabBarLabel: 'Notifications',
-          ...(hasUnseenNotification && { tabBarBadge: ' ' }),
+          ...(hasNotificationBadge && { tabBarBadge: ' ' }),
           tabBarIcon: ({ color, size, focused }) => (
             <Icon
               name={focused ? 'notifications' : 'notifications-outline'}
@@ -331,7 +363,7 @@ export const Navigation: React.FC<Props> = ({
       />
       <ShopNotificationTab.Screen
         name="MessageTab"
-        component={ScreenShopMessages}
+        component={ContainerShopMessages}
         options={{ title: 'Messages' }}
       />
     </ShopNotificationTab.Navigator>
@@ -349,6 +381,7 @@ export const Navigation: React.FC<Props> = ({
         component={ShopNotification}
         options={{
           tabBarLabel: 'Notifications',
+          ...(hasNotificationBadge && { tabBarBadge: ' ' }),
           tabBarIcon: ({ color, size, focused }) => (
             <Icon
               name={focused ? 'notifications' : 'notifications-outline'}

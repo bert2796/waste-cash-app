@@ -15,6 +15,7 @@ import logger from 'redux-logger';
 
 import { appSlice } from './app';
 import { categorySlice } from './category';
+import { conversationSlice } from './conversation';
 import { counterSlice } from './counter';
 import { notificationSlice } from './notification';
 import { productSlice } from './product';
@@ -35,6 +36,7 @@ const persistConfig = {
     'network',
     'app',
     'category',
+    'conversation',
     'notification',
     'product',
     'productOffer',
@@ -53,6 +55,7 @@ const authPersistConfig = {
 const rootReducer = combineReducers({
   app: appSlice.reducer,
   category: categorySlice.reducer,
+  conversation: conversationSlice.reducer,
   counter: counterSlice.reducer,
   notification: notificationSlice.reducer,
   product: productSlice.reducer,

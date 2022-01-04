@@ -2,6 +2,7 @@ import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 
 import { User } from '@services/index';
 import { RootState } from '../store';
+import { getConversationList } from '../conversation/actions';
 import { getNotificationList } from '../notification/actions';
 import { setUserData, setUserError, setUserToken } from '../user/actions';
 import { tokenSelector } from '../user/selectors';
@@ -45,6 +46,9 @@ export const initialize = createAsyncThunk(
 
         // get notifications
         thunkAPI.dispatch(getNotificationList());
+
+        // get messages
+        thunkAPI.dispatch(getConversationList());
       } catch (error) {
         // clear user token
         thunkAPI.dispatch(setUserToken(null));
