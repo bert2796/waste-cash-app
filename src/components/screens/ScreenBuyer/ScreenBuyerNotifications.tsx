@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Colors, Text } from 'react-native-paper';
+import { Colors } from 'react-native-paper';
+
+import { ScreenEmptyPage } from '../ScreenEmptyPage/ScreenEmptyPage';
 
 export const ScreenBuyerNotifications: React.FC = () => {
   return (
     <View style={styles.container}>
-      <Text>Notifications</Text>
+      <ScreenEmptyPage icon="notifications" message="No Notifications" />
     </View>
   );
 };

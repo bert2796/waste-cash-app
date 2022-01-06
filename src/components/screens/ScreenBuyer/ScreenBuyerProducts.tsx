@@ -7,6 +7,7 @@ import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 import { ICategory, IProduct, BuyerStackParam } from '../../../types';
 import { FlatListProduct } from '@molecules/FlatListProduct/FlatListProduct';
+import { ScreenEmptyPage } from '../ScreenEmptyPage/ScreenEmptyPage';
 
 interface Props {
   isLoading: boolean;
@@ -96,6 +97,10 @@ export const ScreenBuyerProducts: React.FC<Props> = ({
             ]}
           />
         </View>
+      )}
+
+      {!isLoading && !productList.length && (
+        <ScreenEmptyPage icon="cube" message="No Products" />
       )}
 
       {!isLoading && Boolean(productList.length) && (

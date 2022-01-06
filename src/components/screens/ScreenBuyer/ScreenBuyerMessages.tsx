@@ -4,6 +4,7 @@ import { Colors } from 'react-native-paper';
 
 import { IConversationSummary, IUser } from '../../../types';
 import { FlatListMessage } from '@molecules/FlatListMessage/FlastListMessage';
+import { ScreenEmptyPage } from '../ScreenEmptyPage/ScreenEmptyPage';
 
 interface Props {
   conversationList: IConversationSummary[];
@@ -16,7 +17,13 @@ export const ScreenBuyerMessages: React.FC<Props> = ({
 }) => {
   return (
     <View style={styles.container}>
-      <FlatListMessage data={conversationList} me={user} />
+      {!conversationList.length && (
+        <ScreenEmptyPage icon="chatbubbles" message="No Messages" />
+      )}
+
+      {Boolean(conversationList.length) && (
+        <FlatListMessage data={conversationList} me={user} />
+      )}
     </View>
   );
 };

@@ -5,6 +5,7 @@ import { Colors } from 'react-native-paper';
 
 import { INotification, SellerStackParam } from '../../../types';
 import { FlatListNotification } from '@molecules/FlatListNotification/FlatListNotification';
+import { ScreenEmptyPage } from '../ScreenEmptyPage/ScreenEmptyPage';
 
 interface Props {
   notificationList: INotification[];
@@ -33,10 +34,16 @@ export const ScreenShopNotifications: React.FC<Props> = ({
 
   return (
     <View style={styles.container}>
-      <FlatListNotification
-        data={notificationList}
-        onSeenNotification={handleSeenNotification}
-      />
+      {!notificationList.length && (
+        <ScreenEmptyPage icon="notifications" message="No Notifications" />
+      )}
+
+      {Boolean(notificationList.length) && (
+        <FlatListNotification
+          data={notificationList}
+          onSeenNotification={handleSeenNotification}
+        />
+      )}
     </View>
   );
 };

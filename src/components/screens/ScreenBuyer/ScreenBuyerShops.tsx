@@ -6,6 +6,7 @@ import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 import { IUser, BuyerStackParam } from '../../../types';
 import { FlatListShop } from '@molecules/FlatListShop/FlatListShop';
+import { ScreenEmptyPage } from '../ScreenEmptyPage/ScreenEmptyPage';
 
 interface Props {
   isLoading: boolean;
@@ -58,6 +59,10 @@ export const ScreenBuyerShops: React.FC<Props> = ({
             ]}
           />
         </View>
+      )}
+
+      {!isLoading && !shopList.length && (
+        <ScreenEmptyPage icon="construct" message="No Junk Shops" />
       )}
 
       {!isLoading && Boolean(shopList.length) && (

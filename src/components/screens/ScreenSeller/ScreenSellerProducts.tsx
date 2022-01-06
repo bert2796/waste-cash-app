@@ -6,6 +6,7 @@ import { Colors, FAB } from 'react-native-paper';
 import { IProduct, SellerStackParam } from '../../../types';
 import { FlatListProduct } from '@molecules/FlatListProduct/FlatListProduct';
 import { SkeletonListProduct } from '@molecules/SkeletonSeller/SkeletonListProduct';
+import { ScreenEmptyPage } from '../ScreenEmptyPage/ScreenEmptyPage';
 
 interface Props {
   productList: IProduct[];
@@ -49,6 +50,10 @@ export const ScreenSellerProducts: React.FC<Props> = ({
         <View style={styles.skeletonContainer}>
           <SkeletonListProduct />
         </View>
+      )}
+
+      {!isLoading && !productList.length && (
+        <ScreenEmptyPage icon="cube" message="No Products" />
       )}
 
       {!isLoading && Boolean(productList.length) && (

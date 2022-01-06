@@ -48,7 +48,7 @@ export const getOwnerProducts = async (params: { token: string }) => {
 
 export const getProducts = async () => {
   return (await axios({
-    url: host,
+    url: `${host}?status=unsold`,
     method: 'GET',
   })) as unknown as AxiosResponse<IGetProductResponse[]>;
 };
