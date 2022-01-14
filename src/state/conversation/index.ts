@@ -7,7 +7,12 @@ import {
 } from '../../types';
 import {
   addMessage,
+  addConversationDataMessage,
+  addConversationListMessage,
+  sendMessage,
+  getConversationData,
   getConversationList,
+  setConversationData,
   setConversationList,
   setConversationError,
 } from './actions';
@@ -15,8 +20,8 @@ import {
 const initialState: IConversationState = {
   isLoading: false,
   error: '',
+  data: null,
   list: [],
-  messages: [],
 };
 
 export const conversationSlice = createSlice({
@@ -24,10 +29,22 @@ export const conversationSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: {
-    // Add Message
-    [`${addMessage.type}`]: (state, action: { payload: IMessage }) => {
+    // Add Conversation Data Message
+    [`${addConversationDataMessage.type}`]: (state, action) => ({
+      ...state,
+      data: {
+        ...state.data,
+        messages: [action.payload, ...(state.data?.messages || [])],
+      },
+    }),
+
+    // Add Conversation List Message
+    [`${addConversationListMessage.type}`]: (
+      state,
+      action: { payload: IMessage },
+    ) => {
       const conversdationIndex = state.list.findIndex(
-        (conversation) => conversation.id === action.payload.conversation.id,
+        (conversation) => conversation.id === action.payload?.conversation?.id,
       );
 
       const {
@@ -42,7 +59,7 @@ export const conversationSlice = createSlice({
         },
       } = action;
       const newConversation: IConversationSummary = {
-        id: conversation.id,
+        id: conversation?.id as number,
         message: {
           id,
           content,
@@ -77,6 +94,38 @@ export const conversationSlice = createSlice({
       }
     },
 
+    // Send Message
+    [`${sendMessage.pending}`]: (state) => ({
+      ...state,
+    }),
+
+    [`${sendMessage.fulfilled}`]: (state) => ({
+      ...state,
+    }),
+
+    [`${sendMessage.rejected}`]: (state, action) => ({
+      ...state,
+      error: action.payload,
+    }),
+
+    // Get Conversation Data
+    [`${getConversationData.pending}`]: (state) => ({
+      ...state,
+      isLoading: true,
+      data: null,
+    }),
+
+    [`${getConversationData.fulfilled}`]: (state) => ({
+      ...state,
+      isLoading: false,
+    }),
+
+    [`${getConversationData.rejected}`]: (state, action) => ({
+      ...state,
+      error: action.payload,
+      isLoading: false,
+    }),
+
     // Get Conversation List
     [`${getConversationList.pending}`]: (state) => ({
       ...state,
@@ -94,10 +143,22 @@ export const conversationSlice = createSlice({
       isLoading: false,
     }),
 
+    // Set Conversation Data
+    [`${setConversationData.type}`]: (state, action) => ({
+      ...state,
+      data: action.payload,
+    }),
+
     // Set Conversation List
     [`${setConversationList.type}`]: (state, action) => ({
       ...state,
       list: action.payload,
+    }),
+
+    // Set Conversation Error
+    [`${setConversationError.type}`]: (state, action) => ({
+      ...state,
+      error: action.payload || '',
     }),
   },
 });

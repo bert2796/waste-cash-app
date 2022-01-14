@@ -5,7 +5,7 @@ import { View, StyleSheet } from 'react-native';
 import { MessageType } from '@flyerhq/react-native-chat-ui';
 import { v4 as uuidv4 } from 'uuid';
 
-import { BuyerStackParam, IConversation, IUser } from '../../../types';
+import { ShopStackParam, IConversation, IUser } from '../../../types';
 import { Chat } from '@organisms/Chat';
 
 interface Props {
@@ -19,12 +19,12 @@ interface Props {
     recipientId?: number;
     content: string;
   }) => void;
-  navigation: NavigationProp<BuyerStackParam>;
-  route: RouteProp<BuyerStackParam, 'BuyerChatShop'>;
+  navigation: NavigationProp<ShopStackParam>;
+  route: RouteProp<ShopStackParam, 'ShopChat'>;
   socket: Socket;
 }
 
-export const ScreenBuyerChatShop: React.FC<Props> = ({
+export const ScreenShopChat: React.FC<Props> = ({
   conversationData,
   me,
   isLoading,
@@ -34,7 +34,7 @@ export const ScreenBuyerChatShop: React.FC<Props> = ({
   route,
   socket,
 }) => {
-  const { shop } = route.params;
+  const { conversationId, recipient } = route.params;
   const [message, setMessage] = React.useState('');
   const [messages, setMessages] = React.useState<MessageType.Any[]>([]);
 
@@ -43,8 +43,6 @@ export const ScreenBuyerChatShop: React.FC<Props> = ({
 
     if (!messages.length) {
       if (conversationData?.messages?.length) {
-        console.log(conversationData.messages);
-
         formattedMessage = conversationData.messages.map(
           (conversationMessage) => ({
             author: {
@@ -101,7 +99,7 @@ export const ScreenBuyerChatShop: React.FC<Props> = ({
     } = {
       socket,
       content: message,
-      recipientId: shop.id,
+      recipientId: recipient.id,
     };
     if (conversationData?.id) {
       toSend.conversationId = conversationData.id;
@@ -119,7 +117,7 @@ export const ScreenBuyerChatShop: React.FC<Props> = ({
     me,
     message,
     messages,
-    shop,
+    recipient,
     socket,
     onSendMessage,
     setMessage,
@@ -127,12 +125,14 @@ export const ScreenBuyerChatShop: React.FC<Props> = ({
   ]);
 
   React.useLayoutEffect(() => {
-    navigation.setOptions({ title: shop.junkShopName });
-  }, [navigation, shop]);
+    navigation.setOptions({
+      title: `${recipient.firstName} ${recipient.lastName}`,
+    });
+  }, [navigation, recipient]);
 
   React.useEffect(() => {
-    onGetConverdsationData(shop.id);
-  }, [shop, onGetConverdsationData]);
+    onGetConverdsationData(conversationId);
+  }, [conversationId, onGetConverdsationData]);
 
   return (
     <View style={styles.container}>

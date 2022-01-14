@@ -1,19 +1,32 @@
 import React from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import {
+  TouchableWithoutFeedback,
+  View,
+  FlatList,
+  StyleSheet,
+} from 'react-native';
 import { List, Avatar, Text, Divider, Colors } from 'react-native-paper';
 import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
 
-import { IConversationSummary, IUser } from '../../../types';
+import { IConversation, IConversationSummary, IUser } from '../../../types';
 
 dayjs.extend(isToday);
 
 interface Props {
   data: IConversationSummary[];
   me: IUser;
+  onPressConversation?: (params: {
+    conversationId: number;
+    recipient: IUser;
+  }) => void;
 }
 
-export const FlatListMessage: React.FC<Props> = ({ data, me }) => {
+export const FlatListMessage: React.FC<Props> = ({
+  data,
+  me,
+  onPressConversation,
+}) => {
   const renderItem = ({ item }: { item: IConversationSummary }) => {
     const conversationRecipient =
       item.recipient.id === me.id ? item.sender : item.recipient;
@@ -21,32 +34,43 @@ export const FlatListMessage: React.FC<Props> = ({ data, me }) => {
     const messageIsSeen = isLastMessageWasSentByMe || item.message.isSeen;
 
     return (
-      <View>
-        <List.Item
-          title={`${conversationRecipient.firstName} ${conversationRecipient.lastName}`}
-          description={`${isLastMessageWasSentByMe ? 'You: ' : ''}${
-            item.message.content
-          }`}
-          left={() => (
-            <View style={styles.avatarContainer}>
-              <Avatar.Text
-                label={`${conversationRecipient?.firstName?.[0]}${conversationRecipient?.lastName?.[0]}`}
-                size={45}
-              />
-            </View>
-          )}
-          right={() => (
-            <Text style={messageIsSeen ? styles.seen : styles.unseen}>
-              {dayjs(item.message.createdAt).isToday()
-                ? dayjs(item.message.createdAt).format('h:mm')
-                : dayjs(item.message.createdAt).format('MMM D')}
-            </Text>
-          )}
-          titleStyle={messageIsSeen ? styles.seen : styles.unseen}
-          descriptionStyle={messageIsSeen ? styles.seen : styles.unseen}
-        />
-        <Divider />
-      </View>
+      <TouchableWithoutFeedback
+        onPress={() =>
+          onPressConversation
+            ? onPressConversation({
+                conversationId: item.id,
+                recipient: conversationRecipient as IUser,
+              })
+            : null
+        }
+      >
+        <View>
+          <List.Item
+            title={`${conversationRecipient.firstName} ${conversationRecipient.lastName}`}
+            description={`${isLastMessageWasSentByMe ? 'You: ' : ''}${
+              item.message.content
+            }`}
+            left={() => (
+              <View style={styles.avatarContainer}>
+                <Avatar.Text
+                  label={`${conversationRecipient?.firstName?.[0]}${conversationRecipient?.lastName?.[0]}`}
+                  size={45}
+                />
+              </View>
+            )}
+            right={() => (
+              <Text style={messageIsSeen ? styles.seen : styles.unseen}>
+                {dayjs(item.message.createdAt).isToday()
+                  ? dayjs(item.message.createdAt).format('h:mm')
+                  : dayjs(item.message.createdAt).format('MMM D')}
+              </Text>
+            )}
+            titleStyle={messageIsSeen ? styles.seen : styles.unseen}
+            descriptionStyle={messageIsSeen ? styles.seen : styles.unseen}
+          />
+          <Divider />
+        </View>
+      </TouchableWithoutFeedback>
     );
   };
   return (

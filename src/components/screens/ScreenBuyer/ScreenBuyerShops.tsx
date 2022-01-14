@@ -1,11 +1,11 @@
 import React from 'react';
-import { NavigationProp } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect } from '@react-navigation/native';
 import { View, StyleSheet } from 'react-native';
 import { Colors } from 'react-native-paper';
-import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 import { IUser, BuyerStackParam } from '../../../types';
 import { FlatListShop } from '@molecules/FlatListShop/FlatListShop';
+import { SkeletonListShop } from '@molecules/SkeletonBuyer/SkeletonListShop';
 import { ScreenEmptyPage } from '../ScreenEmptyPage/ScreenEmptyPage';
 
 interface Props {
@@ -26,38 +26,20 @@ export const ScreenBuyerShops: React.FC<Props> = ({
     [navigation],
   );
 
-  const handleGetShopList = React.useCallback(
-    () => onGetShopList(),
-    [onGetShopList],
-  );
-
   // Get Shop List
-  React.useEffect(() => {
-    handleGetShopList();
-  }, [handleGetShopList]);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (!shopList.length) {
+        onGetShopList();
+      }
+    }, [onGetShopList, shopList]),
+  );
 
   return (
     <View style={styles.container}>
       {isLoading && (
         <View style={styles.skeletonContainer}>
-          <SkeletonContent
-            animationType="pulse"
-            animationDirection="horizontalLeft"
-            boneColor={Colors.grey500}
-            highlightColor={Colors.grey400}
-            duration={3000}
-            isLoading
-            containerStyle={styles.skeleton}
-            layout={[
-              { key: 1, width: '100%', height: 85, marginBottom: 30 },
-              { key: 2, width: '100%', height: 85, marginBottom: 30 },
-              { key: 3, width: '100%', height: 85, marginBottom: 30 },
-              { key: 4, width: '100%', height: 85, marginBottom: 30 },
-              { key: 5, width: '100%', height: 85, marginBottom: 30 },
-              { key: 6, width: '100%', height: 85, marginBottom: 30 },
-              { key: 7, width: '100%', height: 85, marginBottom: 30 },
-            ]}
-          />
+          <SkeletonListShop />
         </View>
       )}
 

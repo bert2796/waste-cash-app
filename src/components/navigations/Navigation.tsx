@@ -10,7 +10,9 @@ import { Colors } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {
+  IConversation,
   IMessage,
+  IUser,
   UserRoles,
   LoggedoutStackParam,
   BuyerStackParam,
@@ -34,8 +36,8 @@ import ContainerSignIn from '@containers/ContainerSignIn';
 import ContainerSignUp from '@containers/ContainerSignUp';
 
 // Buyer
-import { ScreenBuyerChatShop } from '@screens/ScreenBuyer/ScreenBuyerChatShop';
 import ContainerBuyerChatProduct from '@containers/ContainerBuyerChatProduct';
+import ContainerBuyerChatShop from '@containers/ContainerBuyerChatShop';
 import ContainerBuyerMessages from '@containers/ContainerBuyerMessages';
 import ContainerBuyerNotifications from '@containers/ContainerBuyerNotifications';
 import ContainerBuyerProducts from '@containers/ContainerBuyerProducts';
@@ -55,6 +57,7 @@ import ContainerSellerViewOffers from '@containers/ContainerSellerViewOffers';
 import ContainerSellerViewProduct from '@containers/ContainerSellerViewProduct';
 
 // Shop
+import ContainerShopChat from '@containers/ContainerShopChat';
 import ContainerShopMessages from '@containers/ContainerShopMessages';
 import ContainerShopNotifications from '@containers/ContainerShopNotifications';
 import ContainerShopProfile from '@containers/ContainerShopProfile';
@@ -67,8 +70,11 @@ interface Props {
   isInitialize: boolean;
   hasUnseenConversation: boolean;
   hasUnseenNotification: boolean;
+  conversationMessage: IConversation;
+  me: IUser;
   role: UserRoles;
-  onAddMessage: (params: IMessage) => void;
+  onAddConversationDataMessage: (params: IMessage) => void;
+  onAddConversationListMessage: (params: IMessage) => void;
   onAppInitialize: () => void;
   onSetAppError: (error: string | null) => void;
   socket: Socket;
@@ -96,8 +102,11 @@ export const Navigation: React.FC<Props> = ({
   isConnected,
   hasUnseenConversation,
   hasUnseenNotification,
+  conversationMessage,
+  me,
   role,
-  onAddMessage,
+  onAddConversationDataMessage,
+  onAddConversationListMessage,
   onAppInitialize,
   onSetAppError,
   socket,
@@ -138,9 +147,14 @@ export const Navigation: React.FC<Props> = ({
 
     if (!hasCreateMessageListener) {
       console.log('Added createMessage listener');
+
       socket.on('createMessage', (payload: IMessage) => {
-        console.log(`createMessage: ${payload}`);
-        onAddMessage(payload);
+        if (payload.sender.id !== me.id) {
+          onAddConversationListMessage(payload);
+          if (conversationMessage?.id === payload.conversation?.id) {
+            onAddConversationDataMessage(payload);
+          }
+        }
       });
     }
 
@@ -148,7 +162,13 @@ export const Navigation: React.FC<Props> = ({
       // destroy current listener to avoid duplication of listener when this component rerender
       socket.off('createMessage');
     };
-  }, [socket, onAddMessage]);
+  }, [
+    socket,
+    conversationMessage,
+    me,
+    onAddConversationListMessage,
+    onAddConversationDataMessage,
+  ]);
 
   // initialize
   React.useEffect(() => {
@@ -454,7 +474,7 @@ export const Navigation: React.FC<Props> = ({
               />
               <BuyerStack.Screen
                 name="BuyerChatShop"
-                component={ScreenBuyerChatShop}
+                component={ContainerBuyerChatShop}
               />
             </Stack.Group>
           )}
@@ -512,6 +532,7 @@ export const Navigation: React.FC<Props> = ({
                   headerTitleAlign: 'center',
                 }}
               />
+              <ShopStack.Screen name="ShopChat" component={ContainerShopChat} />
             </Stack.Group>
           )}
 

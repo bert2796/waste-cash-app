@@ -3,10 +3,10 @@ import { NavigationProp } from '@react-navigation/native';
 import { View, StyleSheet } from 'react-native';
 import { Colors } from 'react-native-paper';
 import DropDown from 'react-native-paper-dropdown';
-import SkeletonContent from 'react-native-skeleton-content-nonexpo';
 
 import { ICategory, IProduct, BuyerStackParam } from '../../../types';
 import { FlatListProduct } from '@molecules/FlatListProduct/FlatListProduct';
+import { SkeletonListProduct } from '@molecules/SkeletonBuyer/SkeletonListProduct';
 import { ScreenEmptyPage } from '../ScreenEmptyPage/ScreenEmptyPage';
 
 interface Props {
@@ -82,20 +82,7 @@ export const ScreenBuyerProducts: React.FC<Props> = ({
     <View style={styles.container}>
       {isLoading && (
         <View style={styles.skeletonContainer}>
-          <SkeletonContent
-            animationType="pulse"
-            animationDirection="horizontalLeft"
-            boneColor={Colors.grey500}
-            highlightColor={Colors.grey400}
-            duration={3000}
-            isLoading
-            containerStyle={styles.skeleton}
-            layout={[
-              { key: 1, width: '100%', height: 200, marginBottom: 30 },
-              { key: 2, width: '100%', height: 200, marginBottom: 30 },
-              { key: 3, width: '100%', height: 200, marginBottom: 30 },
-            ]}
-          />
+          <SkeletonListProduct />
         </View>
       )}
 

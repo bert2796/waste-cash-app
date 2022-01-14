@@ -4,17 +4,26 @@ import { connect } from 'react-redux';
 import { IMessage } from '../types';
 import { AppDispatch, RootState } from '@state/store';
 import { initialize, setAppError } from '@state/app/actions';
-import { addMessage } from '@state/conversation/actions';
+import {
+  addConversationDataMessage,
+  addConversationListMessage,
+} from '@state/conversation/actions';
 import { isInitializeSelector, appErrorSelector } from '@state/app/selectors';
-import { hasUnseenConversationSelector } from '@state/conversation/selectors';
+import {
+  hasUnseenConversationSelector,
+  conversationDataSelector,
+} from '@state/conversation/selectors';
 import { hasUnseenNotificationSelector } from '@state/notification/selectors';
 import { isAuthSelector, userDataSelector } from '@state/user/selectors';
 import { WithSocket as withSocket } from '@atoms/WithSocket/WithSocket';
 import { Navigation } from '@navigations/Navigation';
 
 const mapActionCreators = (dispatch: AppDispatch) => ({
-  onAddMessage(params: IMessage): void {
-    dispatch(addMessage(params));
+  onAddConversationDataMessage(params: IMessage): void {
+    dispatch(addConversationDataMessage(params));
+  },
+  onAddConversationListMessage(params: IMessage): void {
+    dispatch(addConversationListMessage(params));
   },
   onAppInitialize(): void {
     dispatch(initialize());
@@ -35,6 +44,8 @@ const mapStateToProps = (state: RootState) => {
     isInitialize: isInitializeSelector(state),
     hasUnseenConversation: hasUnseenConversationSelector(state),
     hasUnseenNotification: hasUnseenNotificationSelector(state),
+    conversationMessage: conversationDataSelector(state),
+    me: userData,
     role: userData.role,
   };
 };

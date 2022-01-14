@@ -31,8 +31,6 @@ export const getShopList = createAsyncThunk(
     try {
       const shops = await Shop.getShops();
 
-      await wait(1000);
-
       thunkAPI.dispatch(setShopList(shops.data));
 
       return Promise.resolve();

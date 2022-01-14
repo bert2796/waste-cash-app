@@ -18,6 +18,9 @@ export interface ICategory {
 
 export interface IConversation {
   id: number;
+  messages: IMessage[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IConversationSummary {
@@ -30,7 +33,7 @@ export interface IConversationSummary {
 export interface IMessage {
   id: number;
   content: string;
-  conversation: IConversation;
+  conversation?: IConversation;
   isSeen: boolean;
   sender: IUser;
   recipient: IUser;
@@ -109,8 +112,8 @@ export interface ICategoryState {
 export interface IConversationState {
   error: string;
   isLoading: boolean;
+  data: IConversation | null;
   list: IConversationSummary[];
-  messages: IMessage[];
 }
 
 export interface ICounterState {
@@ -155,6 +158,8 @@ export interface IUserState {
 }
 
 // response interface
+export interface ICreateMessageResponse extends IMessage {}
+
 export interface ICreateProductResponse extends IProduct {}
 
 export interface ICreateProductOfferResponse extends IProductOffer {}
@@ -225,6 +230,7 @@ export type SellerNotificationTabParam = {
 };
 
 export type ShopStackParam = {
+  ShopChat: { conversationId: number; recipient: IUser };
   ShopHome: undefined;
   ShopProfileSettings: undefined;
 };
