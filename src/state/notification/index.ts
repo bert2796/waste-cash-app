@@ -1,39 +1,31 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { INotificationState } from '../../types';
-import {
-  getNotificationList,
-  seenNotification,
-  setNotificationError,
-  setNotificationSuccess,
-  setNotificationList,
-} from './actions';
+import { getNotifications, seenNotification } from './actions';
 
-const initialState: INotificationState = {
-  isLoading: false,
-  success: '',
+const initialState: State.Notification = {
   error: '',
-  data: null,
+  isLoading: false,
   list: [],
 };
 
 export const notificationSlice = createSlice({
-  name: 'notification',
-  initialState,
-  reducers: {},
   extraReducers: {
     // Get Notification List
-    [`${getNotificationList.pending}`]: (state) => ({
+    [`${getNotifications.pending}`]: (state) => ({
       ...state,
       isLoading: true,
     }),
-
-    [`${getNotificationList.fulfilled}`]: (state) => ({
+    [`${getNotifications.fulfilled}`]: (
+      state,
+      action: {
+        payload: { list: Objects.Notification[] };
+      },
+    ) => ({
       ...state,
       isLoading: false,
+      list: action.payload.list,
     }),
-
-    [`${getNotificationList.rejected}`]: (state, action) => ({
+    [`${getNotifications.rejected}`]: (state, action) => ({
       ...state,
       error: action.payload,
       isLoading: false,
@@ -43,7 +35,6 @@ export const notificationSlice = createSlice({
     [`${seenNotification.pending}`]: (state) => ({
       ...state,
     }),
-
     [`${seenNotification.fulfilled}`]: (state, action) => ({
       ...state,
       list: [
@@ -58,28 +49,12 @@ export const notificationSlice = createSlice({
         }),
       ],
     }),
-
     [`${seenNotification.rejected}`]: (state, action) => ({
       ...state,
       error: action.payload,
     }),
-
-    // Set Notification List
-    [`${setNotificationList.type}`]: (state, action) => ({
-      ...state,
-      list: action.payload,
-    }),
-
-    // Set Notification Error
-    [`${setNotificationError.type}`]: (state, action) => ({
-      ...state,
-      error: action.payload || '',
-    }),
-
-    // Set Notification Success
-    [`${setNotificationSuccess.type}`]: (state, action) => ({
-      ...state,
-      success: action.payload || '',
-    }),
   },
+  initialState,
+  name: 'notification',
+  reducers: {},
 });

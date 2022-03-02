@@ -1,39 +1,23 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { ICategory, IServiceError } from '../../types';
-import { Category } from '@services/index';
-import { CategoryActions } from './constants';
+import { Category } from '@/services/index';
+
 import { setAppError } from '../app/actions';
+import { CategoryActions } from './constants';
 
-const wait = (waitingTime = 3000) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`Wait for ${waitingTime} ms: Done!`);
-
-      resolve(true);
-    }, waitingTime);
-  });
-
-export const setCategoryList = createAction<ICategory[]>(
-  CategoryActions.SET_CATEGORY_LIST,
-);
-
-export const getCategoryList = createAsyncThunk(
+export const getCategories = createAsyncThunk(
   CategoryActions.GET_CATEGORY_LIST,
   async (_, thunkAPI) => {
     try {
-      const categoryList = await Category.getCategories();
+      const getCategoriesRes = await Category.getCategories();
+      const categories: Objects.Category[] = getCategoriesRes.data;
 
-      await wait(1000);
-
-      thunkAPI.dispatch(setCategoryList(categoryList.data));
-
-      return Promise.resolve();
+      return Promise.resolve({ list: categories });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error?.response) {
-          const axiosError = error?.response as IServiceError;
+          const axiosError = error?.response as Objects.ServiceError;
           if (axiosError?.status && axiosError.status === 400) {
             return thunkAPI.rejectWithValue(axiosError.data.message);
           }

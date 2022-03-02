@@ -1,36 +1,32 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { ProductStatus } from '../types';
-import { AppDispatch, RootState } from '@state/store';
-import { getCategoryList } from '@state/category/actions';
+import { ScreenSellerCreateProduct } from '@/components/screens/ScreenSeller/ScreenSellerCreateProduct';
+import { getCategories } from '@/state/category/actions';
 import {
   categoryListSelector,
   isLoadingSelector as isCategoryLoadingSelector,
-} from '@state/category/selectors';
+} from '@/state/category/selectors';
+import { createProduct, setProductSuccess } from '@/state/product/actions';
 import {
-  isLoadingSelector as isProductLoadingSelector,
-  productErrorSelector,
+  isLoadingSelector,
   productSuccessSelector,
-} from 'state/product/selectors';
-import { createProduct, setProductSuccess } from '@state/product/actions';
-import { ScreenSellerCreateProduct } from '@screens/ScreenSeller/ScreenSellerCreateProduct';
+} from '@/state/product/selectors';
+import { AppDispatch, RootState } from '@/state/store';
 
 const mapActionCreators = (dispatch: AppDispatch) => ({
-  onGetCategoryList(): void {
-    dispatch(getCategoryList());
-  },
-  onCreateProduct(params: {
-    photo: any;
-    name: string;
-    category: string;
-    description: string;
-    price: number;
-    status: ProductStatus;
-  }): void {
+  createProduct(
+    params: Partial<Omit<Objects.Product, 'category'>> & {
+      category: string;
+      photo: any;
+    },
+  ): void {
     dispatch(createProduct(params));
   },
-  onSetProductSuccess(success: string | null): void {
+  getCategories(): void {
+    dispatch(getCategories());
+  },
+  setProductSuccess(success: string): void {
     dispatch(setProductSuccess(success));
   },
 });
@@ -38,10 +34,9 @@ const mapActionCreators = (dispatch: AppDispatch) => ({
 const mapStateToProps = (state: RootState) => {
   return {
     categoryList: categoryListSelector(state),
-    productError: productErrorSelector(state),
-    productSuccess: productSuccessSelector(state),
     isCategoryLoading: isCategoryLoadingSelector(state),
-    isProductLoading: isProductLoadingSelector(state),
+    isProductLoading: isLoadingSelector(state),
+    success: productSuccessSelector(state),
   };
 };
 

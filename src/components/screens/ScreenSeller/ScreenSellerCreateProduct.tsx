@@ -1,117 +1,112 @@
-import React from 'react';
 import { NavigationProp } from '@react-navigation/native';
-import { View, ScrollView, SafeAreaView, StyleSheet } from 'react-native';
-import { Colors } from 'react-native-paper';
+import React from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 
-import { ProductStatus, ICategory, SellerStackParam } from '../../../types';
-import { DialogCreateProductSuccess } from '@molecules/DialogCreateProductSuccess/DialogCreateProductSuccess';
-import { FormCreateProduct } from '@molecules/FormCreateProduct/FormCreateProduct';
-import { SkeletonCreateProduct } from '@molecules/SkeletonSeller/SkeletonCreateProduct';
+import { Container } from '@/atoms/index';
+import { DialogSuccess, FormCreateProduct } from '@/molecules/index';
+import { ScreenLoading } from '@/screens/ScreenLoading';
 
 interface Props {
-  productError: string;
-  productSuccess: string;
-  categoryList: ICategory[];
+  categoryList: Objects.Category[];
   isCategoryLoading: boolean;
   isProductLoading: boolean;
-  onCreateProduct: (params: {
-    photo: any;
-    name: string;
-    category: string;
-    description: string;
-    price: number;
-    status: ProductStatus;
-  }) => void;
-  onGetCategoryList: () => void;
-  onSetProductSuccess: (message: string | null) => void;
-  navigation: NavigationProp<SellerStackParam>;
+  success: string;
+  createProduct: (
+    params: Partial<Omit<Objects.Product, 'category'>> & {
+      category: string;
+      photo: any;
+    },
+  ) => void;
+  getCategories: () => void;
+  setProductSuccess: (success: string) => void;
+  navigation: NavigationProp<Screens.SellerStackParams>;
 }
 
 export const ScreenSellerCreateProduct: React.FC<Props> = ({
-  productError,
-  productSuccess,
   categoryList,
   isCategoryLoading,
   isProductLoading,
-  onCreateProduct,
-  onGetCategoryList,
-  onSetProductSuccess,
+  success,
+  createProduct,
+  getCategories,
+  setProductSuccess,
   navigation,
 }) => {
-  const [isDialogProductSuccessVisible, setIsDialogProductSuccessVisible] =
-    React.useState(false);
+  const [isDialogVisible, setIsDialogVisible] = React.useState(false);
 
-  const handleGetCategoryList = React.useCallback(() => {
-    onGetCategoryList();
-  }, [onGetCategoryList]);
-
-  const handleDismissDialogProductSuccess = React.useCallback(() => {
-    setIsDialogProductSuccessVisible(false);
-
-    onSetProductSuccess(null);
-  }, [onSetProductSuccess]);
-
-  const handleBrowseProductNavigate = React.useCallback(() => {
-    navigation.navigate('SellerHome');
-  }, [navigation]);
-
-  // Get Category List
-  React.useEffect(() => {
-    handleGetCategoryList();
-  }, [handleGetCategoryList]);
-
-  // Show Dialog Product Success
-  React.useEffect(() => {
-    if (productSuccess) {
-      setIsDialogProductSuccessVisible(true);
+  const handleDialogVisibility = React.useCallback(() => {
+    if (isDialogVisible) {
+      setProductSuccess('');
     }
-  }, [productSuccess]);
+
+    setIsDialogVisible(!isDialogVisible);
+  }, [isDialogVisible, setProductSuccess, setIsDialogVisible]);
+
+  React.useEffect(() => {
+    getCategories();
+  }, [getCategories]);
+
+  // open dialog for successfull product creation
+  React.useEffect(() => {
+    if (success) {
+      handleDialogVisibility();
+    }
+  }, [success, handleDialogVisibility]);
+
+  const handleNavigateBack = () => {
+    if (success) {
+      handleDialogVisibility();
+    }
+
+    navigation.goBack();
+  };
 
   return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.scrollContent}
-        contentContainerStyle={styles.scrollContentContainer}
-        keyboardShouldPersistTaps="handled"
-      >
-        <SafeAreaView style={styles.content}>
-          <DialogCreateProductSuccess
-            success={productSuccess}
-            isVisible={isDialogProductSuccessVisible}
-            onDismissDialog={handleDismissDialogProductSuccess}
-          />
+    <Container>
+      <DialogSuccess
+        isVisible={isDialogVisible}
+        message={success}
+        onDismissDialog={handleDialogVisibility}
+      />
 
-          {isCategoryLoading && <SkeletonCreateProduct />}
-
-          {!isCategoryLoading && (
-            <FormCreateProduct
-              categoryList={categoryList}
-              error={productError}
-              success={productSuccess}
-              isCreateProductLoading={isProductLoading}
-              onBrowseProductNavigate={handleBrowseProductNavigate}
-              onCreateProduct={onCreateProduct}
-            />
-          )}
-        </SafeAreaView>
-      </ScrollView>
-    </View>
+      {isCategoryLoading && <ScreenLoading />}
+      {!isCategoryLoading && Boolean(categoryList.length) && (
+        <>
+          <ScrollView
+            contentContainerStyle={styles.scrollContentContainer}
+            keyboardShouldPersistTaps="handled"
+            style={styles.scrollContent}
+          >
+            <SafeAreaView style={styles.content}>
+              <FormCreateProduct
+                categories={categoryList}
+                isLoading={isProductLoading}
+                onCancel={handleNavigateBack}
+                onSubmit={createProduct}
+              />
+            </SafeAreaView>
+          </ScrollView>
+        </>
+      )}
+    </Container>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flex: 1,
-    backgroundColor: Colors.grey200,
+    margin: 20,
+  },
+  form: {
+    flex: 1,
+  },
+  image: {
+    marginTop: 80,
   },
   scrollContent: {
     flex: 1,
   },
   scrollContentContainer: {
     flexGrow: 1,
-  },
-  content: {
-    flex: 1,
-    margin: 20,
   },
 });

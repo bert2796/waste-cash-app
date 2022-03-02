@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Colors, Appbar, Button } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { Appbar, Button, Colors } from 'react-native-paper';
 
 interface Props {
   isButtonOfferDisabled: boolean;
@@ -16,18 +16,18 @@ export const AppbarSellerViewProduct: React.FC<Props> = ({
   <Appbar style={styles.appBar}>
     <View style={styles.appBarContent}>
       <Button
-        mode="outlined"
         icon="chat-processing-outline"
+        mode="outlined"
         style={styles.buttonChat}
       >
         Chat
       </Button>
       <Button
-        mode="contained"
-        icon="cash-multiple"
-        onPress={onPressOffer}
-        labelStyle={styles.buttonOfferLabel}
         disabled={isButtonOfferDisabled}
+        icon="cash-multiple"
+        labelStyle={styles.buttonOfferLabel}
+        mode="contained"
+        onPress={onPressOffer}
       >
         Offers
       </Button>
@@ -37,16 +37,16 @@ export const AppbarSellerViewProduct: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
   appBar: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
     backgroundColor: Colors.white,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
   },
   appBarContent: {
-    marginLeft: 10,
     display: 'flex',
     flexDirection: 'row',
+    marginLeft: 10,
   },
   buttonChat: {
     marginRight: 10,

@@ -1,31 +1,29 @@
 import React from 'react';
-import { PersistGate } from 'redux-persist/integration/react';
-import { Provider } from 'react-redux';
 import { ReduxNetworkProvider } from 'react-native-offline';
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import * as io from 'socket.io-client';
 
-import ThemeProvider from '@themes/ThemeProvider';
-import SocketProvider from '@components/SocketContext';
-import { store, persistor } from '@state/store';
-import { ScreenInitialLoading } from '@screens/ScreenInitialLoading/ScreenInitialLoading';
-import ContainerNavigation from '@containers/ContainerNavigation';
+import { ScreenLoading } from '@/components/screens/ScreenLoading/ScreenLoading';
+import SocketProvider from '@/components/SocketContext';
+import ContainerNavigation from '@/containers/ContainerNavigation';
+import { persistor, store } from '@/state/store';
+import ThemeProvider from '@/theme/ThemeProvider';
+
+import { websocket } from './config';
 
 const App: React.FC = () => {
-  // const socket = io.connect('wss://waste-cash.com');
-
-  const socket = io.connect('ws://10.0.2.2:3000');
+  const socket = io.connect(websocket);
 
   return (
     <Provider store={store}>
-      <PersistGate loading={<ScreenInitialLoading />} persistor={persistor}>
-        <ReduxNetworkProvider>
-          <ThemeProvider>
-            <SocketProvider.Provider value={{ socket }}>
-              <ContainerNavigation />
-            </SocketProvider.Provider>
-          </ThemeProvider>
-        </ReduxNetworkProvider>
-      </PersistGate>
+      <ThemeProvider>
+        <PersistGate loading={<ScreenLoading />} persistor={persistor}>
+          <SocketProvider.Provider value={{ socket }}>
+            <ContainerNavigation />
+          </SocketProvider.Provider>
+        </PersistGate>
+      </ThemeProvider>
     </Provider>
   );
 };

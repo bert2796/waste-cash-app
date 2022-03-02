@@ -1,45 +1,20 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { TextInput, Subheading, Button, Colors } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { Colors, HelperText, TextInput } from 'react-native-paper';
 
-import { UserRoles } from '../../../types';
-
+import { Button, Input, PasswordInput } from '@/atoms/index';
+import { UserRoles } from '@/constants/index';
+import { isValidEmail } from '@/utils/index';
 interface Props {
   error: string;
-  role: UserRoles;
-  isJunkShop: boolean;
   isLoading: boolean;
-  onSignUp: ({
-    junkShopName,
-    firstName,
-    lastName,
-    address,
-    city,
-    zip,
-    phone,
-    email,
-    username,
-    password,
-    role,
-  }: {
-    junkShopName: string;
-    firstName: string;
-    lastName: string;
-    address: string;
-    city: string;
-    zip: string;
-    phone: string;
-    email: string;
-    username: string;
-    password: string;
-    role: UserRoles;
-  }) => void;
+  role: UserRoles;
+  onSignUp: (params: Omit<Objects.User, 'id'>) => void;
 }
 
 export const FormSignUp: React.FC<Props> = ({
   error,
   role,
-  isJunkShop,
   isLoading,
   onSignUp,
 }) => {
@@ -53,7 +28,6 @@ export const FormSignUp: React.FC<Props> = ({
   const [email, setEmail] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
 
   const inputFirstName: any = React.useRef();
   const inputLastName: any = React.useRef();
@@ -65,336 +39,250 @@ export const FormSignUp: React.FC<Props> = ({
   const inputUsername: any = React.useRef();
   const inputPassword: any = React.useRef();
 
-  const isSignUpButtonEnabled = React.useMemo(
-    () =>
-      (isJunkShop && !junkShopName) ||
-      !firstName ||
-      !lastName ||
-      !address ||
-      !city ||
-      !zip ||
-      !phone ||
-      !email ||
-      !username ||
-      !password ||
-      isLoading,
-    [
-      isJunkShop,
-      junkShopName,
-      firstName,
-      lastName,
+  const isJunkShop = role === UserRoles.JUNKSHOP;
+
+  const isSignUpButtonEnabled =
+    (isJunkShop && !junkShopName) ||
+    (Boolean(email) && !isValidEmail(email)) ||
+    !firstName ||
+    !lastName ||
+    !address ||
+    !city ||
+    !zip ||
+    !phone ||
+    !email ||
+    !username ||
+    !password ||
+    isLoading;
+
+  // Handle changes
+  const handleJunkShopNameChange = (text: string) => {
+    setJunkShopName(text);
+  };
+  const handleFirstNameChange = (text: string) => {
+    setFirstName(text);
+  };
+  const handleLastNameChange = (text: string) => {
+    setLastName(text);
+  };
+  const handleAddressChange = (text: string) => {
+    setAddress(text);
+  };
+  const handleCityChange = (text: string) => {
+    setCity(text);
+  };
+  const handleZipChange = (text: string) => {
+    setZip(text);
+  };
+  const handlePhoneChange = (text: string) => {
+    setPhone(text);
+  };
+  const handleEmailChange = (text: string) => {
+    setEmail(text);
+  };
+  const handlUsernameChange = (text: string) => {
+    setUsername(text);
+  };
+  const handlePasswordChange = (text: string) => {
+    setPassword(text);
+  };
+
+  // handle submit editting
+  const handleJunkShopNameSubmitEditing = () => {
+    inputFirstName.current.focus();
+  };
+  const handleFirstNameSubmitEditing = () => {
+    inputLastName.current.focus();
+  };
+  const handleLastNameSubmitEditing = () => {
+    inputAddress.current.focus();
+  };
+  const handleAddressSubmitEditing = () => {
+    inputCity.current.focus();
+  };
+  const handleCitySubmitEditing = () => {
+    inputZip.current.focus();
+  };
+  const handleZipSubmitEditing = () => {
+    inputPhone.current.focus();
+  };
+  const handlePhoneSubmitEditing = () => {
+    inputEmail.current.focus();
+  };
+  const handleEmailSubmitEditing = () => {
+    inputUsername.current.focus();
+  };
+  const handleUsernameSubmitEditing = () => {
+    inputPassword.current.focus();
+  };
+  const handlePasswordSubmitEditing = () => {
+    handleSignUp();
+  };
+
+  // sign up
+  const handleSignUp = () => {
+    onSignUp({
       address,
       city,
-      zip,
-      phone,
       email,
-      username,
-      password,
-      isLoading,
-    ],
-  );
-
-  const handleJunkShopNameChange = React.useCallback(
-    (text: string) => setJunkShopName(text),
-    [setJunkShopName],
-  );
-
-  const handleFirstNameChange = React.useCallback(
-    (text: string) => setFirstName(text),
-    [setFirstName],
-  );
-
-  const handleLastNameChange = React.useCallback(
-    (text: string) => setLastName(text),
-    [setLastName],
-  );
-
-  const handleAddressChange = React.useCallback(
-    (text: string) => setAddress(text),
-    [setAddress],
-  );
-
-  const handleCityChange = React.useCallback(
-    (text: string) => setCity(text),
-    [setCity],
-  );
-
-  const handleZipChange = React.useCallback(
-    (text: string) => setZip(text),
-    [setZip],
-  );
-
-  const handlePhoneChange = React.useCallback(
-    (text: string) => setPhone(text),
-    [setPhone],
-  );
-
-  const handleEmailChange = React.useCallback(
-    (text: string) => setEmail(text),
-    [setEmail],
-  );
-
-  const handleUsernameChange = React.useCallback(
-    (text: string) => setUsername(text),
-    [setUsername],
-  );
-
-  const handlePasswordChange = React.useCallback(
-    (text: string) => setPassword(text),
-    [setPassword],
-  );
-
-  const handleJunkShopNameSubmitEditing = React.useCallback(
-    () => inputFirstName.current.focus(),
-    [inputFirstName],
-  );
-
-  const handleFirstNameSubmitEditing = React.useCallback(
-    () => inputLastName.current.focus(),
-    [inputLastName],
-  );
-
-  const handleLastNameSubmitEditing = React.useCallback(
-    () => inputAddress.current.focus(),
-    [inputAddress],
-  );
-
-  const handleAddressSubmitEditing = React.useCallback(
-    () => inputCity.current.focus(),
-    [inputCity],
-  );
-
-  const handleCitySubmitEditing = React.useCallback(
-    () => inputZip.current.focus(),
-    [inputZip],
-  );
-
-  const handleZipSubmitEditing = React.useCallback(
-    () => inputPhone.current.focus(),
-    [inputPhone],
-  );
-
-  const handlePhoneSubmitEditing = React.useCallback(
-    () => inputEmail.current.focus(),
-    [inputEmail],
-  );
-
-  const handleEmailSubmitEditing = React.useCallback(
-    () => inputUsername.current.focus(),
-    [inputUsername],
-  );
-
-  const handleUsernameSubmitEditing = React.useCallback(
-    () => inputPassword.current.focus(),
-    [inputPassword],
-  );
-
-  const handlePasswordVisibility = React.useCallback(
-    () => setIsPasswordVisible(!isPasswordVisible),
-    [setIsPasswordVisible, isPasswordVisible],
-  );
-
-  const handleSignUp = React.useCallback(() => {
-    const data = {
-      junkShopName,
       firstName,
       lastName,
-      address,
-      city,
-      zip,
-      phone,
-      email,
-      username,
       password,
-      role,
-    };
-
-    onSignUp(data);
-
-    inputPassword.current.blur();
-  }, [
-    junkShopName,
-    firstName,
-    lastName,
-    address,
-    city,
-    zip,
-    phone,
-    email,
-    username,
-    password,
-    role,
-    onSignUp,
-  ]);
+      phone,
+      role: `${role}`,
+      username,
+      zip,
+    });
+  };
 
   return (
     <View style={styles.form}>
       <View style={styles.inputTextContainer}>
         {isJunkShop && (
-          <TextInput
-            mode="outlined"
+          <View style={styles.inputWrapper}>
+            <Input
+              label="Junk Shop Name"
+              placeholder="Your Junk Shop Name"
+              returnKeyType="next"
+              value={junkShopName}
+              onChangeText={handleJunkShopNameChange}
+              onSubmitEditing={handleJunkShopNameSubmitEditing}
+            />
+          </View>
+        )}
+
+        {/* first and last name */}
+        <View style={styles.inputWrapper}>
+          <View style={styles.row}>
+            <View style={[styles.rowItemWrapper, styles.rowItemWithMR]}>
+              <Input
+                innerRef={inputFirstName}
+                label="First Name"
+                placeholder="Your First Name"
+                returnKeyType="next"
+                value={firstName}
+                onChangeText={handleFirstNameChange}
+                onSubmitEditing={handleFirstNameSubmitEditing}
+              />
+            </View>
+            <View style={styles.rowItemWrapper}>
+              <Input
+                innerRef={inputLastName}
+                label="Last Name"
+                placeholder="Your Last Name"
+                returnKeyType="next"
+                value={lastName}
+                onChangeText={handleLastNameChange}
+                onSubmitEditing={handleLastNameSubmitEditing}
+              />
+            </View>
+          </View>
+        </View>
+
+        {/* address */}
+        <View style={styles.inputWrapper}>
+          <Input
+            innerRef={inputAddress}
+            label="Address"
+            placeholder="Your Address"
             returnKeyType="next"
-            label="Junk Shop Name"
-            placeholder="Your Junk Shop Name"
-            blurOnSubmit={false}
-            onChangeText={handleJunkShopNameChange}
-            onSubmitEditing={handleJunkShopNameSubmitEditing}
-            style={styles.inputText}
+            value={address}
+            onChangeText={handleAddressChange}
+            onSubmitEditing={handleAddressSubmitEditing}
           />
-        )}
+        </View>
 
-        <View style={styles.row}>
-          <View style={styles.inputTextWrapper}>
-            <TextInput
-              mode="outlined"
-              returnKeyType="next"
-              label="First Name"
-              placeholder="Your First Name"
-              blurOnSubmit={false}
-              onChangeText={handleFirstNameChange}
-              onSubmitEditing={handleFirstNameSubmitEditing}
-              ref={inputFirstName}
-              style={[styles.inputText, styles.firstName]}
-            />
-          </View>
-
-          <View style={styles.inputTextWrapper}>
-            <TextInput
-              mode="outlined"
-              returnKeyType="next"
-              label="Last Name"
-              placeholder="Your Last Name"
-              blurOnSubmit={false}
-              onChangeText={handleLastNameChange}
-              onSubmitEditing={handleLastNameSubmitEditing}
-              ref={inputLastName}
-              style={styles.inputText}
-            />
+        {/* city and zip code */}
+        <View style={styles.inputWrapper}>
+          <View style={styles.row}>
+            <View style={[styles.rowItemWrapper, styles.rowItemWithMR]}>
+              <Input
+                innerRef={inputCity}
+                label="City"
+                placeholder="Your City"
+                returnKeyType="next"
+                value={city}
+                onChangeText={handleCityChange}
+                onSubmitEditing={handleCitySubmitEditing}
+              />
+            </View>
+            <View style={styles.rowItemWrapper}>
+              <Input
+                innerRef={inputZip}
+                keyboardType="number-pad"
+                label="Zip Code"
+                maxLength={5}
+                placeholder="Your Zip Code"
+                returnKeyType="next"
+                value={zip}
+                onChangeText={handleZipChange}
+                onSubmitEditing={handleZipSubmitEditing}
+              />
+            </View>
           </View>
         </View>
 
-        <TextInput
-          mode="outlined"
-          returnKeyType="next"
-          label="Address"
-          placeholder="Your Address"
-          blurOnSubmit={false}
-          onChangeText={handleAddressChange}
-          onSubmitEditing={handleAddressSubmitEditing}
-          ref={inputAddress}
-          style={styles.inputText}
-        />
-
-        <View style={styles.row}>
-          <View style={styles.inputTextWrapper}>
-            <TextInput
-              mode="outlined"
-              returnKeyType="next"
-              label="City"
-              blurOnSubmit={false}
-              onChangeText={handleCityChange}
-              onSubmitEditing={handleCitySubmitEditing}
-              ref={inputCity}
-              style={[styles.inputText, styles.firstName]}
-            />
-          </View>
-
-          <View style={styles.inputTextWrapper}>
-            <TextInput
-              mode="outlined"
-              returnKeyType="next"
-              label="Zip Code"
-              keyboardType="number-pad"
-              maxLength={5}
-              blurOnSubmit={false}
-              onChangeText={handleZipChange}
-              onSubmitEditing={handleZipSubmitEditing}
-              ref={inputZip}
-              style={styles.inputText}
-            />
-          </View>
+        {/* phone */}
+        <View style={styles.inputWrapper}>
+          <Input
+            innerRef={inputPhone}
+            keyboardType="number-pad"
+            label="Phone Number"
+            left={<TextInput.Affix text="+63" />}
+            maxLength={10}
+            placeholder="Your Phone Number"
+            returnKeyType="next"
+            value={phone}
+            onChangeText={handlePhoneChange}
+            onSubmitEditing={handlePhoneSubmitEditing}
+          />
         </View>
 
-        <TextInput
-          mode="outlined"
-          returnKeyType="next"
-          label="Phone Number"
-          placeholder="Your Phone Number"
-          keyboardType="number-pad"
-          maxLength={10}
-          blurOnSubmit={false}
-          onChangeText={handlePhoneChange}
-          onSubmitEditing={handlePhoneSubmitEditing}
-          ref={inputPhone}
-          style={styles.inputText}
-          left={<TextInput.Affix text="+63" />}
-        />
+        {/* email */}
+        <View style={styles.inputWrapper}>
+          <Input
+            error={Boolean(email) && !isValidEmail(email)}
+            innerRef={inputEmail}
+            label="Email"
+            placeholder="Your Email"
+            returnKeyType="next"
+            value={email}
+            onChangeText={handleEmailChange}
+            onSubmitEditing={handleEmailSubmitEditing}
+          />
+          {Boolean(email) && !isValidEmail(email) && (
+            <HelperText visible type="error">
+              Email address is invalid
+            </HelperText>
+          )}
+        </View>
 
-        <TextInput
-          mode="outlined"
-          returnKeyType="next"
-          label="Email"
-          placeholder="Your Emai"
-          blurOnSubmit={false}
-          error={Boolean(error) || error === 'Invalid Email'}
-          onChangeText={handleEmailChange}
-          onSubmitEditing={handleEmailSubmitEditing}
-          ref={inputEmail}
-          style={styles.inputText}
-        />
+        {/* username */}
+        <View style={styles.inputWrapper}>
+          <Input
+            innerRef={inputUsername}
+            label="Username"
+            placeholder="Your Username"
+            returnKeyType="next"
+            value={username}
+            onChangeText={handlUsernameChange}
+            onSubmitEditing={handleUsernameSubmitEditing}
+          />
+        </View>
 
-        <TextInput
-          mode="outlined"
-          returnKeyType="next"
-          label="Username"
-          placeholder="Your Username"
-          blurOnSubmit={false}
-          error={Boolean(error) && error !== 'Invalid Email'}
-          onChangeText={handleUsernameChange}
-          onSubmitEditing={handleUsernameSubmitEditing}
-          ref={inputUsername}
-          style={styles.inputText}
-        />
-
-        <TextInput
-          mode="outlined"
+        <PasswordInput
+          innerRef={inputPassword}
           returnKeyType="done"
-          label="Password"
-          placeholder="Your Password"
-          blurOnSubmit={false}
-          secureTextEntry={!isPasswordVisible}
           onChangeText={handlePasswordChange}
-          onSubmitEditing={handleSignUp}
-          ref={inputPassword}
-          right={
-            isPasswordVisible ? (
-              <TextInput.Icon
-                name="eye-outline"
-                onPress={handlePasswordVisibility}
-              />
-            ) : (
-              <TextInput.Icon
-                name="eye-off-outline"
-                onPress={handlePasswordVisibility}
-              />
-            )
-          }
-          style={styles.inputText}
+          onSubmitEditing={handlePasswordSubmitEditing}
         />
-
-        {Boolean(error) && (
-          <Subheading style={styles.textError}>{error}</Subheading>
-        )}
       </View>
 
       <Button
-        mode="contained"
-        onPress={handleSignUp}
         disabled={isSignUpButtonEnabled}
         loading={isLoading}
         style={styles.button}
-        contentStyle={styles.buttonContent}
-        labelStyle={styles.buttonLabel}
+        onPress={handleSignUp}
       >
         {isLoading ? 'Loading' : 'Sign Up'}
       </Button>
@@ -403,43 +291,33 @@ export const FormSignUp: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
+  button: {
+    marginBottom: 10,
+  },
   form: {
     flex: 1,
+  },
+  inputTextContainer: {
+    marginBottom: 20,
+  },
+  inputWrapper: {
+    marginBottom: 15,
   },
   row: {
     flex: 1,
     flexDirection: 'row',
   },
-  inputTextWrapper: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  firstName: {
+  rowItemWithMR: {
     marginRight: 20,
   },
-  inputTextContainer: {
-    marginBottom: 20,
-  },
-  inputText: {
-    marginBottom: 15,
-    height: 50,
-  },
-  textError: {
-    color: Colors.red900,
-  },
-  button: {
-    marginBottom: 10,
-  },
-  buttonContent: {
-    height: 50,
-  },
-  buttonLabel: {
-    color: Colors.white,
+  rowItemWrapper: {
+    flex: 1,
+    justifyContent: 'space-between',
   },
   signUpLabel: {
     color: Colors.green500,
   },
-  divider: {
-    marginBottom: 10,
+  textError: {
+    color: Colors.red900,
   },
 });

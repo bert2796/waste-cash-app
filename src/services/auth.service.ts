@@ -1,40 +1,21 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { ILoginResponse, UserRoles } from '../types';
+import { host } from '../config';
 
-// prod
-// const host = 'https://waste-cash.com/auth';
-
-// dev
-const host = 'http://10.0.2.2:3000/auth';
+const url = `${host}/auth`;
 
 export const login = async (params: { username: string; password: string }) => {
   return (await axios({
-    url: `${host}/login`,
+    data: params,
     method: 'POST',
-    data: {
-      username: params.username,
-      password: params.password,
-    },
-  })) as unknown as AxiosResponse<ILoginResponse>;
+    url: `${url}/login`,
+  })) as unknown as AxiosResponse<Objects.Login>;
 };
 
-export const register = async (params: {
-  junkShopName: string;
-  firstName: string;
-  lastName: string;
-  address: string;
-  city: string;
-  zip: string;
-  phone: string;
-  email: string;
-  username: string;
-  password: string;
-  role: UserRoles;
-}) => {
+export const register = async (params: Omit<Objects.User, 'id'>) => {
   return (await axios({
-    url: `${host}/register`,
-    method: 'POST',
     data: params,
-  })) as unknown as AxiosResponse<ILoginResponse>;
+    method: 'POST',
+    url: `${url}/register`,
+  })) as unknown as AxiosResponse<Objects.Register>;
 };

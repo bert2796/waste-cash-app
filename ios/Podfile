@@ -17,6 +17,8 @@ target 'wcash' do
 
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
+  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
+
   target 'wcashTests' do
     inherit! :complete
     # Pods for testing

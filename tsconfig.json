@@ -40,16 +40,19 @@
     "baseUrl": ".",                       /* Base directory to resolve non-absolute module names. */
     "paths": {
       "*": ["src/*"],
-      "@containers/*": ["src/containers/*"],
-      "@components/*": ["src/components/*"],
-      "@atoms/*": ["src/components/atoms/*"],
-      "@navigations/*": ["src/components/navigations/*"],
-      "@molecules/*": ["src/components/molecules/*"],
-      "@organisms/*": ["src/components/organisms/*"],
-      "@screens/*": ["src/components/screens/*"],
-      "@services/*": ["src/services/*"],
-      "@state/*": ["src/state/*"],
-      "@themes/*": ["src/themes/*"]
+      "@/assets/*": ["src/assets/*"],
+      "@/atoms/*": ["src/components/atoms/*"],
+      "@/components/*": ["src/components/*"],
+      "@/constants/*": ["src/constants/*"],
+      "@/containers/*": ["src/containers/*"],
+      "@/molecules/*": ["src/components/molecules/*"],
+			"@/navigations/*": ["src/components/navigationso/*"],
+      "@/organisms/*": ["src/components/organisms/*"],
+      "@/screens/*": ["src/components/screens/*"],
+			"@/services/*": ["src/services/*"],
+      "@/state/*": ["src/state/*"],
+      "@/theme/*": ["src/theme/*"],
+      "@/utils/*": ["src/utils/*"]
     },                           /* A series of entries which re-map imports to lookup locations relative to the 'baseUrl'. */
     // "rootDirs": [],                        /* List of root folders whose combined content represents the structure of the project at runtime. */
     "typeRoots": ["./src/types"],                       /* List of folders to include type definitions from. */

@@ -1,36 +1,35 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import { IUserState, IUser } from '../../types';
 import { RootState } from '../store';
 
 const rootSelector = createSelector(
-  (state: RootState): IUserState => state.user,
-  (user: IUserState) => user,
+  (state: RootState): State.User => state.user,
+  (user: State.User) => user,
 );
 
 export const userDataSelector = createSelector(
   rootSelector,
-  (user: IUserState): IUser => user.data,
+  (user: State.User): Objects.User => user.data!,
 );
 
 export const userErrorSelector = createSelector(
   rootSelector,
-  (user: IUserState): string => user.error,
+  (user: State.User): string => user.error,
 );
 
 export const tokenSelector = createSelector(
   rootSelector,
-  (user: IUserState): string => user.token,
+  (user: State.User): string => user.token,
 );
 
 export const isAuthSelector = createSelector(
   rootSelector,
   userDataSelector,
-  (user: IUserState, userData: IUser): boolean =>
+  (user: State.User, userData: Objects.User): boolean =>
     Boolean(user.token) && Boolean(userData.id),
 );
 
 export const isLoadingSelector = createSelector(
   rootSelector,
-  (user: IUserState): boolean => user.isLoading,
+  (user: State.User): boolean => user.isLoading,
 );

@@ -191,6 +191,7 @@ export type LoggedoutStackParam = {
 };
 
 export type BuyerStackParam = {
+  BuyerChat: { conversationId: number; recipient: IUser };
   BuyerChatShop: { shop: IUser };
   BuyerChatProduct: { seller: IUser };
   BuyerHome: undefined;
@@ -211,6 +212,7 @@ export type BuyerNotificationTabParam = {
 };
 
 export type SellerStackParam = {
+  SellerChat: { conversationId: number; recipient: IUser };
   SellerCreateProduct: undefined;
   SellerHome: undefined;
   SellerProfileSettings: undefined;
@@ -236,11 +238,6 @@ export type ShopStackParam = {
 };
 
 export type ShopMainTabParam = {
-  Notification: undefined;
+  Messages: undefined;
   Profile: undefined;
-};
-
-export type ShopNotificationTabParam = {
-  NotificationTab: undefined;
-  MessageTab: undefined;
 };

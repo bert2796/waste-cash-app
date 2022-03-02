@@ -1,34 +1,29 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet } from 'react-native';
-import { TextInput, Subheading, Button, Colors } from 'react-native-paper';
-import DropDown from 'react-native-paper-dropdown';
+import { Image, StyleSheet, View } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
+import { Colors, TextInput } from 'react-native-paper';
+import DropDown from 'react-native-paper-dropdown';
 
-import { ProductStatus, ICategory } from '../../../types';
+import { Button, Input } from '@/atoms/index';
+import { ProductStatus } from '@/constants/index';
 
 interface Props {
-  error: string;
-  success: string;
-  categoryList: ICategory[];
-  isCreateProductLoading: boolean;
-  onBrowseProductNavigate: () => void;
-  onCreateProduct: (params: {
-    photo: any;
-    name: string;
-    category: string;
-    description: string;
-    price: number;
-    status: ProductStatus;
-  }) => void;
+  categories: Objects.Category[];
+  isLoading: boolean;
+  onCancel: () => void;
+  onSubmit: (
+    params: Partial<Omit<Objects.Product, 'category'>> & {
+      category: string;
+      photo: any;
+    },
+  ) => void;
 }
 
 export const FormCreateProduct: React.FC<Props> = ({
-  error,
-  success,
-  categoryList,
-  isCreateProductLoading,
-  onBrowseProductNavigate,
-  onCreateProduct,
+  categories,
+  isLoading,
+  onCancel,
+  onSubmit,
 }) => {
   const [assets, setAssets] = React.useState<any>([]);
   const [name, setName] = React.useState('');
@@ -37,34 +32,24 @@ export const FormCreateProduct: React.FC<Props> = ({
   const [price, setPrice] = React.useState('');
   const [isDropdownVisible, setIsDropdownVisible] = React.useState(false);
 
-  const inputPrice: any = React.useRef();
+  const options = categories.map((item) => ({
+    label: item.name,
+    value: item.name,
+  }));
 
-  const categories = React.useMemo(() => {
-    return categoryList.map((categoryItem) => ({
-      label: categoryItem.name,
-      value: categoryItem.name,
-    }));
-  }, [categoryList]);
+  const handleCategoryChange = (text: string) => {
+    setCategory(text);
+  };
 
-  const isSubmitButtonDisabled = React.useMemo(
-    () =>
-      !assets.length ||
-      !name ||
-      !category ||
-      !description ||
-      isCreateProductLoading,
-    [assets, name, category, description, isCreateProductLoading],
-  );
-
-  const handleChoosePhoto = () => {
+  const handleChooseImage = () => {
     ImagePicker.launchImageLibrary(
       {
-        maxHeight: 220,
-        maxWidth: 200,
-        selectionLimit: 1,
-        mediaType: 'photo',
         includeBase64: true,
         includeExtra: false,
+        maxHeight: 220,
+        maxWidth: 200,
+        mediaType: 'photo',
+        selectionLimit: 1,
       },
       (response) => {
         setAssets(response.assets);
@@ -72,67 +57,31 @@ export const FormCreateProduct: React.FC<Props> = ({
     );
   };
 
-  const handleNameChange = React.useCallback(
-    (text: string) => setName(text),
-    [setName],
-  );
+  const handleDescriptionChange = (text: string) => {
+    setDescription(text);
+  };
 
-  const handleCategoryChange = React.useCallback(
-    (text: string) => setCategory(text),
-    [setCategory],
-  );
+  const handleDropdownVisibility = () =>
+    setIsDropdownVisible(!isDropdownVisible);
 
-  const handleDescriptionChange = React.useCallback(
-    (text: string) => setDescription(text),
-    [setDescription],
-  );
+  const handleNameChange = (text: string) => {
+    setName(text);
+  };
 
-  const handlePriceChange = React.useCallback(
-    (text: string) => setPrice(text),
-    [setPrice],
-  );
+  const handlePriceChange = (text: string) => {
+    setPrice(text);
+  };
 
-  const handleToggleDropdown = React.useCallback(
-    () => setIsDropdownVisible(!isDropdownVisible),
-    [setIsDropdownVisible, isDropdownVisible],
-  );
-
-  const handleSubmit = React.useCallback(() => {
-    onCreateProduct({
-      photo: assets[0],
-      name,
+  const handleSubmit = () => {
+    onSubmit({
       category,
       description,
+      name,
+      photo: assets[0],
       price: +price,
       status: ProductStatus.UNSOLD,
     });
-
-    inputPrice.current.blur();
-  }, [onCreateProduct, assets, name, category, description, price]);
-
-  const handleBrowseProductNavigate = React.useCallback(
-    () => onBrowseProductNavigate(),
-    [onBrowseProductNavigate],
-  );
-
-  const handleClearForm = React.useCallback(() => {
-    handleNameChange('');
-    handleCategoryChange('');
-    handleDescriptionChange('');
-    handlePriceChange('');
-  }, [
-    handleNameChange,
-    handleCategoryChange,
-    handleDescriptionChange,
-    handlePriceChange,
-  ]);
-
-  // clear form is success
-  React.useEffect(() => {
-    if (success) {
-      handleClearForm();
-    }
-  }, [success, handleClearForm]);
+  };
 
   return (
     <View style={styles.form}>
@@ -141,105 +90,75 @@ export const FormCreateProduct: React.FC<Props> = ({
           assets?.map((asset: any) => {
             return (
               <Image
-                resizeMode="cover"
-                resizeMethod="scale"
-                style={styles.photo}
-                source={{ uri: asset.uri }}
                 key={asset.uri}
+                resizeMethod="scale"
+                resizeMode="cover"
+                source={{ uri: asset.uri }}
+                style={styles.image}
               />
             );
           })}
-        <Button
-          mode="contained"
-          onPress={handleChoosePhoto}
-          style={styles.button}
-          contentStyle={styles.buttonContent}
-          labelStyle={styles.buttonLabel}
-        >
-          Choose Photo
-        </Button>
-        <TextInput
-          mode="outlined"
-          returnKeyType="done"
-          label="Name"
-          placeholder="Sample Product Name"
-          blurOnSubmit={false}
-          error={Boolean(error)}
-          value={name}
-          onChangeText={handleNameChange}
-          style={styles.inputText}
-        />
 
-        <View style={styles.dropdownContainer}>
-          <DropDown
-            mode="outlined"
-            label="Category"
-            visible={isDropdownVisible}
-            showDropDown={handleToggleDropdown}
-            onDismiss={handleToggleDropdown}
-            setValue={handleCategoryChange}
-            value={category}
-            list={categories}
-            dropDownContainerHeight={40}
-            dropDownContainerMaxHeight={40}
+        <Button style={styles.button} onPress={handleChooseImage}>
+          Choose Image
+        </Button>
+
+        <View style={styles.inputWrapper}>
+          <Input
+            label="Name"
+            placeholder="Your Product Name"
+            returnKeyType="done"
+            value={name}
+            onChangeText={handleNameChange}
           />
         </View>
 
-        <TextInput
-          mode="outlined"
-          returnKeyType="next"
-          label="Description"
-          placeholder="Describe your product"
-          blurOnSubmit={false}
-          multiline
-          numberOfLines={4}
-          error={Boolean(error)}
-          value={description}
-          onChangeText={handleDescriptionChange}
-          style={styles.textArea}
-        />
+        <View style={styles.inputWrapper}>
+          <DropDown
+            dropDownContainerHeight={options.length * 50}
+            dropDownContainerMaxHeight={options.length * 50 + 50}
+            label="Category"
+            list={options}
+            mode="outlined"
+            setValue={handleCategoryChange}
+            showDropDown={handleDropdownVisibility}
+            value={category}
+            visible={isDropdownVisible}
+            onDismiss={handleDropdownVisibility}
+          />
+        </View>
 
-        <TextInput
-          mode="outlined"
-          keyboardType="numeric"
-          returnKeyType="next"
-          label="Price"
-          blurOnSubmit={false}
-          error={Boolean(error)}
-          value={`${price}`}
-          onChangeText={handlePriceChange}
-          onSubmitEditing={handleSubmit}
-          ref={inputPrice}
-          style={styles.inputText}
-          left={<TextInput.Affix text={'\u20B1'} />}
-        />
+        <View style={styles.inputWrapper}>
+          <Input
+            multiline
+            blurOnSubmit={false}
+            label="Description"
+            numberOfLines={4}
+            placeholder="Describe your product"
+            returnKeyType="next"
+            style={styles.textArea}
+            value={description}
+            onChangeText={handleDescriptionChange}
+          />
+        </View>
 
-        {Boolean(error) && (
-          <Subheading style={styles.textError}>{error}</Subheading>
-        )}
+        <View style={styles.inputWrapper}>
+          <Input
+            keyboardType="numeric"
+            label="Price"
+            left={<TextInput.Affix text={'\u20B1'} />}
+            placeholder="Your Product Price"
+            returnKeyType="next"
+            value={price}
+            onChangeText={handlePriceChange}
+          />
+        </View>
       </View>
-
-      <Button
-        mode="contained"
-        onPress={handleSubmit}
-        disabled={isSubmitButtonDisabled}
-        loading={isCreateProductLoading}
-        style={styles.button}
-        contentStyle={styles.buttonContent}
-        labelStyle={styles.buttonLabel}
-      >
-        {isCreateProductLoading ? 'Loading' : 'Submit'}
+      <Button loading={isLoading} style={styles.button} onPress={handleSubmit}>
+        {isLoading ? 'Loading' : 'Submit'}
       </Button>
 
-      <Button
-        mode="contained"
-        color={Colors.white}
-        onPress={handleBrowseProductNavigate}
-        disabled={isCreateProductLoading}
-        style={styles.button}
-        contentStyle={styles.buttonContent}
-        labelStyle={styles.cancelLabel}
-      >
+      <Button color={Colors.white} onPress={onCancel}>
         Cancel
       </Button>
     </View>
@@ -247,45 +166,31 @@ export const FormCreateProduct: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
+  button: {
+    marginBottom: 10,
+  },
   form: {
     flex: 1,
   },
-  photo: {
+  image: {
     height: 220,
     marginBottom: 20,
   },
   inputTextContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
-  inputText: {
+  inputWrapper: {
     marginBottom: 15,
-    height: 50,
   },
-  dropdownContainer: {
-    marginBottom: 15,
+  signUpLabel: {
+    color: Colors.green500,
   },
   textArea: {
-    marginBottom: 15,
-    minHeight: 80,
     justifyContent: 'flex-start',
+    minHeight: 80,
     textAlignVertical: 'top',
   },
   textError: {
     color: Colors.red900,
-  },
-  button: {
-    marginBottom: 10,
-  },
-  buttonContent: {
-    height: 50,
-  },
-  buttonLabel: {
-    color: Colors.white,
-  },
-  cancelLabel: {
-    color: Colors.green500,
-  },
-  divider: {
-    marginBottom: 10,
   },
 });

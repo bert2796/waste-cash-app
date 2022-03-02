@@ -1,42 +1,35 @@
 import axios, { AxiosResponse } from 'axios';
 
-import {
-  IGetConversationResponse,
-  IGetConversationSummaryResponse,
-} from '../types';
+import { host } from '../config';
 
-// prod
-// const host = 'https://waste-cash.com/categories';
-
-// dev
-const host = 'http://10.0.2.2:3000/conversations';
+const url = `${host}/conversations`;
 
 export const getConversation = async (params: {
   token: string;
   conversationId?: number;
   shopId?: number;
 }) => {
-  const url = `${host}/${
+  const urlToUse = `${url}/${
     params?.conversationId ? params.conversationId : `shop/${params.shopId}`
   }`;
 
   return (await axios({
-    url,
-    method: 'GET',
     headers: {
       Authorization: `Bearer ${params.token}`,
     },
-  })) as unknown as AxiosResponse<IGetConversationResponse>;
+    method: 'GET',
+    url: urlToUse,
+  })) as unknown as AxiosResponse<Objects.Conversation>;
 };
 
 export const getConversations = async (params: { token: string }) => {
   return (await axios({
-    url: host,
-    method: 'GET',
     headers: {
       Authorization: `Bearer ${params.token}`,
     },
-  })) as unknown as AxiosResponse<IGetConversationSummaryResponse[]>;
+    method: 'GET',
+    url,
+  })) as unknown as AxiosResponse<Objects.ConversationSummary[]>;
 };
 
 // export const getConversationMessages = async () => {

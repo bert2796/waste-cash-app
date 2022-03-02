@@ -1,35 +1,40 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { IProductOfferState } from '../../types';
 import {
   createProductOffer,
   setProductOfferError,
   setProductOfferSuccess,
 } from './actions';
 
-const initialState: IProductOfferState = {
+const initialState: State.ProductOffer = {
+  error: '',
   isLoading: false,
   success: '',
-  error: '',
 };
 
 export const productOfferSlice = createSlice({
-  name: 'productOffer',
-  initialState,
-  reducers: {},
   extraReducers: {
     // Create Product Offer
     [`${createProductOffer.pending}`]: (state) => ({
       ...state,
+      error: '',
       isLoading: true,
+      success: '',
     }),
 
-    [`${createProductOffer.fulfilled}`]: (state) => ({
+    [`${createProductOffer.fulfilled}`]: (
+      state,
+      action: { payload: string },
+    ) => ({
       ...state,
       isLoading: false,
+      success: action.payload,
     }),
 
-    [`${createProductOffer.rejected}`]: (state, action) => ({
+    [`${createProductOffer.rejected}`]: (
+      state,
+      action: { payload: string },
+    ) => ({
       ...state,
       error: action.payload,
       isLoading: false,
@@ -47,4 +52,7 @@ export const productOfferSlice = createSlice({
       success: action.payload || '',
     }),
   },
+  initialState,
+  name: 'productOffer',
+  reducers: {},
 });

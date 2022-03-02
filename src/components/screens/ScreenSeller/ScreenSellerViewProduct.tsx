@@ -1,137 +1,45 @@
-import React from 'react';
 import { NavigationProp, RouteProp } from '@react-navigation/native';
-import { View, ScrollView, Image, StyleSheet } from 'react-native';
-import { Colors, Chip, Title, Subheading, Paragraph } from 'react-native-paper';
-import numeral from 'numeral';
+import React from 'react';
 
-import { IProduct, SellerStackParam } from '../../../types';
-import { AppbarSellerViewProduct } from '@molecules/AppbarSellerViewProduct/AppbarSellerViewProduct';
-import { SkeletonViewProduct } from '@molecules/SkeletonSeller/SkeletonViewProduct';
+import { Container } from '@/atoms/index';
+import { AppbarViewProduct } from '@/molecules/index';
+import { ProductContent } from '@/organisms/index';
+import { ScreenLoading } from '@/screens/ScreenLoading';
 
 interface Props {
   isLoading: boolean;
-  productData: IProduct;
-  onGetProductData: (params: { productId: number }) => void;
-  onSetProductData: (productData: null) => void;
-  navigation: NavigationProp<SellerStackParam>;
-  route: RouteProp<SellerStackParam, 'SellerViewProduct'>;
+  productData: Objects.Product;
+  getProduct: (id: number) => void;
+  navigation: NavigationProp<Screens.SellerStackParams>;
+  route: RouteProp<Screens.SellerStackParams, 'SellerViewProductScreen'>;
 }
 
 export const ScreenSellerViewProduct: React.FC<Props> = ({
   isLoading,
   productData,
-  onGetProductData,
-  onSetProductData,
+  getProduct,
   navigation,
   route,
 }) => {
-  const { productId, isRedirectToOffers } = route.params;
+  const { id } = route.params;
 
-  const handleClearProductData = React.useCallback(
-    () => onSetProductData(null),
-    [onSetProductData],
-  );
+  const handleNavigateToOffersScreen = () => {
+    navigation.navigate('SellerListOffersScreen');
+  };
 
-  const handleGetProductData = React.useCallback(
-    () => onGetProductData({ productId }),
-    [onGetProductData, productId],
-  );
-
-  const handleOnViewOffersNavigation = React.useCallback(
-    (wasRedirectedFromNotification?: boolean) =>
-      navigation.navigate('SellerViewOffers', {
-        wasRedirectedFromNotification,
-      }),
-    [navigation],
-  );
-
-  // Clear Product Data
-  React.useEffect(() => handleClearProductData(), [handleClearProductData]);
-
-  // Get Product Data
   React.useEffect(() => {
-    handleGetProductData();
-
-    if (isRedirectToOffers) {
-      handleOnViewOffersNavigation(true);
-    }
-  }, [handleGetProductData, isRedirectToOffers, handleOnViewOffersNavigation]);
+    getProduct(id);
+  }, [id, getProduct]);
 
   return (
-    <View style={styles.container}>
-      {isLoading && <SkeletonViewProduct />}
-      {!isLoading && Boolean(productData?.name) && (
+    <Container>
+      {isLoading && <ScreenLoading />}
+      {!isLoading && Boolean(productData) && (
         <>
-          <AppbarSellerViewProduct
-            onPressOffer={handleOnViewOffersNavigation}
-            isButtonOfferDisabled={!productData.offers.length}
-          />
-          <ScrollView
-            style={styles.scrollContent}
-            contentContainerStyle={styles.scrollContentContainer}
-            keyboardShouldPersistTaps="handled"
-          >
-            <Image
-              source={{ uri: productData.thumbnail }}
-              style={styles.imageCover}
-            />
-            <View style={styles.categoryContent}>
-              <Chip
-                mode="outlined"
-                onPress={() => {}}
-                textStyle={styles.chipLabelStyle}
-              >
-                {productData.category.name}
-              </Chip>
-            </View>
-            <View style={styles.heading}>
-              <Title>{productData.name}</Title>
-              <Subheading>{`\u20B1 ${numeral(productData.price).format(
-                '0,0.00',
-              )}`}</Subheading>
-
-              <View style={styles.description}>
-                <Paragraph>{productData.description}</Paragraph>
-              </View>
-            </View>
-          </ScrollView>
+          <ProductContent product={productData} />
+          <AppbarViewProduct onOffer={handleNavigateToOffersScreen} />
         </>
       )}
-    </View>
+    </Container>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.grey200,
-  },
-  scrollContent: {
-    flex: 1,
-    marginBottom: 50,
-  },
-  scrollContentContainer: {
-    flexGrow: 1,
-  },
-  imageCover: {
-    width: '100%',
-    height: 200,
-  },
-  categoryContent: {
-    marginTop: 10,
-    marginLeft: 20,
-    marginRight: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  chipLabelStyle: {
-    color: Colors.green400,
-  },
-  heading: {
-    margin: 20,
-  },
-  description: {
-    marginTop: 20,
-  },
-});

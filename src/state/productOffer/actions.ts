@@ -1,14 +1,14 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { IProductOffer, IProduct, IServiceError } from '../../types';
-import { Product } from '@services/index';
-import { RootState } from '../store';
-import { ProductOfferActions } from './constant';
-import { tokenSelector } from '../user/selectors';
-import { productDataSelector } from '../product/selectors';
+import { Product } from '@/services/index';
+
 import { setAppError } from '../app/actions';
 import { addProductOffer } from '../product/actions';
+import { productDataSelector } from '../product/selectors';
+import { RootState } from '../store';
+import { tokenSelector } from '../user/selectors';
+import { ProductOfferActions } from './constant';
 
 export const setProductOfferError = createAction<string | null>(
   ProductOfferActions.SET_PRODUCT_OFFER_ERROR,
@@ -32,17 +32,19 @@ export const createProductOffer = createAsyncThunk(
       const productData = productDataSelector(state);
 
       const createdProductOffer = await Product.createProductOffer({
-        token,
-        productId: productData.id,
         price: params.price,
+        productId: productData.id,
+        token,
       });
 
+      // add offer in product data
       thunkAPI.dispatch(addProductOffer(createdProductOffer.data));
-      thunkAPI.dispatch(setProductOfferSuccess('Offer submitted succesfully.'));
+
+      return Promise.resolve('Offer submitted succesfully.');
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error?.response) {
-          const axiosError = error?.response as IServiceError;
+          const axiosError = error?.response as Objects.ServiceError;
           if (axiosError?.status && axiosError.status === 400) {
             return thunkAPI.rejectWithValue(axiosError.data.message);
           }

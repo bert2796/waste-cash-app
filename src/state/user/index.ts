@@ -1,36 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { IUserState, UserRoles } from '../../types';
 import {
   setUserData,
   setUserError,
+  setUserIsLoading,
   setUserToken,
   signIn,
   signOut,
 } from './actions';
 
-const initialState: IUserState = {
-  isLoading: false,
+const initialState: State.User = {
+  data: undefined,
   error: '',
+  isLoading: false,
   token: '',
-  data: {
-    id: 0,
-    firstName: '',
-    lastName: '',
-    address: '',
-    city: '',
-    zip: 0,
-    mobile: 0,
-    email: '',
-    username: '',
-    role: '' as UserRoles,
-  },
 };
 
 export const userSlice = createSlice({
-  name: 'user',
-  initialState,
-  reducers: {},
   extraReducers: {
     // Sign In
     [`${signIn.pending}`]: (state) => ({
@@ -43,19 +29,21 @@ export const userSlice = createSlice({
       error: '',
       isLoading: false,
     }),
-    [`${signIn.rejected}`]: (state, action) => ({
+    [`${signIn.rejected}`]: (state, action: { error: Error }) => ({
       ...state,
-      error: action.payload,
+      error: action.error.message,
       isLoading: false,
     }),
 
     // Sign Out
     [`${signOut.pending}`]: (state) => ({
       ...state,
+      error: '',
       isLoading: true,
     }),
     [`${signOut.fulfilled}`]: (state) => ({
       ...state,
+      error: '',
       isLoading: false,
     }),
     [`${signOut.rejected}`]: (state) => ({
@@ -64,63 +52,35 @@ export const userSlice = createSlice({
     }),
 
     // Set User Data
-    [`${setUserData.type}`]: (state, action) => {
-      if (!action.payload) {
-        return {
-          ...state,
-          data: {
+    [`${setUserData.type}`]: (state, action: { payload?: Objects.User }) => ({
+      ...state,
+      data: action.payload
+        ? {
             ...state.data,
-            id: 0,
-            firstName: '',
-            lastName: '',
-            address: '',
-            city: '',
-            zip: 0,
-            mobile: 0,
-            email: '',
-            username: '',
-            role: '' as UserRoles,
-          },
-        };
-      }
-
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          ...action.payload,
-        },
-      };
-    },
+            ...action.payload,
+          }
+        : undefined,
+    }),
 
     // Set User Error
-    [`${setUserError.type}`]: (state, action) => {
-      if (!action.payload) {
-        return {
-          ...state,
-          error: '',
-        };
-      }
-
-      return {
-        ...state,
-        error: action.payload,
-      };
-    },
+    [`${setUserError.type}`]: (state, action: { payload?: string }) => ({
+      ...state,
+      error: action.payload || '',
+    }),
 
     // Set User Token
-    [`${setUserToken.type}`]: (state, action) => {
-      if (!action.payload) {
-        return {
-          ...state,
-          token: '',
-        };
-      }
+    [`${setUserToken.type}`]: (state, action: { payload?: string }) => ({
+      ...state,
+      token: action.payload || '',
+    }),
 
-      return {
-        ...state,
-        token: action.payload,
-      };
-    },
+    // Set User Is Loading
+    [`${setUserIsLoading.type}`]: (state, action: { payload?: boolean }) => ({
+      ...state,
+      isLoading: action.payload || false,
+    }),
   },
+  initialState,
+  name: 'user',
+  reducers: {},
 });

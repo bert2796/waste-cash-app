@@ -1,153 +1,83 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import {
-  TextInput,
-  Subheading,
-  Button,
-  Colors,
-  Divider,
-} from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { Colors, Divider } from 'react-native-paper';
 
+import { Button, Input, PasswordInput } from '@/atoms/index';
 interface Props {
   error: string;
   isLoading: boolean;
-  onClearUserError: () => void;
-  onSignIn: (username: string, password: string) => void;
-  onSignUpNavigation: () => void;
+  onNavigateToSignUp: () => void;
+  onSignIn: (params: { username: string; password: string }) => void;
 }
 
 export const FormSignIn: React.FC<Props> = ({
   error,
   isLoading,
-  onClearUserError,
+  onNavigateToSignUp,
   onSignIn,
-  onSignUpNavigation,
 }) => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
-  const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
+
   const inputPassword: any = React.useRef();
 
-  const isSignInButtonDisabled = React.useMemo(
-    () => !username || !password || isLoading,
-    [username, password, isLoading],
-  );
+  const isSignInButtonDisabled = !username || !password || isLoading;
 
-  const isSignUpButtonDisabled = React.useMemo(() => isLoading, [isLoading]);
+  const handleUsernameChange = (text: string) => {
+    setUsername(text);
+  };
 
-  const handleUsernameChange = React.useCallback(
-    (text: string) => setUsername(text),
-    [setUsername],
-  );
+  const handleUsernameSubmitEditing = () => {
+    inputPassword.current.focus();
+  };
 
-  const handlePasswordChange = React.useCallback(
-    (text: string) => setPassword(text),
-    [setPassword],
-  );
+  const handlePasswordChange = (text: string) => {
+    setPassword(text);
+  };
 
-  const handleUsernameSubmitEditing = React.useCallback(
-    () => inputPassword.current.focus(),
-    [inputPassword],
-  );
+  const handleNavigateToSignUp = () => {
+    onNavigateToSignUp();
+  };
 
-  const handlePasswordVisibility = React.useCallback(
-    () => setIsPasswordVisible(!isPasswordVisible),
-    [setIsPasswordVisible, isPasswordVisible],
-  );
-
-  const handleSignIn = React.useCallback(() => {
-    onSignIn(username, password);
-
-    inputPassword.current.blur();
-  }, [onSignIn, username, password]);
-
-  const handleClearForm = React.useCallback(() => {
-    handleUsernameChange('');
-    handlePasswordChange('');
-  }, [handleUsernameChange, handlePasswordChange]);
-
-  const handleSignUpNavigation = React.useCallback(() => {
-    if (error) {
-      // clear error
-      onClearUserError();
-
-      // clear form
-      handleClearForm();
-    }
-    onSignUpNavigation();
-  }, [error, onClearUserError, handleClearForm, onSignUpNavigation]);
+  const handleSignIn = () => {
+    onSignIn({ password, username });
+  };
 
   return (
     <View style={styles.form}>
       <View style={styles.inputTextContainer}>
-        <TextInput
-          mode="outlined"
-          returnKeyType="next"
-          label="Email or Username"
-          placeholder="Your Email or Username"
-          value={username}
-          blurOnSubmit={false}
-          error={Boolean(error)}
-          onChangeText={handleUsernameChange}
-          onSubmitEditing={handleUsernameSubmitEditing}
-          style={styles.inputText}
-        />
+        <View style={styles.inputWrapper}>
+          <Input
+            error={Boolean(error)}
+            label="Email or Username"
+            placeholder="Your Email or Username"
+            returnKeyType="next"
+            value={username}
+            onChangeText={handleUsernameChange}
+            onSubmitEditing={handleUsernameSubmitEditing}
+          />
+        </View>
 
-        <TextInput
-          mode="outlined"
+        <PasswordInput
+          error={Boolean(error)}
+          innerRef={inputPassword}
           returnKeyType="done"
-          label="Password"
-          placeholder="Your Password"
-          blurOnSubmit={false}
-          value={password}
-          error={Boolean(error)}
-          secureTextEntry={!isPasswordVisible}
           onChangeText={handlePasswordChange}
-          onSubmitEditing={handleSignIn}
-          ref={inputPassword}
-          right={
-            isPasswordVisible ? (
-              <TextInput.Icon
-                name="eye-outline"
-                onPress={handlePasswordVisibility}
-              />
-            ) : (
-              <TextInput.Icon
-                name="eye-off-outline"
-                onPress={handlePasswordVisibility}
-              />
-            )
-          }
-          style={styles.inputText}
         />
-
-        {Boolean(error) && (
-          <Subheading style={styles.textError}>{error}</Subheading>
-        )}
       </View>
 
       <Button
-        mode="contained"
-        onPress={handleSignIn}
         disabled={isSignInButtonDisabled}
         loading={isLoading}
         style={styles.button}
-        contentStyle={styles.buttonContent}
-        labelStyle={styles.buttonLabel}
+        onPress={handleSignIn}
       >
         {isLoading ? 'Loading' : 'Sign In'}
       </Button>
 
       <Divider style={styles.divider} />
 
-      <Button
-        color={Colors.white}
-        mode="contained"
-        onPress={handleSignUpNavigation}
-        disabled={isSignUpButtonDisabled}
-        contentStyle={styles.buttonContent}
-        labelStyle={styles.signUpLabel}
-      >
+      <Button color={Colors.white} onPress={handleNavigateToSignUp}>
         Sign Up
       </Button>
     </View>
@@ -155,32 +85,25 @@ export const FormSignIn: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
+  button: {
+    marginBottom: 10,
+  },
+  divider: {
+    marginBottom: 10,
+  },
   form: {
     flex: 1,
   },
   inputTextContainer: {
     marginBottom: 20,
   },
-  inputText: {
+  inputWrapper: {
     marginBottom: 15,
-    height: 40,
-  },
-  textError: {
-    color: Colors.red900,
-  },
-  button: {
-    marginBottom: 10,
-  },
-  buttonContent: {
-    height: 50,
-  },
-  buttonLabel: {
-    color: Colors.white,
   },
   signUpLabel: {
     color: Colors.green500,
   },
-  divider: {
-    marginBottom: 10,
+  textError: {
+    color: Colors.red900,
   },
 });

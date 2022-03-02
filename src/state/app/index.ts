@@ -3,21 +3,13 @@ import { createSlice } from '@reduxjs/toolkit';
 import { IAppState, UserRoles } from '../../types';
 import { initialize, setAppError } from './actions';
 
-const initialState: IAppState = {
+const initialState: State.App = {
   error: '',
   isInitialize: false,
-  role: '' as UserRoles,
+  role: '',
 };
 
 export const appSlice = createSlice({
-  name: 'app',
-  initialState,
-  reducers: {
-    setRole: (state, action) => ({
-      ...state,
-      role: action.payload.role,
-    }),
-  },
   extraReducers: {
     // Initialize
     [`${initialize.pending}`]: (state) => {
@@ -53,5 +45,13 @@ export const appSlice = createSlice({
         error: action.payload,
       };
     },
+  },
+  initialState,
+  name: 'app',
+  reducers: {
+    setRole: (state, action) => ({
+      ...state,
+      role: action.payload.role,
+    }),
   },
 });

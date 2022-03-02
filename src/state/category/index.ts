@@ -1,40 +1,34 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { ICategoryState } from '../../types';
-import { getCategoryList, setCategoryList } from './actions';
+import { getCategories } from './actions';
 
-const initialState: ICategoryState = {
-  isLoading: false,
+const initialState: State.Category = {
   error: '',
+  isLoading: false,
   list: [],
 };
 
 export const categorySlice = createSlice({
-  name: 'category',
-  initialState,
-  reducers: {},
   extraReducers: {
-    // Get Category List
-    [`${getCategoryList.pending}`]: (state) => ({
+    // Get Categories
+    [`${getCategories.pending}`]: (state) => ({
       ...state,
-      error: '',
       isLoading: true,
     }),
-    [`${getCategoryList.fulfilled}`]: (state) => ({
+    [`${getCategories.fulfilled}`]: (
+      state,
+      action: { payload: { list: Objects.Category[] } },
+    ) => ({
       ...state,
-      error: '',
       isLoading: false,
+      list: action.payload.list,
     }),
-    [`${getCategoryList.rejected}`]: (state, action) => ({
+    [`${getCategories.rejected}`]: (state) => ({
       ...state,
-      error: action.payload,
       isLoading: false,
-    }),
-
-    // Set Category List
-    [`${setCategoryList.type}`]: (state, action) => ({
-      ...state,
-      list: action.payload,
     }),
   },
+  initialState,
+  name: 'category',
+  reducers: {},
 });

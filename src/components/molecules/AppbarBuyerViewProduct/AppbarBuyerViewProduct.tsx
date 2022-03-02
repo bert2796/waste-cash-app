@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Colors, Appbar, Button } from 'react-native-paper';
+import { StyleSheet, View } from 'react-native';
+import { Appbar, Button, Colors } from 'react-native-paper';
 
 interface Props {
   isChatButtonDisabled: boolean;
@@ -20,22 +20,22 @@ export const AppbarBuyerViewProduct: React.FC<Props> = ({
   <Appbar style={styles.appBar}>
     <View style={styles.appBarContent}>
       <Button
-        mode="outlined"
-        icon="chat-processing-outline"
-        onPress={onPressChat}
-        style={styles.buttonChat}
         disabled={isChatButtonDisabled}
+        icon="chat-processing-outline"
+        mode="outlined"
+        style={styles.buttonChat}
+        onPress={onPressChat}
       >
         Chat
       </Button>
 
       {hasOfferedAlready && (
         <Button
-          mode="contained"
-          icon="cash-multiple"
-          onPress={onPressOffer}
-          labelStyle={styles.buttonOfferLabel}
           disabled={isOfferButtonDisabled}
+          icon="cash-multiple"
+          labelStyle={styles.buttonOfferLabel}
+          mode="contained"
+          onPress={onPressOffer}
         >
           View Offer
         </Button>
@@ -43,11 +43,11 @@ export const AppbarBuyerViewProduct: React.FC<Props> = ({
 
       {!hasOfferedAlready && (
         <Button
-          mode="contained"
-          icon="cash-multiple"
-          onPress={onPressOffer}
-          labelStyle={styles.buttonOfferLabel}
           disabled={isOfferButtonDisabled}
+          icon="cash-multiple"
+          labelStyle={styles.buttonOfferLabel}
+          mode="contained"
+          onPress={onPressOffer}
         >
           Make Offer
         </Button>
@@ -58,16 +58,16 @@ export const AppbarBuyerViewProduct: React.FC<Props> = ({
 
 const styles = StyleSheet.create({
   appBar: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    bottom: 0,
     backgroundColor: Colors.white,
+    bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
   },
   appBarContent: {
-    marginLeft: 10,
     display: 'flex',
     flexDirection: 'row',
+    marginLeft: 10,
   },
   buttonChat: {
     marginRight: 10,

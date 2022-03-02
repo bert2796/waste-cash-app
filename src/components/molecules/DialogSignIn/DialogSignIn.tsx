@@ -1,5 +1,5 @@
 import React from 'react';
-import { Portal, Dialog, Text, Button } from 'react-native-paper';
+import { Button, Dialog, Portal, Text } from 'react-native-paper';
 
 interface Props {
   isVisible: boolean;
@@ -17,7 +17,7 @@ export const DialogSignIn: React.FC<Props> = ({
 
   return (
     <Portal>
-      <Dialog visible={isVisible} dismissable={false}>
+      <Dialog dismissable={false} visible={isVisible}>
         <Dialog.Title>Successfully Sign Up!</Dialog.Title>
         <Dialog.Content>
           <Text>Thank you, your sign-up request was successful!</Text>

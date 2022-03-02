@@ -1,20 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { AppDispatch, RootState } from '@state/store';
+import { ScreenSellerViewProduct } from '@/components/screens/ScreenSeller/ScreenSellerViewProduct';
+import { getProduct } from '@/state/product/actions';
 import {
   isLoadingSelector,
   productDataSelector,
-} from '@state/product/selectors';
-import { getProductData, setProductData } from '@state/product/actions';
-import { ScreenSellerViewProduct } from '@screens/ScreenSeller/ScreenSellerViewProduct';
+} from '@/state/product/selectors';
+import { AppDispatch, RootState } from '@/state/store';
 
 const mapActionCreators = (dispatch: AppDispatch) => ({
-  onGetProductData(params: { productId: number }): void {
-    dispatch(getProductData(params));
-  },
-  onSetProductData(productData: null): void {
-    dispatch(setProductData(productData));
+  getProduct(id: number): void {
+    dispatch(getProduct(id));
   },
 });
 

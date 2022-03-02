@@ -1,12 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
 
+import { host } from '../config';
 import { ICreateMessageResponse } from '../types';
 
-// prod
-// const host = 'https://waste-cash.com/categories';
-
-// dev
-const host = 'http://10.0.2.2:3000/messages';
+const url = `${host}/messages`;
 
 export const createMessage = async (params: {
   token: string;
@@ -17,7 +14,7 @@ export const createMessage = async (params: {
   const { token, ...rest } = params;
 
   return (await axios({
-    url: host,
+    url,
     method: 'POST',
     headers: {
       Authorization: `Bearer ${params.token}`,

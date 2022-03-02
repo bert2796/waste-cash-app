@@ -1,24 +1,24 @@
 import React from 'react';
-import { Portal, Dialog, Text, Button } from 'react-native-paper';
+import { Button, Dialog, Portal, Text } from 'react-native-paper';
 
 interface Props {
   isVisible: boolean;
-  onDismissDialog: () => void;
+  onDismiss: () => void;
 }
 
 export const DialogAcceptOffer: React.FC<Props> = ({
   isVisible,
-  onDismissDialog,
+  onDismiss,
 }) => {
   return (
     <Portal>
-      <Dialog visible={isVisible} onDismiss={onDismissDialog}>
+      <Dialog visible={isVisible} onDismiss={onDismiss}>
         <Dialog.Content>
           <Text>Are you sure with your choice</Text>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={onDismissDialog}>Yes</Button>
-          <Button onPress={onDismissDialog}>No</Button>
+          <Button onPress={onDismiss}>Yes</Button>
+          <Button onPress={onDismiss}>No</Button>
         </Dialog.Actions>
       </Dialog>
     </Portal>

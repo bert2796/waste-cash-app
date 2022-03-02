@@ -1,21 +1,13 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 
-import { User } from '@services/index';
-import { RootState } from '../store';
+import { User } from '@/services/index';
+
 import { getConversationList } from '../conversation/actions';
 import { getNotificationList } from '../notification/actions';
+import { RootState } from '../store';
 import { setUserData, setUserError, setUserToken } from '../user/actions';
 import { tokenSelector } from '../user/selectors';
 import { AppActions } from './constants';
-
-const wait = (waitingTime = 3000) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`Done waiting for ${waitingTime} ms`);
-
-      resolve(true);
-    }, waitingTime);
-  });
 
 export const setAppError = createAction<string | null>(
   AppActions.SET_APP_ERROR,
@@ -54,8 +46,6 @@ export const initialize = createAsyncThunk(
         thunkAPI.dispatch(setUserToken(null));
         return Promise.resolve();
       }
-
-      await wait();
 
       return Promise.resolve();
     } catch (error) {

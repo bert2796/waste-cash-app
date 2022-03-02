@@ -1,26 +1,19 @@
-import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { CommonActions } from '@react-navigation/native';
+import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { IUser, IServiceError, UserRoles } from '../../types';
-import { Auth, User } from '@services/index';
-import { RootState } from '../store';
-import { getNotificationList } from '../notification/actions';
-import { UserActions } from './constants';
+import { UserRoles } from '@/constants/index';
+import { Auth, User } from '@/services/index';
+
 import { setAppError } from '../app/actions';
 import { roleSelector } from '../app/selectors';
+import { getConversations } from '../conversation/actions';
 import navigate from '../navigation';
+import { getNotifications } from '../notification/actions';
+import { RootState } from '../store';
+import { UserActions } from './constants';
 
-const wait = (waitingTime = 3000) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`Wait for ${waitingTime} ms: Done!`);
-
-      resolve(true);
-    }, waitingTime);
-  });
-
-export const setUserData = createAction<IUser | null>(
+export const setUserData = createAction<Objects.User | null>(
   UserActions.SET_USER_DATA,
 );
 
@@ -32,6 +25,9 @@ export const setUserToken = createAction<string | null>(
   UserActions.SET_USER_TOKEN,
 );
 
+export const setUserIsLoading = createAction<boolean | null>(
+  UserActions.SET_USER_IS_LOADING,
+);
 export const signIn = createAsyncThunk(
   UserActions.SIGN_IN,
   async (params: { username: string; password: string }, thunkAPI) => {
@@ -46,27 +42,38 @@ export const signIn = createAsyncThunk(
         return thunkAPI.rejectWithValue('User does not exist.');
       }
 
+      // set necessary details for user
       thunkAPI.dispatch(setUserData(userData.data));
       thunkAPI.dispatch(setUserToken(userLogin.data.accessToken));
-      thunkAPI.dispatch(getNotificationList());
 
-      await wait(1000);
-      // navigate()?.dispatch(StackActions.replace('SellerHome'));
+      // retrieve notifications and conversations
+      thunkAPI.dispatch(getNotifications());
+      thunkAPI.dispatch(getConversations());
 
-      // remove logged out screens
+      // verify where to navigate the user
+      let initialScreen = '';
+
+      switch (appRole) {
+        case UserRoles.BUYER:
+          initialScreen = 'BuyerInitialScreen';
+          break;
+
+        case UserRoles.JUNKSHOP:
+          initialScreen = 'JunkShopInitialScreen';
+          break;
+
+        case UserRoles.SELLER:
+          initialScreen = 'SellerInitialScreen';
+          break;
+      }
+
+      // navigate to home screen
       navigate()?.dispatch(
         CommonActions.reset({
           index: 1,
           routes: [
             {
-              name:
-                appRole === UserRoles.BUYER
-                  ? 'BuyerHome'
-                  : appRole === UserRoles.SELLER
-                  ? 'SellerHome'
-                  : appRole === UserRoles.JUNKSHOP
-                  ? 'ShopHome'
-                  : '',
+              name: initialScreen,
             },
           ],
         }),
@@ -74,11 +81,13 @@ export const signIn = createAsyncThunk(
 
       return Promise.resolve();
     } catch (error) {
+      let message = (error as Error)?.message;
+
       if (axios.isAxiosError(error)) {
         if (error?.response) {
-          const axiosError = error?.response as IServiceError;
+          const axiosError = error?.response as Objects.ServiceError;
           if (axiosError?.status && axiosError.status === 400) {
-            return thunkAPI.rejectWithValue(axiosError.data.message);
+            message = axiosError.data.message;
           }
         }
       }
@@ -86,7 +95,7 @@ export const signIn = createAsyncThunk(
       // set global error
       thunkAPI.dispatch(setAppError('Server is busy. Please try again later.'));
 
-      return Promise.resolve();
+      return Promise.reject(new Error(message));
     }
   },
 );
@@ -95,16 +104,16 @@ export const signOut = createAsyncThunk(
   UserActions.SIGN_OUT,
   async (_, thunkAPI) => {
     // clear user data
-    thunkAPI.dispatch(setUserData(null));
+    // thunkAPI.dispatch(setUserData(null));
 
     // clear token
-    thunkAPI.dispatch(setUserToken(null));
+    // thunkAPI.dispatch(setUserToken(null));
 
-    // remove logged out screens
+    // navigate to role selection
     navigate()?.dispatch(
       CommonActions.reset({
         index: 1,
-        routes: [{ name: 'SelectRole' }],
+        routes: [{ name: 'SelectRoleScreen' }],
       }),
     );
 

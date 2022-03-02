@@ -1,164 +1,34 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import {
-  IConversationState,
-  IConversationSummary,
-  IMessage,
-} from '../../types';
-import {
-  addMessage,
-  addConversationDataMessage,
-  addConversationListMessage,
-  sendMessage,
-  getConversationData,
-  getConversationList,
-  setConversationData,
-  setConversationList,
-  setConversationError,
-} from './actions';
+import { getConversations } from './actions';
 
-const initialState: IConversationState = {
-  isLoading: false,
+const initialState: State.Conversation = {
   error: '',
-  data: null,
+  isLoading: false,
   list: [],
 };
 
 export const conversationSlice = createSlice({
-  name: 'conversation',
-  initialState,
-  reducers: {},
   extraReducers: {
-    // Add Conversation Data Message
-    [`${addConversationDataMessage.type}`]: (state, action) => ({
+    // Get Conversations
+    [`${getConversations.pending}`]: (state) => ({
       ...state,
-      data: {
-        ...state.data,
-        messages: [action.payload, ...(state.data?.messages || [])],
-      },
+      isLoading: true,
     }),
-
-    // Add Conversation List Message
-    [`${addConversationListMessage.type}`]: (
+    [`${getConversations.fulfilled}`]: (
       state,
-      action: { payload: IMessage },
-    ) => {
-      const conversdationIndex = state.list.findIndex(
-        (conversation) => conversation.id === action.payload?.conversation?.id,
-      );
-
-      const {
-        payload: {
-          id,
-          content,
-          isSeen,
-          createdAt,
-          conversation,
-          recipient,
-          sender,
-        },
-      } = action;
-      const newConversation: IConversationSummary = {
-        id: conversation?.id as number,
-        message: {
-          id,
-          content,
-          isSeen,
-          createdAt,
-        },
-        recipient: {
-          id: recipient.id,
-          firstName: recipient.firstName,
-          lastName: recipient.lastName,
-        },
-        sender: {
-          id: sender.id,
-          firstName: sender.firstName,
-          lastName: sender.lastName,
-        },
-      };
-
-      if (conversdationIndex > -1) {
-        let conversationSummary = [...state.list];
-        conversationSummary = conversationSummary.splice(conversdationIndex, 0);
-
-        return {
-          ...state,
-          list: [newConversation, ...conversationSummary],
-        };
-      } else {
-        return {
-          ...state,
-          list: [newConversation, ...state.list],
-        };
-      }
-    },
-
-    // Send Message
-    [`${sendMessage.pending}`]: (state) => ({
-      ...state,
-    }),
-
-    [`${sendMessage.fulfilled}`]: (state) => ({
-      ...state,
-    }),
-
-    [`${sendMessage.rejected}`]: (state, action) => ({
-      ...state,
-      error: action.payload,
-    }),
-
-    // Get Conversation Data
-    [`${getConversationData.pending}`]: (state) => ({
-      ...state,
-      isLoading: true,
-      data: null,
-    }),
-
-    [`${getConversationData.fulfilled}`]: (state) => ({
+      action: { payload: { list: Objects.ConversationSummary[] } },
+    ) => ({
       ...state,
       isLoading: false,
+      list: action.payload.list,
     }),
-
-    [`${getConversationData.rejected}`]: (state, action) => ({
-      ...state,
-      error: action.payload,
-      isLoading: false,
-    }),
-
-    // Get Conversation List
-    [`${getConversationList.pending}`]: (state) => ({
-      ...state,
-      isLoading: true,
-    }),
-
-    [`${getConversationList.fulfilled}`]: (state) => ({
+    [`${getConversations.rejected}`]: (state) => ({
       ...state,
       isLoading: false,
-    }),
-
-    [`${getConversationList.rejected}`]: (state, action) => ({
-      ...state,
-      error: action.payload,
-      isLoading: false,
-    }),
-
-    // Set Conversation Data
-    [`${setConversationData.type}`]: (state, action) => ({
-      ...state,
-      data: action.payload,
-    }),
-
-    // Set Conversation List
-    [`${setConversationList.type}`]: (state, action) => ({
-      ...state,
-      list: action.payload,
-    }),
-
-    // Set Conversation Error
-    [`${setConversationError.type}`]: (state, action) => ({
-      ...state,
-      error: action.payload || '',
     }),
   },
+  initialState,
+  name: 'conversation',
+  reducers: {},
 });

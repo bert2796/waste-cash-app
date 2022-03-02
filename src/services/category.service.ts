@@ -1,16 +1,11 @@
 import axios, { AxiosResponse } from 'axios';
 
-import { IGetCategoryResponse } from '../types';
+import { host } from '../config';
 
-// prod
-// const host = 'https://waste-cash.com/categories';
+const url = `${host}/categories`;
 
-// dev
-const host = 'http://10.0.2.2:3000/categories';
-
-export const getCategories = async () => {
-  return (await axios({
-    url: host,
+export const getCategories = async () =>
+  (await axios({
     method: 'GET',
-  })) as unknown as AxiosResponse<IGetCategoryResponse[]>;
-};
+    url,
+  })) as unknown as AxiosResponse<Objects.Category[]>;

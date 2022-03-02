@@ -1,53 +1,46 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { AppDispatch, RootState } from '@state/store';
+import { ScreenBuyerViewProduct } from '@/components/screens/ScreenBuyer/ScreenBuyerViewProduct';
+import { getProduct } from '@/state/product/actions';
 import {
-  isLoadingSelector as isLoadingProductSelector,
+  isLoadingSelector as productLoadingSelector,
   productDataSelector,
-} from '@state/product/selectors';
-import {
-  isLoadingSelector as isLoadingProductOfferSelector,
-  offerSelector,
-  productOfferSuccessSelector,
-} from '@state/productOffer/selectors';
-import { getProductData, setProductData } from '@state/product/actions';
+  productOfferDataSelector,
+} from '@/state/product/selectors';
 import {
   createProductOffer,
   setProductOfferSuccess,
-} from '@state/productOffer/actions';
-import { WithSocket as withSocket } from '@atoms/WithSocket/WithSocket';
-import { ScreenBuyerViewProduct } from '@screens/ScreenBuyer/ScreenBuyerViewProduct';
+} from '@/state/productOffer/actions';
+import {
+  isLoadingSelector as productOfferLoadingSelector,
+  productOfferSuccessSelector,
+} from '@/state/productOffer/selectors';
+import { AppDispatch, RootState } from '@/state/store';
 
 const mapActionCreators = (dispatch: AppDispatch) => ({
-  onCreateProductOffer(params: { price: number }): void {
+  createProductOffer(params: { price: number }): void {
     dispatch(createProductOffer(params));
   },
-  onGetProductData(params: { productId: number }): void {
-    dispatch(getProductData(params));
+  getProduct(id: number): void {
+    dispatch(getProduct(id));
   },
-  onSetProductData(productData: null): void {
-    dispatch(setProductData(productData));
-  },
-  onSetProductOfferSuccess(message: string | null): void {
+  setProductOfferSuccess(message: string): void {
     dispatch(setProductOfferSuccess(message));
   },
 });
 
 const mapStateToProps = (state: RootState) => {
-  const offer = offerSelector(state);
-
   return {
-    isLoadingProduct: isLoadingProductSelector(state),
-    isLoadingProductOffer: isLoadingProductOfferSelector(state),
-    hasOfferedAlready: Boolean(offer),
-    productOfferSuccess: productOfferSuccessSelector(state),
+    isProductLoading: productLoadingSelector(state),
+    isProductOfferLoading: productOfferLoadingSelector(state),
     productData: productDataSelector(state),
-    offer,
+    productOfferData: productOfferDataSelector(state),
+    success: productOfferSuccessSelector(state),
   };
 };
 
 export default connect(
   mapStateToProps,
   mapActionCreators,
-)(withSocket(ScreenBuyerViewProduct));
+)(ScreenBuyerViewProduct);

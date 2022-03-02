@@ -1,70 +1,34 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { IShopState, UserRoles } from '../../types';
-import {
-  getShopList,
-  setShopList,
-  setShopError,
-  setShopSuccess,
-} from './actions';
+import { getShops } from './actions';
 
-const initialState: IShopState = {
-  isLoading: false,
+const initialState: State.Shop = {
   error: '',
-  success: '',
-  data: {
-    id: 0,
-    firstName: '',
-    lastName: '',
-    address: '',
-    city: '',
-    zip: 0,
-    mobile: 0,
-    email: '',
-    username: '',
-    role: '' as UserRoles,
-  },
+  isLoading: false,
   list: [],
 };
 
 export const shopSlice = createSlice({
-  name: 'shop',
-  initialState,
-  reducers: {},
   extraReducers: {
-    // Get Product List
-    [`${getShopList.pending}`]: (state) => ({
+    // Get Shops
+    [`${getShops.pending}`]: (state) => ({
       ...state,
       isLoading: true,
     }),
-
-    [`${getShopList.fulfilled}`]: (state) => ({
+    [`${getShops.fulfilled}`]: (
+      state,
+      action: { payload: { list: Objects.User[] } },
+    ) => ({
       ...state,
       isLoading: false,
+      list: action.payload.list,
     }),
-
-    [`${getShopList.rejected}`]: (state, action) => ({
+    [`${getShops.rejected}`]: (state) => ({
       ...state,
-      error: action.payload,
       isLoading: false,
-    }),
-
-    // Set Product List
-    [`${setShopList.type}`]: (state, action) => ({
-      ...state,
-      list: action.payload,
-    }),
-
-    // Set Product Error
-    [`${setShopError.type}`]: (state, action) => ({
-      ...state,
-      error: action.payload || '',
-    }),
-
-    // Set Product Success
-    [`${setShopSuccess.type}`]: (state, action) => ({
-      ...state,
-      success: action.payload || '',
     }),
   },
+  initialState,
+  name: 'shop',
+  reducers: {},
 });

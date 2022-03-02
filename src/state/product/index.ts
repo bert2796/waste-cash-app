@@ -1,119 +1,91 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { IProductState } from '../../types';
 import {
-  addProduct,
   addProductOffer,
   createProduct,
-  getProductData,
-  getProductList,
-  setProductData,
-  setProductList,
-  setProductError,
-  setProductSuccess,
+  getProduct,
+  getProducts,
 } from './actions';
 
-const initialState: IProductState = {
-  isLoading: false,
-  success: '',
+const initialState: State.Product = {
   error: '',
-  data: null,
+  isLoading: false,
   list: [],
+  success: '',
 };
 
 export const productSlice = createSlice({
-  name: 'product',
-  initialState,
-  reducers: {},
   extraReducers: {
     // Create Product
     [`${createProduct.pending}`]: (state) => ({
       ...state,
       isLoading: true,
     }),
-
-    [`${createProduct.fulfilled}`]: (state) => ({
+    [`${createProduct.fulfilled}`]: (
+      state,
+      action: { payload: { data: Objects.Product } },
+    ) => ({
+      ...state,
+      isLoading: false,
+      list: [...state.list, action.payload.data],
+    }),
+    [`${createProduct.rejected}`]: (state) => ({
       ...state,
       isLoading: false,
     }),
 
-    [`${createProduct.rejected}`]: (state, action) => ({
-      ...state,
-      error: action.payload,
-      isLoading: false,
-    }),
-
-    // Get Product Data
-    [`${getProductData.pending}`]: (state) => ({
+    // Get Product
+    [`${getProduct.pending}`]: (state) => ({
       ...state,
       isLoading: true,
     }),
-
-    [`${getProductData.fulfilled}`]: (state) => ({
-      ...state,
-      isLoading: false,
-    }),
-
-    [`${getProductData.rejected}`]: (state, action) => ({
-      ...state,
-      error: action.payload,
-      isLoading: false,
-    }),
-
-    // Get Product List
-    [`${getProductList.pending}`]: (state) => ({
-      ...state,
-      isLoading: true,
-    }),
-
-    [`${getProductList.fulfilled}`]: (state) => ({
-      ...state,
-      isLoading: false,
-    }),
-
-    [`${getProductList.rejected}`]: (state, action) => ({
-      ...state,
-      error: action.payload,
-      isLoading: false,
-    }),
-
-    // Add Product
-    [`${addProduct.type}`]: (state, action) => ({
-      ...state,
-      list: [action.payload, ...state.list],
-    }),
-
-    // addProductOffer
-    [`${addProductOffer.type}`]: (state, action) => ({
+    [`${getProduct.fulfilled}`]: (
+      state,
+      action: { payload: { data: Objects.Product } },
+    ) => ({
       ...state,
       data: {
         ...state.data,
+        ...action.payload.data,
+      },
+      isLoading: false,
+    }),
+    [`${getProduct.rejected}`]: (state) => ({
+      ...state,
+      isLoading: false,
+    }),
+
+    // Get Products
+    [`${getProducts.pending}`]: (state) => ({
+      ...state,
+      isLoading: true,
+    }),
+    [`${getProducts.fulfilled}`]: (
+      state,
+      action: { payload: { list: Objects.Product[] } },
+    ) => ({
+      ...state,
+      isLoading: false,
+      list: action.payload.list,
+    }),
+    [`${getProducts.rejected}`]: (state) => ({
+      ...state,
+      isLoading: false,
+    }),
+
+    // Add Product Offer
+    [`${addProductOffer.type}`]: (
+      state,
+      action: { payload: Objects.ProductOffer },
+    ) => ({
+      ...state,
+      data: {
+        ...state.data!,
         offers: [...(state.data?.offers || []), action.payload],
       },
     }),
-
-    // Set Product Data
-    [`${setProductData.type}`]: (state, action) => ({
-      ...state,
-      data: action.payload,
-    }),
-
-    // Set Product List
-    [`${setProductList.type}`]: (state, action) => ({
-      ...state,
-      list: action.payload,
-    }),
-
-    // Set Product Error
-    [`${setProductError.type}`]: (state, action) => ({
-      ...state,
-      error: action.payload || '',
-    }),
-
-    // Set Product Success
-    [`${setProductSuccess.type}`]: (state, action) => ({
-      ...state,
-      success: action.payload || '',
-    }),
   },
+  initialState,
+  name: 'product',
+  reducers: {},
 });

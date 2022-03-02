@@ -1,35 +1,30 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import { INotificationState, INotification } from '../../types';
 import { RootState } from '../store';
 
 const rootSelector = createSelector(
-  (state: RootState): INotificationState => state.notification,
-  (notification: INotificationState) => notification,
+  (state: RootState): State.Notification => state.notification,
+  (notification: State.Notification) => notification,
 );
 
 export const notificationListSelector = createSelector(
   rootSelector,
-  (notification: INotificationState): INotification[] => notification.list,
-);
-
-export const notificationSuccessSelector = createSelector(
-  rootSelector,
-  (notification: INotificationState): string => notification.success,
+  (notification: State.Notification): Objects.Notification[] =>
+    notification.list,
 );
 
 export const notificationErrorSelector = createSelector(
   rootSelector,
-  (notification: INotificationState): string => notification.error,
+  (notification: State.Notification): string => notification.error,
 );
 
 export const isLoadingSelector = createSelector(
   rootSelector,
-  (notification: INotificationState): boolean => notification.isLoading,
+  (notification: State.Notification): boolean => notification.isLoading,
 );
 
 export const hasUnseenNotificationSelector = createSelector(
   notificationListSelector,
-  (notificationList: INotification[]): boolean =>
+  (notificationList: Objects.Notification[]): boolean =>
     notificationList.some((notification) => !notification.isSeen),
 );

@@ -1,24 +1,23 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import { ICategoryState, ICategory } from '../../types';
 import { RootState } from '../store';
 
 const rootSelector = createSelector(
-  (state: RootState): ICategoryState => state.category,
-  (category: ICategoryState) => category,
+  (state: RootState): State.Category => state.category,
+  (category: State.Category) => category,
 );
 
 export const categoryListSelector = createSelector(
   rootSelector,
-  (category: ICategoryState): ICategory[] => category.list,
+  (category: State.Category): Objects.Category[] => category.list,
 );
 
 export const categoryErrorSelector = createSelector(
   rootSelector,
-  (category: ICategoryState): string => category.error,
+  (category: State.Category): string => category.error,
 );
 
 export const isLoadingSelector = createSelector(
   rootSelector,
-  (category: ICategoryState): boolean => category.isLoading,
+  (category: State.Category): boolean => category.isLoading,
 );

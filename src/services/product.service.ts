@@ -1,64 +1,64 @@
 import axios, { AxiosResponse } from 'axios';
 
-import {
-  ProductStatus,
-  ICreateProductResponse,
-  ICreateProductOfferResponse,
-  IGetProductResponse,
-} from '../types';
+import { host } from '../config';
 
-// prod
-// const host = 'https://waste-cash.com/products';
-
-// dev
-const host = 'http://10.0.2.2:3000/products';
+const url = `${host}/products`;
 
 export const createProduct = async (params: {
   token: string;
   formData: FormData;
-}) => {
-  const { token, formData } = params;
-
-  // return (await axios({
-  //   url: `${host}`,
-  //   method: 'POST',
-  //   headers: {
-  //     Authorization: `Bearer ${token}`,
-  //   },
-  //   data,
-  // })) as unknown as AxiosResponse<ICreateProductResponse>;
-
-  return (await axios.post(host, formData, {
+}) =>
+  (await axios.post(url, params.formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
-      Authorization: `Bearer ${token}`,
+      // eslint-disable-next-line sort-keys-fix/sort-keys-fix
+      Authorization: `Bearer ${params.token}`,
     },
-  })) as unknown as AxiosResponse<ICreateProductResponse>;
-};
+  })) as unknown as AxiosResponse<Objects.Product>;
 
-export const getOwnerProducts = async (params: { token: string }) => {
-  return (await axios({
-    url: `${host}/owners`,
-    method: 'GET',
+export const getOwnerProducts = async (params: { token: string }) =>
+  (await axios({
     headers: {
       Authorization: `Bearer ${params.token}`,
     },
-  })) as unknown as AxiosResponse<IGetProductResponse[]>;
-};
-
-export const getProducts = async () => {
-  return (await axios({
-    url: `${host}?status=unsold`,
     method: 'GET',
-  })) as unknown as AxiosResponse<IGetProductResponse[]>;
-};
+    url: `${url}/owners`,
+  })) as unknown as AxiosResponse<Objects.Product[]>;
 
-export const getProduct = async (params: { productId: number }) => {
-  return (await axios({
-    url: `${host}/${params.productId}`,
+export const getProduct = async (id: number) =>
+  (await axios({
     method: 'GET',
-  })) as unknown as AxiosResponse<IGetProductResponse>;
-};
+    url: `${url}/${id}`,
+  })) as unknown as AxiosResponse<Objects.Product>;
+
+export const getProducts = async () =>
+  (await axios({
+    method: 'GET',
+    url: `${url}?status=unsold`,
+  })) as unknown as AxiosResponse<Objects.Product[]>;
+
+// export const createProduct = async (params: {
+//   token: string;
+//   formData: FormData;
+// }) => {
+//   const { token, formData } = params;
+
+//   // return (await axios({
+//   //   url: `${host}`,
+//   //   method: 'POST',
+//   //   headers: {
+//   //     Authorization: `Bearer ${token}`,
+//   //   },
+//   //   data,
+//   // })) as unknown as AxiosResponse<ICreateProductResponse>;
+
+//   return (await axios.post(url, formData, {
+//     headers: {
+//       'Content-Type': 'multipart/form-data',
+//       Authorization: `Bearer ${token}`,
+//     },
+//   })) as unknown as AxiosResponse<ICreateProductResponse>;
+// };
 
 export const createProductOffer = async (params: {
   token: string;
@@ -68,13 +68,13 @@ export const createProductOffer = async (params: {
   const { token, productId, price } = params;
 
   return (await axios({
-    url: `${host}/${productId}/offers`,
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
     data: {
       price,
     },
-  })) as unknown as AxiosResponse<ICreateProductOfferResponse>;
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: 'POST',
+    url: `${url}/${productId}/offers`,
+  })) as unknown as AxiosResponse<Objects.ProductOffer>;
 };

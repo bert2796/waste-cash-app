@@ -1,60 +1,28 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import {
-  ProductStatus,
-  UserRoles,
-  IProductOffer,
-  IProduct,
-  IServiceError,
-} from '../../types';
-import { Product } from '@services/index';
-import { RootState } from '../store';
-import { ProductActions } from './constants';
-import { tokenSelector, userDataSelector } from '../user/selectors';
+import { UserRoles } from '@/constants/index';
+import { Product } from '@/services/index';
+
 import { setAppError } from '../app/actions';
-
-const wait = (waitingTime = 3000) =>
-  new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`Wait for ${waitingTime} ms: Done!`);
-
-      resolve(true);
-    }, waitingTime);
-  });
-
-export const addProduct = createAction<IProduct>(ProductActions.ADD_PRODUCT);
-
-export const addProductOffer = createAction<IProductOffer>(
-  ProductActions.ADD_PRODUCT_OFFER,
-);
-
-export const setProductError = createAction<string | null>(
-  ProductActions.SET_PRODUCT_ERROR,
-);
+import { RootState } from '../store';
+import { tokenSelector, userDataSelector } from '../user/selectors';
+import { ProductActions } from './constants';
 
 export const setProductSuccess = createAction<string | null>(
   ProductActions.SET_PRODUCT_SUCCESS,
 );
 
-export const setProductData = createAction<IProduct | null>(
-  ProductActions.SET_PRODUCT_DATA,
-);
-
-export const setProductList = createAction<IProduct[]>(
-  ProductActions.SET_PRODUCT_LIST,
+export const addProductOffer = createAction<Objects.ProductOffer>(
+  ProductActions.ADD_PRODUCT_OFFER,
 );
 
 export const createProduct = createAsyncThunk(
   ProductActions.CREATE_PRODUCT,
   async (
-    params: {
-      photo: any;
-      name: string;
+    params: Partial<Omit<Objects.Product, 'category'>> & {
       category: string;
-      description: string;
-      price: number;
-      status: ProductStatus;
+      photo: any;
     },
     thunkAPI,
   ) => {
@@ -63,7 +31,6 @@ export const createProduct = createAsyncThunk(
       const token = tokenSelector(state);
       const formData = new FormData();
 
-      // append required params to create product
       formData.append('image', {
         name: params.photo.fileName,
         type: params.photo.type,
@@ -75,16 +42,14 @@ export const createProduct = createAsyncThunk(
       formData.append('price', params.price);
       formData.append('status', params.status);
 
-      const createdProduct = await Product.createProduct({ formData, token });
+      const createProductRes = await Product.createProduct({ formData, token });
+      const product: Objects.Product = createProductRes.data;
 
-      thunkAPI.dispatch(setProductSuccess('Succesfully created product.'));
-      thunkAPI.dispatch(addProduct(createdProduct.data));
-
-      return Promise.resolve();
+      return Promise.resolve({ data: product });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error?.response) {
-          const axiosError = error?.response as IServiceError;
+          const axiosError = error?.response as Objects.ServiceError;
           if (axiosError?.status && axiosError.status === 400) {
             return thunkAPI.rejectWithValue(axiosError.data.message);
           }
@@ -94,28 +59,22 @@ export const createProduct = createAsyncThunk(
       // set global error
       thunkAPI.dispatch(setAppError('Server is busy. Please try again later.'));
 
-      return Promise.resolve();
+      return Promise.reject();
     }
   },
 );
 
-export const getProductData = createAsyncThunk(
+export const getProduct = createAsyncThunk(
   ProductActions.GET_PRODUCT_DATA,
-  async (params: { productId: number }, thunkAPI) => {
+  async (id: number, thunkAPI) => {
     try {
-      const productData = await Product.getProduct({
-        productId: params.productId,
-      });
+      const getProductRes = await Product.getProduct(id);
 
-      await wait(1000);
-
-      thunkAPI.dispatch(setProductData(productData.data));
-
-      return Promise.resolve();
+      return Promise.resolve({ data: getProductRes.data });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error?.response) {
-          const axiosError = error?.response as IServiceError;
+          const axiosError = error?.response as Objects.ServiceError;
           if (axiosError?.status && axiosError.status === 400) {
             return thunkAPI.rejectWithValue(axiosError.data.message);
           }
@@ -125,38 +84,33 @@ export const getProductData = createAsyncThunk(
       // set global error
       thunkAPI.dispatch(setAppError('Server is busy. Please try again later.'));
 
-      return Promise.resolve();
+      return Promise.reject();
     }
   },
 );
 
-export const getProductList = createAsyncThunk(
+export const getProducts = createAsyncThunk(
   ProductActions.GET_PRODUCT_LIST,
   async (_, thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;
       const user = userDataSelector(state);
 
-      let productList;
-      if (user.role === UserRoles.SELLER) {
+      let products: Objects.Product[] = [];
+      if (user.role === UserRoles.BUYER) {
+        const getProductsRes = await Product.getProducts();
+        products = getProductsRes.data;
+      } else if (user.role === UserRoles.SELLER) {
         const token = tokenSelector(state);
-
-        productList = await Product.getOwnerProducts({ token });
-      } else if (user.role === UserRoles.BUYER) {
-        productList = await Product.getProducts();
+        const getOwnerProductsRes = await Product.getOwnerProducts({ token });
+        products = getOwnerProductsRes.data;
       }
 
-      await wait(1000);
-
-      if (productList) {
-        thunkAPI.dispatch(setProductList(productList.data));
-      }
-
-      return Promise.resolve();
+      return Promise.resolve({ list: products });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error?.response) {
-          const axiosError = error?.response as IServiceError;
+          const axiosError = error?.response as Objects.ServiceError;
           if (axiosError?.status && axiosError.status === 400) {
             return thunkAPI.rejectWithValue(axiosError.data.message);
           }
@@ -166,7 +120,7 @@ export const getProductList = createAsyncThunk(
       // set global error
       thunkAPI.dispatch(setAppError('Server is busy. Please try again later.'));
 
-      return Promise.resolve();
+      return Promise.reject();
     }
   },
 );
