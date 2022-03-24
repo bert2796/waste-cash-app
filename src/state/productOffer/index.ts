@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import {
   createProductOffer,
+  rejectProductOffer,
   setProductOfferError,
   setProductOfferSuccess,
 } from './actions';
@@ -21,7 +22,6 @@ export const productOfferSlice = createSlice({
       isLoading: true,
       success: '',
     }),
-
     [`${createProductOffer.fulfilled}`]: (
       state,
       action: { payload: string },
@@ -30,8 +30,26 @@ export const productOfferSlice = createSlice({
       isLoading: false,
       success: action.payload,
     }),
-
     [`${createProductOffer.rejected}`]: (
+      state,
+      action: { payload: string },
+    ) => ({
+      ...state,
+      error: action.payload,
+      isLoading: false,
+    }),
+
+    // Reject Product Offer
+    [`${rejectProductOffer.pending}`]: (state) => ({
+      ...state,
+      error: '',
+      isLoading: true,
+    }),
+    [`${rejectProductOffer.fulfilled}`]: (state) => ({
+      ...state,
+      isLoading: false,
+    }),
+    [`${rejectProductOffer.rejected}`]: (
       state,
       action: { payload: string },
     ) => ({

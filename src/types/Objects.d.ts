@@ -12,6 +12,8 @@ declare module Objects {
   interface Conversation {
     id: number;
     messages: Message[];
+    createdAt: string;
+    updatedAt: string;
   }
 
   interface ConversationSummary {
@@ -59,6 +61,7 @@ declare module Objects {
     id: number;
     price: number;
     user: User;
+    status?: string;
     product?: Product;
   }
 

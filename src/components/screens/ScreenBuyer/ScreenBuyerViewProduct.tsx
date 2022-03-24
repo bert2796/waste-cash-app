@@ -39,6 +39,8 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
 
   const [isDialogVisible, setIsDialogVisible] = React.useState(false);
 
+  const bottomSheet: any = React.useRef();
+
   const handleDialogVisibility = () => {
     // clear success message
     if (isDialogVisible && success) {
@@ -47,8 +49,6 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
 
     setIsDialogVisible(!isDialogVisible);
   };
-
-  const bottomSheet: any = React.useRef();
 
   const handleOpenBottomSheet = () => {
     bottomSheet.current.open();
@@ -62,6 +62,12 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
     if (success) {
       handleDialogVisibility();
     }
+  };
+
+  const handleNavigateToViewConversation = () => {
+    navigation.navigate('BuyerViewConversationScreen', {
+      recipient: productData.owner,
+    });
   };
 
   // fetch product details
@@ -91,6 +97,7 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
           <AppbarViewProduct
             isBuyer
             isOfferExist={Boolean(productOfferData)}
+            onChat={handleNavigateToViewConversation}
             onOffer={handleOpenBottomSheet}
           />
           <BottomSheetViewProduct

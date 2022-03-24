@@ -1,5 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 
+import { ProductOfferStatus } from '@/constants/index';
+
 import { RootState } from '../store';
 import { userDataSelector } from '../user/selectors';
 
@@ -23,13 +25,25 @@ export const productOfferListSelector = createSelector(
   (product: State.Product): Objects.ProductOffer[] => product.data?.offers!,
 );
 
+export const productPendingOfferListSelector = createSelector(
+  productOfferListSelector,
+  (productOfferList: Objects.ProductOffer[]): Objects.ProductOffer[] =>
+    productOfferList?.filter(
+      (offer) => offer.status === ProductOfferStatus.PENDING,
+    ) || [],
+);
+
 export const productOfferDataSelector = createSelector(
   [productOfferListSelector, userDataSelector],
   (
     productOffers: Objects.ProductOffer[],
     userData: Objects.User,
   ): Objects.ProductOffer | undefined =>
-    productOffers?.find((productOffer) => productOffer.user.id === userData.id),
+    productOffers?.find(
+      (productOffer) =>
+        productOffer.user.id === userData.id &&
+        productOffer.status === ProductOfferStatus.PENDING,
+    ),
 );
 
 export const productErrorSelector = createSelector(

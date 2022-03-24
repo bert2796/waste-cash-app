@@ -18,7 +18,7 @@ export const ScreenBuyerListShops: React.FC<Props> = ({
   navigation,
 }) => {
   const handleNavigateToConversation = (shop: Objects.User) => {
-    navigation.navigate('BuyerInitialScreen');
+    navigation.navigate('BuyerViewConversationScreen', { shop });
   };
 
   React.useEffect(() => {

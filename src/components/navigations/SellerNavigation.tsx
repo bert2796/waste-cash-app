@@ -9,13 +9,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ContainerListConversations from '@/containers/ContainerCommonListConversations';
 import ContainerListNotifications from '@/containers/ContainerCommonListNotifications';
 import ContainerProfile from '@/containers/ContainerCommonProfile';
+import ContainerViewConversation from '@/containers/ContainerCommonViewConversation';
+import ContainerViewNotification from '@/containers/ContainerCommonViewNotification';
 import ContainerSellerCreateProduct from '@/containers/ContainerSellerCreateProduct';
 import ContainerSellerListOffers from '@/containers/ContainerSellerListOffers';
 import ContainerSellerListProducts from '@/containers/ContainerSellerListProducts';
 import ContainerSellerViewProduct from '@/containers/ContainerSellerViewProduct';
 
 interface Props {
-  hasNotificationBadge?: boolean;
+  hasNotificationBadge: boolean;
 }
 
 const SellerStack = createStackNavigator<Screens.SellerStackParams>();
@@ -116,26 +118,42 @@ export const SellerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
       />
 
       <SellerStack.Screen
-        component={ContainerSellerViewProduct}
-        name="SellerViewProductScreen"
-        options={{ headerTitle: '' }}
-      />
-
-      <SellerStack.Screen
         component={ContainerSellerCreateProduct}
         name="SellerCreateProductScreen"
         options={{
+          headerShadowVisible: true,
           headerTitle: 'Create Product',
           headerTitleAlign: 'center',
         }}
       />
 
+      {/* List Screens */}
       <SellerStack.Screen
         component={ContainerSellerListOffers}
         name="SellerListOffersScreen"
         options={{
+          headerShadowVisible: true,
           headerTitle: 'Offers',
         }}
+      />
+
+      {/* View Screens */}
+      <SellerStack.Screen
+        component={ContainerSellerViewProduct}
+        name="SellerViewProductScreen"
+        options={{ headerShadowVisible: true, headerTitle: '' }}
+      />
+
+      <SellerStack.Screen
+        component={ContainerViewConversation}
+        name="SellerViewConversationScreen"
+        options={{ headerShadowVisible: true, headerShown: false }}
+      />
+
+      <SellerStack.Screen
+        component={ContainerViewNotification}
+        name="SellerViewNotificationScreen"
+        options={{ headerShadowVisible: true, title: 'Notification' }}
       />
     </SellerStack.Group>
   );

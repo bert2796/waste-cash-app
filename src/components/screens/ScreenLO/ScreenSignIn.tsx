@@ -8,6 +8,7 @@ import { FormSignIn } from '@/molecules/index';
 interface Props {
   error: string;
   isLoading: boolean;
+  setError: (error: string) => void;
   setLoading: (isLoading: boolean) => void;
   signIn: (params: { username: string; password: string }) => void;
   navigation: NavigationProp<Screens.LoggedOutStackParams>;
@@ -15,6 +16,7 @@ interface Props {
 
 export const ScreenSignIn: React.FC<Props> = ({
   error,
+  setError,
   isLoading,
   navigation,
   setLoading,
@@ -27,6 +29,10 @@ export const ScreenSignIn: React.FC<Props> = ({
   React.useEffect(() => {
     setLoading(false);
   }, [setLoading]);
+
+  React.useEffect(() => {
+    setError('');
+  }, [setError]);
 
   return (
     <Container>

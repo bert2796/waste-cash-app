@@ -46,7 +46,7 @@
       "@/constants/*": ["src/constants/*"],
       "@/containers/*": ["src/containers/*"],
       "@/molecules/*": ["src/components/molecules/*"],
-			"@/navigations/*": ["src/components/navigationso/*"],
+			"@/navigations/*": ["src/components/navigations/*"],
       "@/organisms/*": ["src/components/organisms/*"],
       "@/screens/*": ["src/components/screens/*"],
 			"@/services/*": ["src/services/*"],

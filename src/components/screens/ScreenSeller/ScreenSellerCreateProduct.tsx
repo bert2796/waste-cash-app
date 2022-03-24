@@ -49,9 +49,9 @@ export const ScreenSellerCreateProduct: React.FC<Props> = ({
   // open dialog for successfull product creation
   React.useEffect(() => {
     if (success) {
-      handleDialogVisibility();
+      setIsDialogVisible(true);
     }
-  }, [success, handleDialogVisibility]);
+  }, [success]);
 
   const handleNavigateBack = () => {
     if (success) {

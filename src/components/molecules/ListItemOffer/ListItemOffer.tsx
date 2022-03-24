@@ -1,16 +1,23 @@
 import numeral from 'numeral';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Avatar, Button, Colors, Divider, List } from 'react-native-paper';
+import { Avatar, Colors, Divider, List } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { formatPrice, summarizeText } from '@/utils/index';
+import { Button, ButtonIcon, ButtonIconVariants } from '@/atoms/index';
+import { formatPrice } from '@/utils/index';
 
 interface Props {
   offer: Objects.ProductOffer;
   onAccept: (id: number) => void;
+  onReject: (id: number) => void;
 }
 
-export const ListItemOffer: React.FC<Props> = ({ offer, onAccept }) => (
+export const ListItemOffer: React.FC<Props> = ({
+  offer,
+  onAccept,
+  onReject,
+}) => (
   <View>
     <List.Item
       description={formatPrice(offer.price)}
@@ -24,13 +31,14 @@ export const ListItemOffer: React.FC<Props> = ({ offer, onAccept }) => (
       )}
       right={() => (
         <View style={styles.buttonContainer}>
-          <Button
-            labelStyle={styles.acceptLabelStyle}
-            mode="contained"
-            onPress={() => onAccept(offer.id)}
-          >
-            Accept
-          </Button>
+          <View style={styles.buttonWrapperWithMR}>
+            <ButtonIcon icon="done" onPress={() => onAccept(offer.id)} />
+          </View>
+          <ButtonIcon
+            icon="close"
+            variants={ButtonIconVariants.ERROR}
+            onPress={() => onReject(offer.id)}
+          />
         </View>
       )}
       testID="list-item-offer"
@@ -52,6 +60,9 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  buttonWrapperWithMR: {
+    marginRight: 10,
   },
 });

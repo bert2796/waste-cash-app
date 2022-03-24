@@ -24,19 +24,19 @@ export const ScreenListConversations: React.FC<Props> = ({
 
     switch (userData.role) {
       case UserRoles.BUYER:
-        conversationScreen = 'BuyerInitialScreen';
+        conversationScreen = 'BuyerViewConversationScreen';
         break;
 
       case UserRoles.JUNKSHOP:
-        conversationScreen = 'JunkShopInitialScreen';
+        conversationScreen = 'JunkShopViewConversationScreen';
         break;
 
       case UserRoles.SELLER:
-        conversationScreen = 'SellerInitialScreen';
+        conversationScreen = 'SellerViewConversationScreen';
         break;
     }
 
-    navigation.navigate(conversationScreen);
+    navigation.navigate(conversationScreen, params);
   };
 
   return (

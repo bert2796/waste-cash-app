@@ -17,6 +17,10 @@ export const addProductOffer = createAction<Objects.ProductOffer>(
   ProductActions.ADD_PRODUCT_OFFER,
 );
 
+export const removeProductOffer = createAction<number>(
+  ProductActions.REMOVE_PRODUCT_OFFER,
+);
+
 export const createProduct = createAsyncThunk(
   ProductActions.CREATE_PRODUCT,
   async (

@@ -1,20 +1,27 @@
 import React from 'react';
-import { FlatList, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 
 import { ListItemNotification } from '../ListItemNotification/ListItemNotification';
 
 interface Props {
   list: Objects.Notification[];
-  onSeenNotification: (notification: Objects.Notification) => void;
+  onNavigateToNotification: (notification: Objects.Notification) => void;
 }
 
 export const FlatListNotifications: React.FC<Props> = ({
   list,
-  onSeenNotification,
+  onNavigateToNotification,
 }) => {
   const renderItem = ({ item }: { item: Objects.Notification }) => (
-    <TouchableWithoutFeedback onPress={() => onSeenNotification(item)}>
-      <ListItemNotification notification={item} />
+    <TouchableWithoutFeedback onPress={() => onNavigateToNotification(item)}>
+      <View>
+        <ListItemNotification notification={item} />
+      </View>
     </TouchableWithoutFeedback>
   );
 

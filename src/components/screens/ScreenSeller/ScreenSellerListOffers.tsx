@@ -2,35 +2,62 @@ import React from 'react';
 
 import { Container } from '@/atoms/index';
 import {
-  DialogAcceptOffer,
+  DialogAcceptOrRejectOffer,
   EmptyListPlaceHolder,
   FlatListOffers,
 } from '@/molecules/index';
 
 interface Props {
   productOfferList: Objects.ProductOffer[];
+  rejectProductOffer: (offerId: number) => void;
 }
 
 export const ScreenSellerListOffers: React.FC<Props> = ({
   productOfferList,
+  rejectProductOffer,
 }) => {
+  const [id, setId] = React.useState(0);
   const [isDialogVisible, setIsDialogVisible] = React.useState(false);
+  const [title, setTitle] = React.useState('');
 
   const handleDialogVisibility = () => {
     setIsDialogVisible(!isDialogVisible);
   };
 
+  const handleShowAcceptDialog = (offerId: number) => {
+    setId(offerId);
+    setTitle('Accept Offer');
+
+    handleDialogVisibility();
+  };
+
+  const handleShowRejectDialog = (offerId: number) => {
+    setId(offerId);
+    setTitle('Reject Offer');
+
+    handleDialogVisibility();
+  };
+
+  const handleReject = () => {
+    rejectProductOffer(id);
+
+    handleDialogVisibility();
+  };
+
   return (
     <Container>
-      <DialogAcceptOffer
+      <DialogAcceptOrRejectOffer
         isVisible={isDialogVisible}
+        title={title}
         onDismiss={handleDialogVisibility}
+        onReject={handleReject}
       />
 
       {Boolean(productOfferList.length) && (
         <FlatListOffers
           list={productOfferList}
-          onAccept={handleDialogVisibility}
+          onAccept={handleShowAcceptDialog}
+          onReject={handleShowRejectDialog}
         />
       )}
 

@@ -2,28 +2,34 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Appbar, Colors } from 'react-native-paper';
 
-import { Button } from '@/atoms/index';
+import { Button, ButtonSize } from '@/atoms/index';
 interface Props {
   isBuyer?: boolean;
   isOfferExist?: boolean;
+  onChat?: () => void;
   onOffer: () => void;
 }
 
 export const AppbarViewProduct: React.FC<Props> = ({
   isBuyer,
   isOfferExist,
+  onChat,
   onOffer,
 }) => (
   <Appbar style={styles.appBar}>
     <View style={styles.appBarContent}>
-      <Button
-        color={Colors.white}
-        icon="chat-processing-outline"
-        style={styles.buttonChat}
-      >
-        Chat
-      </Button>
-      <Button icon="cash-multiple" onPress={onOffer}>
+      {isBuyer && (
+        <Button
+          color={Colors.white}
+          icon="chat-processing-outline"
+          size={ButtonSize.SMALL}
+          style={styles.buttonChat}
+          onPress={onChat}
+        >
+          Chat
+        </Button>
+      )}
+      <Button icon="cash-multiple" size={ButtonSize.SMALL} onPress={onOffer}>
         {isBuyer ? (isOfferExist ? 'View Offer' : 'Make Offer') : 'Offers'}
       </Button>
     </View>

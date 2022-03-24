@@ -10,8 +10,8 @@ const mapActionCreators = (dispatch: AppDispatch) => ({});
 
 const mapStateToProps = (state: RootState) => {
   return {
+    me: userDataSelector(state),
     notificationList: notificationListSelector(state),
-    userData: userDataSelector(state),
   };
 };
 

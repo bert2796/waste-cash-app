@@ -7,17 +7,33 @@ import { UserRoles } from '@/constants/index';
 import { EmptyListPlaceHolder, FlatListNotifications } from '@/molecules/index';
 
 interface Props {
+  me: Objects.User;
   notificationList: Objects.Notification[];
-  userData: Objects.User;
   navigation: NavigationProp<any>;
 }
 
 export const ScreenListNotifications: React.FC<Props> = ({
+  me,
   notificationList,
-  userData,
   navigation,
 }) => {
-  const handleOnSeenNotification = (notification: Objects.Notification) => {};
+  const handleOnNavigateToNotification = (
+    notification: Objects.Notification,
+  ) => {
+    let notificationScreen = '';
+
+    switch (me.role) {
+      case UserRoles.BUYER:
+        notificationScreen = 'BuyerViewNotificationScreen';
+        break;
+
+      case UserRoles.SELLER:
+        notificationScreen = 'SellerViewNotificationScreen';
+        break;
+    }
+
+    navigation.navigate(notificationScreen, notification);
+  };
 
   return (
     <Container>
@@ -28,7 +44,7 @@ export const ScreenListNotifications: React.FC<Props> = ({
       {Boolean(notificationList.length) && (
         <FlatListNotifications
           list={notificationList}
-          onSeenNotification={handleOnSeenNotification}
+          onNavigateToNotification={handleOnNavigateToNotification}
         />
       )}
     </Container>

@@ -7,10 +7,12 @@ const url = `${host}/conversations`;
 export const getConversation = async (params: {
   token: string;
   conversationId?: number;
-  shopId?: number;
+  recipientId?: number;
 }) => {
   const urlToUse = `${url}/${
-    params?.conversationId ? params.conversationId : `shop/${params.shopId}`
+    params?.conversationId
+      ? params.conversationId
+      : `recipient/${params.recipientId}`
   }`;
 
   return (await axios({

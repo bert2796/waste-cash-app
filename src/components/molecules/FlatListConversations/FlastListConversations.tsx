@@ -1,5 +1,10 @@
 import React from 'react';
-import { FlatList, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 
 import { ListItemConversation } from '../ListItemConversation/ListItemConversation';
 
@@ -32,12 +37,14 @@ export const FlatListConversations: React.FC<Props> = ({
           })
         }
       >
-        <ListItemConversation
-          conversationSummary={item}
-          isMessageWasSeen={isMessageWasSeen!}
-          isMessageWasSentByMe={isMessageWasSentByMe}
-          recipient={recipient}
-        />
+        <View>
+          <ListItemConversation
+            conversationSummary={item}
+            isMessageWasSeen={isMessageWasSeen!}
+            isMessageWasSentByMe={isMessageWasSentByMe}
+            recipient={recipient}
+          />
+        </View>
       </TouchableWithoutFeedback>
     );
   };

@@ -1,12 +1,19 @@
 import React from 'react';
-import { ButtonProps, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { Button as PaperButton, Colors } from 'react-native-paper';
 
-type Props = React.ComponentProps<typeof PaperButton>;
+export enum ButtonSize {
+  SMALL = 'small',
+  LARGE = 'large',
+}
+
+type Props = React.ComponentProps<typeof PaperButton> & { size?: ButtonSize };
 
 export const Button: React.FC<Props> = ({ children, ...props }) => (
   <PaperButton
-    contentStyle={styles.buttonContent}
+    contentStyle={
+      props?.size && props.size === ButtonSize.SMALL ? {} : styles.buttonContent
+    }
     labelStyle={
       props?.color === Colors.white
         ? styles.primaryButtonLabel

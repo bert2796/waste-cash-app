@@ -78,3 +78,23 @@ export const createProductOffer = async (params: {
     url: `${url}/${productId}/offers`,
   })) as unknown as AxiosResponse<Objects.ProductOffer>;
 };
+
+export const updateProductOffer = async (params: {
+  token: string;
+  productId: number;
+  productOfferId: number;
+  status: string;
+}) => {
+  const { token, productId, productOfferId, status } = params;
+
+  return (await axios({
+    data: {
+      status,
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: 'PATCH',
+    url: `${url}/${productId}/offers/${productOfferId}`,
+  })) as unknown as AxiosResponse<Objects.ProductOffer>;
+};

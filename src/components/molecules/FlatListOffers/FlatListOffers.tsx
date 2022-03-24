@@ -6,11 +6,16 @@ import { ListItemOffer } from '../ListItemOffer/ListItemOffer';
 interface Props {
   list: Objects.ProductOffer[];
   onAccept: (id: number) => void;
+  onReject: (id: number) => void;
 }
 
-export const FlatListOffers: React.FC<Props> = ({ list, onAccept }) => {
+export const FlatListOffers: React.FC<Props> = ({
+  list,
+  onAccept,
+  onReject,
+}) => {
   const renderItem = ({ item }: { item: Objects.ProductOffer }) => (
-    <ListItemOffer offer={item} onAccept={onAccept} />
+    <ListItemOffer offer={item} onAccept={onAccept} onReject={onReject} />
   );
 
   return (

@@ -25,7 +25,27 @@ export const formatNotificationTitle = (event: string) => {
     case 'create-product-offer':
       title = 'Offer';
       break;
+
+    case 'rejected-product-offer':
+      title = 'Offer Rejected';
+      break;
   }
 
   return title;
+};
+
+export const getNotificationIcon = (event: string) => {
+  let icon = '';
+
+  switch (event) {
+    case 'create-product-offer':
+      icon = 'tag';
+      break;
+
+    case 'rejected-product-offer':
+      icon = 'tag-remove';
+      break;
+  }
+
+  return icon;
 };

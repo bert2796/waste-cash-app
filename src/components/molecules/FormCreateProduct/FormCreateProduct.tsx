@@ -32,6 +32,9 @@ export const FormCreateProduct: React.FC<Props> = ({
   const [price, setPrice] = React.useState('');
   const [isDropdownVisible, setIsDropdownVisible] = React.useState(false);
 
+  const isCreateProductButtonDisabled =
+    isLoading || !name || !category || !description || !price || !assets.length;
+
   const options = categories.map((item) => ({
     label: item.name,
     value: item.name,
@@ -154,7 +157,12 @@ export const FormCreateProduct: React.FC<Props> = ({
           />
         </View>
       </View>
-      <Button loading={isLoading} style={styles.button} onPress={handleSubmit}>
+      <Button
+        disabled={isCreateProductButtonDisabled}
+        loading={isLoading}
+        style={styles.button}
+        onPress={handleSubmit}
+      >
         {isLoading ? 'Loading' : 'Submit'}
       </Button>
 

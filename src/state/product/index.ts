@@ -5,6 +5,8 @@ import {
   createProduct,
   getProduct,
   getProducts,
+  removeProductOffer,
+  setProductSuccess,
 } from './actions';
 
 const initialState: State.Product = {
@@ -28,6 +30,7 @@ export const productSlice = createSlice({
       ...state,
       isLoading: false,
       list: [...state.list, action.payload.data],
+      success: 'Product succesfully created.',
     }),
     [`${createProduct.rejected}`]: (state) => ({
       ...state,
@@ -77,12 +80,44 @@ export const productSlice = createSlice({
     [`${addProductOffer.type}`]: (
       state,
       action: { payload: Objects.ProductOffer },
+    ) => {
+      if (state.data?.offers.length) {
+        return {
+          ...state,
+          data: {
+            ...state.data,
+            offers: [...(state.data?.offers || []), action.payload],
+          },
+        };
+      }
+
+      return state;
+    },
+
+    // Remove Product Offer
+    [`${removeProductOffer.type}`]: (state, action: { payload: number }) => {
+      if (state.data?.offers.length) {
+        return {
+          ...state,
+          data: {
+            ...state.data,
+            offers: state.data?.offers.filter(
+              (offer) => offer.id !== action.payload,
+            ),
+          },
+        };
+      }
+
+      return state;
+    },
+
+    // Set Product Success
+    [`${setProductSuccess.type}`]: (
+      state,
+      action: { payload: string | null },
     ) => ({
       ...state,
-      data: {
-        ...state.data!,
-        offers: [...(state.data?.offers || []), action.payload],
-      },
+      success: !action.payload ? '' : action.payload,
     }),
   },
   initialState,

@@ -1,6 +1,6 @@
 export * from './AppbarViewProduct/AppbarViewProduct';
 export * from './BottomSheetViewProduct/BottomSheetViewProduct';
-export * from './DialogAcceptOffer/DialogAcceptOffer';
+export * from './DialogAcceptOrRejectOffer/DialogAcceptOrRejectOffer';
 export * from './DialogSignIn/DialogSignIn';
 export * from './DialogSuccess/DialogSuccess';
 export * from './EmptyListPlaceholder/EmptyListPlaceholder';

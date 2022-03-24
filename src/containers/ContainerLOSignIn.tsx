@@ -4,10 +4,13 @@ import { connect } from 'react-redux';
 import { ScreenSignIn } from '@/components/screens/ScreenLO';
 import { UserRoles } from '@/constants/index';
 import { AppDispatch, RootState } from '@/state/store';
-import { setUserIsLoading, signIn } from '@/state/user/actions';
+import { setUserError, setUserIsLoading, signIn } from '@/state/user/actions';
 import { isLoadingSelector, userErrorSelector } from '@/state/user/selectors';
 
 const mapActionCreators = (dispatch: AppDispatch) => ({
+  setError(error: string): void {
+    dispatch(setUserError(error));
+  },
   setLoading(isLoading: boolean): void {
     dispatch(setUserIsLoading(isLoading));
   },
