@@ -17,8 +17,8 @@ export const ScreenBuyerListShops: React.FC<Props> = ({
   getShops,
   navigation,
 }) => {
-  const handleNavigateToConversation = (shop: Objects.User) => {
-    navigation.navigate('BuyerViewConversationScreen', { shop });
+  const handleNavigateToConversation = (user: Objects.User) => {
+    navigation.navigate('BuyerViewConversationScreen', { recipient: user });
   };
 
   React.useEffect(() => {

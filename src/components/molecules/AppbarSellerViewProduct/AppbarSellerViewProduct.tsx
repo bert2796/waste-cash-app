@@ -3,34 +3,41 @@ import { StyleSheet, View } from 'react-native';
 import { Appbar, Button, Colors } from 'react-native-paper';
 
 interface Props {
+  hasBidder?: boolean;
   isButtonOfferDisabled: boolean;
   onPressChat?: () => void;
-  onPressOffer: () => void;
+  onPressOffer?: () => void;
 }
 
 export const AppbarSellerViewProduct: React.FC<Props> = ({
+  hasBidder,
   isButtonOfferDisabled,
   onPressChat,
   onPressOffer,
 }) => (
   <Appbar style={styles.appBar}>
     <View style={styles.appBarContent}>
-      <Button
-        icon="chat-processing-outline"
-        mode="outlined"
-        style={styles.buttonChat}
-      >
-        Chat
-      </Button>
-      <Button
-        disabled={isButtonOfferDisabled}
-        icon="cash-multiple"
-        labelStyle={styles.buttonOfferLabel}
-        mode="contained"
-        onPress={onPressOffer}
-      >
-        Offers
-      </Button>
+      {!hasBidder && (
+        <View>
+          {' '}
+          <Button
+            icon="chat-processing-outline"
+            mode="outlined"
+            style={styles.buttonChat}
+          >
+            Chat
+          </Button>
+          <Button
+            disabled={isButtonOfferDisabled}
+            icon="cash-multiple"
+            labelStyle={styles.buttonOfferLabel}
+            mode="contained"
+            onPress={onPressOffer}
+          >
+            Offers
+          </Button>
+        </View>
+      )}
     </View>
   </Appbar>
 );

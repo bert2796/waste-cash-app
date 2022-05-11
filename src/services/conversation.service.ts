@@ -34,6 +34,19 @@ export const getConversations = async (params: { token: string }) => {
   })) as unknown as AxiosResponse<Objects.ConversationSummary[]>;
 };
 
+export const seenConversationMessages = async (params: {
+  token: string;
+  conversationId: number;
+}) => {
+  return (await axios({
+    headers: {
+      Authorization: `Bearer ${params.token}`,
+    },
+    method: 'PATCH',
+    url: `${url}/${params.conversationId}/seen-all`,
+  })) as unknown as AxiosResponse<Objects.Conversation>;
+};
+
 // export const getConversationMessages = async () => {
 //   return (await axios({
 //     url: host,

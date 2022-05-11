@@ -18,7 +18,7 @@ export const addConversationListMessage = createAction<Objects.Message>(
   ConversationActions.ADD_CONVERSATION_LIST_MESSAGE,
 );
 
-export const setConversationData = createAction<Objects.Conversation>(
+export const setConversationData = createAction<Objects.Conversation | null>(
   ConversationActions.SET_CONVERSATION_DATA,
 );
 
@@ -131,6 +131,43 @@ export const getConversations = createAsyncThunk(
         getConversationsRes.data;
 
       return Promise.resolve({ list: conversations });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error?.response) {
+          const axiosError = error?.response as Objects.ServiceError;
+          if (axiosError?.status && axiosError.status === 400) {
+            return thunkAPI.rejectWithValue(axiosError.data.message);
+          }
+        }
+      }
+
+      // set global error
+      thunkAPI.dispatch(setAppError('Server is busy. Please try again later.'));
+
+      return Promise.reject();
+    }
+  },
+);
+
+export const seenConversationMessages = createAsyncThunk(
+  ConversationActions.SEEN_CONVERSATION_MESSAGES,
+  async (params: { conversationId: number }, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState() as RootState;
+      const token = tokenSelector(state);
+
+      const seenConversationMessagesRes =
+        await Conversation.seenConversationMessages({
+          conversationId: params.conversationId,
+          token,
+        });
+      const updateConversationMessages: Objects.Conversation =
+        seenConversationMessagesRes.data;
+
+      return Promise.resolve({
+        id: params.conversationId,
+        messages: updateConversationMessages.messages,
+      });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error?.response) {

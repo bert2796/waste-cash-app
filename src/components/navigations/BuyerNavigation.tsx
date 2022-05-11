@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import ContainerBuyerViewMap from 'containers/ContainerBuyerViewMap';
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Colors } from 'react-native-paper';
@@ -149,6 +150,15 @@ export const BuyerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
       <BuyerStack.Screen
         component={ContainerViewNotification}
         name="BuyerViewNotificationScreen"
+        options={{
+          headerShadowVisible: true,
+          headerTitle: '',
+        }}
+      />
+
+      <BuyerStack.Screen
+        component={ContainerBuyerViewMap}
+        name="BuyerViewMap"
         options={{
           headerShadowVisible: true,
           headerTitle: '',

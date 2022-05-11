@@ -4,6 +4,7 @@ import { Button, Dialog, Portal, Text } from 'react-native-paper';
 interface Props {
   isVisible: boolean;
   title: string;
+  onAccept: () => void;
   onDismiss: () => void;
   onReject: () => void;
 }
@@ -11,6 +12,7 @@ interface Props {
 export const DialogAcceptOrRejectOffer: React.FC<Props> = ({
   isVisible,
   title,
+  onAccept,
   onDismiss,
   onReject,
 }) => {
@@ -22,7 +24,7 @@ export const DialogAcceptOrRejectOffer: React.FC<Props> = ({
           <Text>Are you sure with your choice</Text>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={title.includes('Accept') ? onDismiss : onReject}>
+          <Button onPress={title.includes('Accept') ? onAccept : onReject}>
             Yes
           </Button>
           <Button onPress={onDismiss}>No</Button>

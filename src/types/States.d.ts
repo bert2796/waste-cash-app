@@ -5,6 +5,12 @@ declare module State {
     role?: string;
   }
 
+  interface BidderSEtup {
+    error: string;
+    success: string;
+    isLoading: boolean;
+  }
+
   interface Category {
     error: string;
     isLoading: boolean;
@@ -16,6 +22,10 @@ declare module State {
     isLoading: boolean;
     data?: Objects.Conversation;
     list: Objects.ConversationSummary[];
+  }
+
+  interface Map {
+    data?: Objects.Map;
   }
 
   interface Notification {
@@ -37,6 +47,13 @@ declare module State {
     error: string;
     success: string;
     isLoading: boolean;
+  }
+
+  interface Review {
+    error: string;
+    success: string;
+    isLoading: boolean;
+    list: Objects.Review[];
   }
 
   interface Shop {

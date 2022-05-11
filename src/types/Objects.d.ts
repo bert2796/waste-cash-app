@@ -1,4 +1,21 @@
 declare module Objects {
+  interface Address {
+    location: string;
+    latitude: number;
+    longitude: number;
+  }
+
+  interface BidderSetup {
+    id: number;
+    date: string;
+    time: string;
+    mop: string;
+    address: Address;
+    product: Product;
+    createdAt: string;
+    updatedAt: string;
+  }
+
   interface Credential {
     accessToken: string;
   }
@@ -33,6 +50,12 @@ declare module Objects {
     createdAt: string;
   }
 
+  interface Map {
+    latitude: number;
+    longitude: number;
+    streetAddress: string;
+  }
+
   interface Notification {
     id: number;
     description: string;
@@ -55,6 +78,10 @@ declare module Objects {
     offers: ProductOffer[];
     owner: User;
     thumbnail: string;
+    bidder?: User;
+    bidderSetup?: BidderSetup;
+    offer?: ProductOffer;
+    review?: Review;
   }
 
   interface ProductOffer {
@@ -63,6 +90,15 @@ declare module Objects {
     user: User;
     status?: string;
     product?: Product;
+  }
+
+  interface Review {
+    id: number;
+    rate: number;
+    feedback: string;
+    product: Product;
+    reviewee: User;
+    reviewer: User;
   }
 
   interface User {

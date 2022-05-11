@@ -26,6 +26,18 @@ export const formatNotificationTitle = (event: string) => {
       title = 'Offer';
       break;
 
+    case 'create-bidder-setup':
+      title = 'Location Added';
+      break;
+
+    case 'update-bidder-setup':
+      title = 'Location Updated';
+      break;
+
+    case 'accepted-product-offer':
+      title = 'Offer Accepted';
+      break;
+
     case 'rejected-product-offer':
       title = 'Offer Rejected';
       break;
@@ -38,12 +50,24 @@ export const getNotificationIcon = (event: string) => {
   let icon = '';
 
   switch (event) {
+    case 'accepted-product-offer':
+      icon = 'tag-heart';
+      break;
+
     case 'create-product-offer':
       icon = 'tag';
       break;
 
     case 'rejected-product-offer':
       icon = 'tag-remove';
+      break;
+
+    case 'create-bidder-setup':
+      icon = 'map';
+      break;
+
+    case 'update-bidder-setup':
+      icon = 'map';
       break;
   }
 

@@ -14,11 +14,14 @@ import {
 } from 'redux-persist';
 
 import { appSlice } from './app';
+import { bidderSetupSlice } from './bidderSetup';
 import { categorySlice } from './category';
 import { conversationSlice } from './conversation';
+import { mapSlice } from './map';
 import { notificationSlice } from './notification';
 import { productSlice } from './product';
 import { productOfferSlice } from './productOffer';
+import { productReview } from './review';
 import { shopSlice } from './shop';
 import { userSlice } from './user';
 
@@ -36,12 +39,15 @@ const authPersistConfig = {
 
 const rootReducer = combineReducers({
   app: appSlice.reducer,
+  bidderSetup: bidderSetupSlice.reducer,
   category: categorySlice.reducer,
   conversation: conversationSlice.reducer,
   // network,
+  map: mapSlice.reducer,
   notification: notificationSlice.reducer,
   product: productSlice.reducer,
   productOffer: productOfferSlice.reducer,
+  productReview: productReview.reducer,
   shop: shopSlice.reducer,
   user: persistReducer(authPersistConfig, userSlice.reducer),
 });

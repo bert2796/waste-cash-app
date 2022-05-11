@@ -14,6 +14,7 @@ declare module Screens {
     };
     BuyerViewNotificationScreen: Objects.Notification;
     BuyerViewProductScreen: { id: number };
+    BuyerViewMap: undefined;
   };
 
   type BuyerInitialScreenTabs = {
@@ -50,6 +51,7 @@ declare module Screens {
   // Seller
   type SellerStackParams = {
     SellerInitialScreen: undefined;
+    SellerBidderSetup: undefined;
     SellerCreateProductScreen: undefined;
     SellerListOffersScreen: undefined;
     SellerViewConversationScreen: {
@@ -58,6 +60,7 @@ declare module Screens {
     };
     SellerViewNotificationScreen: Objects.Notification;
     SellerViewProductScreen: { id: number };
+    SellerSetMap: { currentAddress?: Objects.Address };
   };
 
   type SellerInitialScreenTabs = {

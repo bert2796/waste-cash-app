@@ -4,6 +4,7 @@ import * as Conversation from './conversation.service';
 import * as Message from './message.service';
 import * as Notification from './notification.service';
 import * as Product from './product.service';
+import * as Review from './review.service';
 import * as Shop from './shop.service';
 import * as User from './user.service';
 
@@ -14,6 +15,7 @@ export {
   Message,
   Notification,
   Product,
+  Review,
   Shop,
   User,
 };

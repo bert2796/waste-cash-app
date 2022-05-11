@@ -21,8 +21,8 @@
     "node_modules": true,
     "**/node_modules": true
   },
-  "cSpell.words": [
-    "nestjs",
-    "fastify"
-  ]
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "eslint.validate": ["javascript"]
 }

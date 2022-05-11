@@ -7,6 +7,7 @@ import { ScreenViewConversation } from '@/components/screens/ScreenCommon/Screen
 import {
   addConversationDataMessage,
   getConversation,
+  seenConversationMessages,
   sendMessage,
 } from '@/state/conversation/actions';
 import {
@@ -25,6 +26,9 @@ const mapActionCreators = (dispatch: AppDispatch) => ({
     recipientId?: number;
   }): void {
     dispatch(getConversation(params));
+  },
+  seenMessages(params: { conversationId: number }): void {
+    dispatch(seenConversationMessages(params));
   },
   sendMessage(params: {
     socket: Socket;

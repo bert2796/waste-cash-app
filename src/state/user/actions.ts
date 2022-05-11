@@ -7,11 +7,14 @@ import { Auth, User } from '@/services/index';
 
 import { setAppError } from '../app/actions';
 import { roleSelector } from '../app/selectors';
-import { getConversations } from '../conversation/actions';
+import { getConversations, setConversationData } from '../conversation/actions';
 import navigate from '../navigation';
 import { getNotifications } from '../notification/actions';
+// import { setP } from '../product/actions';
+import { getReviews } from '../review/actions';
 import { RootState } from '../store';
 import { UserActions } from './constants';
+import { tokenSelector } from './selectors';
 
 export const setUserData = createAction<Objects.User | null>(
   UserActions.SET_USER_DATA,
@@ -49,6 +52,11 @@ export const signIn = createAsyncThunk(
       // retrieve notifications and conversations
       thunkAPI.dispatch(getNotifications());
       thunkAPI.dispatch(getConversations());
+
+      // retrieve reviews
+      if (appRole === UserRoles.SELLER) {
+        thunkAPI.dispatch(getReviews());
+      }
 
       // verify where to navigate the user
       let initialScreen = '';
@@ -104,10 +112,13 @@ export const signOut = createAsyncThunk(
   UserActions.SIGN_OUT,
   async (_, thunkAPI) => {
     // clear user data
-    // thunkAPI.dispatch(setUserData(null));
+    thunkAPI.dispatch(setUserData(null));
 
     // clear token
-    // thunkAPI.dispatch(setUserToken(null));
+    thunkAPI.dispatch(setUserToken(null));
+
+    // clear conversation data
+    thunkAPI.dispatch(setConversationData(null));
 
     // navigate to role selection
     navigate()?.dispatch(
@@ -118,5 +129,36 @@ export const signOut = createAsyncThunk(
     );
 
     return Promise.resolve();
+  },
+);
+
+export const updateUser = createAsyncThunk(
+  UserActions.UPDATE_USER,
+  async (params: Partial<Objects.User>, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState() as RootState;
+      const token = tokenSelector(state);
+
+      const updatedUserRes = await User.update({ data: params, token });
+      if (updatedUserRes.status === 200) {
+        thunkAPI.dispatch(setUserData(updatedUserRes.data));
+      }
+
+      return Promise.resolve();
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error?.response) {
+          const axiosError = error?.response as Objects.ServiceError;
+          if (axiosError?.status && axiosError.status === 400) {
+            return thunkAPI.rejectWithValue(axiosError.data.message);
+          }
+        }
+      }
+
+      // set global error
+      thunkAPI.dispatch(setAppError('Server is busy. Please try again later.'));
+
+      return Promise.reject();
+    }
   },
 );

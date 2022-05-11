@@ -1,9 +1,11 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit';
 
+import { UserRoles } from '@/constants/index';
 import { User } from '@/services/index';
 
-import { getConversationList } from '../conversation/actions';
-import { getNotificationList } from '../notification/actions';
+import { getConversations } from '../conversation/actions';
+import { getNotifications } from '../notification/actions';
+import { getReviews } from '../review/actions';
 import { RootState } from '../store';
 import { setUserData, setUserError, setUserToken } from '../user/actions';
 import { tokenSelector } from '../user/selectors';
@@ -37,10 +39,15 @@ export const initialize = createAsyncThunk(
         thunkAPI.dispatch(setUserData(userData.data));
 
         // get notifications
-        thunkAPI.dispatch(getNotificationList());
+        thunkAPI.dispatch(getNotifications());
 
         // get messages
-        thunkAPI.dispatch(getConversationList());
+        thunkAPI.dispatch(getConversations());
+
+        // retrieve reviews
+        if (userData.data.role === UserRoles.SELLER) {
+          thunkAPI.dispatch(getReviews());
+        }
       } catch (error) {
         // clear user token
         thunkAPI.dispatch(setUserToken(null));

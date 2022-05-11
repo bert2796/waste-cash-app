@@ -241,7 +241,7 @@ export const FormSignUp: React.FC<Props> = ({
         {/* email */}
         <View style={styles.inputWrapper}>
           <Input
-            error={Boolean(email) && !isValidEmail(email)}
+            error={(Boolean(email) && !isValidEmail(email)) || Boolean(error)}
             innerRef={inputEmail}
             label="Email"
             placeholder="Your Email"
@@ -253,6 +253,12 @@ export const FormSignUp: React.FC<Props> = ({
           {Boolean(email) && !isValidEmail(email) && (
             <HelperText visible type="error">
               Email address is invalid
+            </HelperText>
+          )}
+
+          {Boolean(error) && (
+            <HelperText visible type="error">
+              {error}
             </HelperText>
           )}
         </View>

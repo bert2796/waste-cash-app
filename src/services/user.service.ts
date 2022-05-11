@@ -13,3 +13,17 @@ export const me = async (params: { token: string }) => {
     url: `${url}/me`,
   })) as unknown as AxiosResponse<Objects.Me>;
 };
+
+export const update = async (params: {
+  token: string;
+  data: Partial<Objects.User>;
+}) => {
+  return (await axios({
+    data: params.data,
+    headers: {
+      Authorization: `Bearer ${params.token}`,
+    },
+    method: 'PATCH',
+    url: `${url}/me`,
+  })) as unknown as AxiosResponse<Objects.Me>;
+};

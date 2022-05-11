@@ -60,6 +60,7 @@ export const getProducts = async () =>
 //   })) as unknown as AxiosResponse<ICreateProductResponse>;
 // };
 
+// Product Offer API
 export const createProductOffer = async (params: {
   token: string;
   productId: number;
@@ -97,4 +98,74 @@ export const updateProductOffer = async (params: {
     method: 'PATCH',
     url: `${url}/${productId}/offers/${productOfferId}`,
   })) as unknown as AxiosResponse<Objects.ProductOffer>;
+};
+
+// Bidder Setup API
+export const createProductBidderSetup = async (params: {
+  token: string;
+  productId: number;
+  location: string;
+  latitude: string;
+  longitude: string;
+  date: string;
+  time: string;
+  mop: string;
+}) => {
+  const { token, productId, ...data } = params;
+
+  return (await axios({
+    data,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: 'POST',
+    url: `${url}/${productId}/bidderSetups`,
+  })) as unknown as AxiosResponse<Objects.BidderSetup>;
+};
+
+export const updateProductBidderSetup = async (params: {
+  token: string;
+  productId: number;
+  bidderSetupId: number;
+  address?: {
+    location?: string;
+    latitude?: string;
+    longitude?: string;
+  };
+  date?: string;
+  time?: string;
+  mop?: string;
+}) => {
+  const { token, productId, bidderSetupId, ...data } = params;
+
+  return (await axios({
+    data,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: 'PATCH',
+    url: `${url}/${productId}/bidderSetups/${bidderSetupId}`,
+  })) as unknown as AxiosResponse<Objects.BidderSetup>;
+};
+
+// Review API
+export const createProductReview = async (params: {
+  token: string;
+  productId: number;
+  rate: string;
+  feedback: string;
+}) => {
+  const { token, rate, feedback, productId } = params;
+
+  return (await axios({
+    data: {
+      feedback,
+      rate,
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    method: 'POST',
+    url: `${url}/${productId}/reviews`,
+  })) as unknown as AxiosResponse<Objects.Review>;
 };

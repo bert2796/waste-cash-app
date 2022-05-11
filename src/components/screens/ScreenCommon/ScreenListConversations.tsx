@@ -1,5 +1,6 @@
 import { NavigationProp } from '@react-navigation/native';
 import React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import { Container } from '@/atoms/index';
 import { UserRoles } from '@/constants/index';
@@ -52,6 +53,14 @@ export const ScreenListConversations: React.FC<Props> = ({
           onNavigateToConversation={handleOnNavigateToConversation}
         />
       )}
+
+      <View style={styles.clear} />
     </Container>
   );
 };
+
+const styles = StyleSheet.create({
+  clear: {
+    height: 20,
+  },
+});

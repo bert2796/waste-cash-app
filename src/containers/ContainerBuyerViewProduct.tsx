@@ -17,6 +17,7 @@ import {
   productOfferSuccessSelector,
 } from '@/state/productOffer/selectors';
 import { AppDispatch, RootState } from '@/state/store';
+import { userDataSelector } from '@/state/user/selectors';
 
 const mapActionCreators = (dispatch: AppDispatch) => ({
   createProductOffer(params: { price: number }): void {
@@ -34,6 +35,7 @@ const mapStateToProps = (state: RootState) => {
   return {
     isProductLoading: productLoadingSelector(state),
     isProductOfferLoading: productOfferLoadingSelector(state),
+    me: userDataSelector(state),
     productData: productDataSelector(state),
     productOfferData: productOfferDataSelector(state),
     success: productOfferSuccessSelector(state),

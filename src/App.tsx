@@ -1,4 +1,5 @@
 import React from 'react';
+import Geocoder from 'react-native-geocoding';
 import { ReduxNetworkProvider } from 'react-native-offline';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -14,6 +15,8 @@ import { websocket } from './config';
 
 const App: React.FC = () => {
   const socket = io.connect(websocket);
+
+  Geocoder.init('AIzaSyDX0uDf-xuv9sHyljHUSiBtJDQACQkgblI', { language: 'en' });
 
   return (
     <Provider store={store}>

@@ -5,6 +5,7 @@ import {
   addConversationListMessage,
   getConversation,
   getConversations,
+  seenConversationMessages,
   setConversationData,
 } from './actions';
 
@@ -126,6 +127,51 @@ export const conversationSlice = createSlice({
       list: action.payload.list,
     }),
     [`${getConversations.rejected}`]: (state) => ({
+      ...state,
+      isLoading: false,
+    }),
+
+    // Seen Conversation Messages
+    [`${seenConversationMessages.pending}`]: (state) => ({
+      ...state,
+      error: '',
+      isLoading: true,
+    }),
+    [`${seenConversationMessages.fulfilled}`]: (
+      state,
+      action: { payload: { id: number; messages: Objects.Message[] } },
+    ) => ({
+      ...state,
+      ...(state.data && {
+        data: {
+          ...state.data,
+          messages: action.payload.messages,
+        },
+      }),
+      isLoading: false,
+      list: state.list.map((conversation) => {
+        if (conversation.id === action.payload.id) {
+          const updatedMessage = action.payload.messages.find(
+            (message) => conversation.message.id === message.id,
+          );
+
+          if (updatedMessage) {
+            return {
+              ...conversation,
+              message: {
+                ...conversation.message,
+                isSeen: updatedMessage.isSeen,
+              },
+            };
+          }
+
+          return conversation;
+        }
+
+        return conversation;
+      }),
+    }),
+    [`${seenConversationMessages.rejected}`]: (state) => ({
       ...state,
       isLoading: false,
     }),

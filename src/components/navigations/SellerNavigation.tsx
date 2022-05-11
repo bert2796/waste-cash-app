@@ -9,8 +9,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import ContainerListConversations from '@/containers/ContainerCommonListConversations';
 import ContainerListNotifications from '@/containers/ContainerCommonListNotifications';
 import ContainerProfile from '@/containers/ContainerCommonProfile';
+import ContainerSetMap from '@/containers/ContainerCommonSetMap';
 import ContainerViewConversation from '@/containers/ContainerCommonViewConversation';
 import ContainerViewNotification from '@/containers/ContainerCommonViewNotification';
+import ContainerSellerBidderSetup from '@/containers/ContainerSellerBidderSetup';
 import ContainerSellerCreateProduct from '@/containers/ContainerSellerCreateProduct';
 import ContainerSellerListOffers from '@/containers/ContainerSellerListOffers';
 import ContainerSellerListProducts from '@/containers/ContainerSellerListProducts';
@@ -139,6 +141,12 @@ export const SellerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
 
       {/* View Screens */}
       <SellerStack.Screen
+        component={ContainerSellerBidderSetup}
+        name="SellerBidderSetup"
+        options={{ headerShadowVisible: true, headerTitle: 'Set Up' }}
+      />
+
+      <SellerStack.Screen
         component={ContainerSellerViewProduct}
         name="SellerViewProductScreen"
         options={{ headerShadowVisible: true, headerTitle: '' }}
@@ -147,13 +155,19 @@ export const SellerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
       <SellerStack.Screen
         component={ContainerViewConversation}
         name="SellerViewConversationScreen"
-        options={{ headerShadowVisible: true, headerShown: false }}
+        options={{ headerShadowVisible: true }}
       />
 
       <SellerStack.Screen
         component={ContainerViewNotification}
         name="SellerViewNotificationScreen"
         options={{ headerShadowVisible: true, title: 'Notification' }}
+      />
+
+      <SellerStack.Screen
+        component={ContainerSetMap}
+        name="SellerSetMap"
+        options={{ headerShadowVisible: true, title: 'Set Location' }}
       />
     </SellerStack.Group>
   );

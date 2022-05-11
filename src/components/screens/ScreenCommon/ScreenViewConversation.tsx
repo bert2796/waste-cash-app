@@ -15,6 +15,7 @@ interface Props {
     conversationId?: number;
     recipientId?: number;
   }) => void;
+  seenMessages: (params: { conversationId: number }) => void;
   sendMessage: (params: {
     socket: Socket;
     conversationId?: number;
@@ -32,6 +33,7 @@ export const ScreenViewConversation: React.FC<Props> = ({
   me,
   addConversationDataMessage,
   getConversationData,
+  seenMessages,
   sendMessage,
   navigation,
   route,
@@ -110,6 +112,21 @@ export const ScreenViewConversation: React.FC<Props> = ({
         : { recipientId: +params?.recipient?.id }),
     });
   }, [params, getConversationData]);
+
+  // seen converastion
+  React.useEffect(() => {
+    if (
+      conversationData?.id &&
+      conversationData.messages.filter(
+        (conversationMessage) =>
+          conversationMessage.sender.id !== me.id &&
+          !conversationMessage.isSeen,
+      )?.length
+    ) {
+      seenMessages({ conversationId: conversationData.id });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [conversationData?.id, seenMessages]);
 
   // add title in header
   React.useLayoutEffect(() => {

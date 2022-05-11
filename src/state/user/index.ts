@@ -7,6 +7,7 @@ import {
   setUserToken,
   signIn,
   signOut,
+  updateUser,
 } from './actions';
 
 const initialState: State.User = {
@@ -48,6 +49,23 @@ export const userSlice = createSlice({
     }),
     [`${signOut.rejected}`]: (state) => ({
       ...state,
+      isLoading: false,
+    }),
+
+    // Update User
+    [`${updateUser.pending}`]: (state) => ({
+      ...state,
+      error: '',
+      isLoading: true,
+    }),
+    [`${updateUser.fulfilled}`]: (state) => ({
+      ...state,
+      error: '',
+      isLoading: false,
+    }),
+    [`${updateUser.rejected}`]: (state, action: { error: Error }) => ({
+      ...state,
+      error: action.error.message,
       isLoading: false,
     }),
 

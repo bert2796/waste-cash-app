@@ -1,11 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { ProductOfferStatus } from '@/constants/index';
+
 import {
+  acceptProductOffer,
   addProductOffer,
   createProduct,
   getProduct,
   getProducts,
   removeProductOffer,
+  setProductBidderSetup,
+  setProductReview,
   setProductSuccess,
 } from './actions';
 
@@ -76,12 +81,39 @@ export const productSlice = createSlice({
       isLoading: false,
     }),
 
+    // Accept Product Offer
+    [`${acceptProductOffer.type}`]: (
+      state,
+      action: { payload: { offerId: number; buyer: Objects.User } },
+    ) => {
+      if (state.data?.offers.length) {
+        return {
+          ...state,
+          data: {
+            ...state.data,
+            bidder: action.payload.buyer,
+            offers: state.data?.offers.map((offer) => {
+              if (offer.id === action.payload.offerId) {
+                return {
+                  ...offer,
+                  status: ProductOfferStatus.ACCEPTED,
+                };
+              }
+              return offer;
+            }),
+          },
+        };
+      }
+
+      return state;
+    },
+
     // Add Product Offer
     [`${addProductOffer.type}`]: (
       state,
       action: { payload: Objects.ProductOffer },
     ) => {
-      if (state.data?.offers.length) {
+      if (state.data) {
         return {
           ...state,
           data: {
@@ -104,6 +136,42 @@ export const productSlice = createSlice({
             offers: state.data?.offers.filter(
               (offer) => offer.id !== action.payload,
             ),
+          },
+        };
+      }
+
+      return state;
+    },
+
+    // Set Product Bidder Setup
+    [`${setProductBidderSetup.type}`]: (
+      state,
+      action: { payload: Objects.BidderSetup },
+    ) => {
+      if (state?.data) {
+        return {
+          ...state,
+          data: {
+            ...state.data,
+            bidderSetup: action.payload,
+          },
+        };
+      }
+
+      return state;
+    },
+
+    // Set Product Review
+    [`${setProductReview.type}`]: (
+      state,
+      action: { payload: Objects.Review },
+    ) => {
+      if (state.data) {
+        return {
+          ...state,
+          data: {
+            ...state.data,
+            review: action.payload,
           },
         };
       }

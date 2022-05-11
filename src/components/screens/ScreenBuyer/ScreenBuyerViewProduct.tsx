@@ -2,6 +2,7 @@ import { NavigationProp, RouteProp } from '@react-navigation/native';
 import React from 'react';
 
 import { Container } from '@/atoms/index';
+import { ProductStatus } from '@/constants/index';
 import {
   AppbarViewProduct,
   BottomSheetViewProduct,
@@ -13,6 +14,7 @@ import { ScreenLoading } from '@/screens/ScreenLoading';
 interface Props {
   isProductLoading: boolean;
   isProductOfferLoading: boolean;
+  me: Objects.User;
   productData: Objects.Product;
   productOfferData: Objects.ProductOffer | undefined;
   success: string;
@@ -26,6 +28,7 @@ interface Props {
 export const ScreenBuyerViewProduct: React.FC<Props> = ({
   isProductLoading,
   isProductOfferLoading,
+  me,
   productData,
   productOfferData,
   success,
@@ -70,6 +73,12 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
     });
   };
 
+  const handleNavigateToViewMap = () => {
+    if (productData?.bidderSetup) {
+      navigation.navigate('BuyerViewMap');
+    }
+  };
+
   // fetch product details
   React.useEffect(() => {
     getProduct(id);
@@ -94,12 +103,18 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
       {!isProductLoading && Boolean(productData) && (
         <>
           <ProductContent product={productData} />
-          <AppbarViewProduct
-            isBuyer
-            isOfferExist={Boolean(productOfferData)}
-            onChat={handleNavigateToViewConversation}
-            onOffer={handleOpenBottomSheet}
-          />
+          {(productData.status === ProductStatus.UNSOLD ||
+            (Boolean(productData?.bidder) &&
+              productData?.bidder?.id === me.id)) && (
+            <AppbarViewProduct
+              isBuyer
+              hasWinner={Boolean(productData.bidder)}
+              isOfferExist={Boolean(productOfferData)}
+              onChat={handleNavigateToViewConversation}
+              onOffer={handleOpenBottomSheet}
+              onViewMap={handleNavigateToViewMap}
+            />
+          )}
           <BottomSheetViewProduct
             innerRef={bottomSheet}
             isLoading={isProductOfferLoading}

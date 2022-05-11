@@ -1,6 +1,6 @@
 import { NavigationProp } from '@react-navigation/native';
 import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet } from 'react-native';
 
 import { Container } from '@/atoms/index';
 import { DialogSuccess, FormCreateProduct } from '@/molecules/index';
@@ -42,6 +42,12 @@ export const ScreenSellerCreateProduct: React.FC<Props> = ({
     setIsDialogVisible(!isDialogVisible);
   }, [isDialogVisible, setProductSuccess, setIsDialogVisible]);
 
+  const handleDismiss = () => {
+    handleDialogVisibility();
+
+    navigation.goBack();
+  };
+
   React.useEffect(() => {
     getCategories();
   }, [getCategories]);
@@ -66,26 +72,26 @@ export const ScreenSellerCreateProduct: React.FC<Props> = ({
       <DialogSuccess
         isVisible={isDialogVisible}
         message={success}
-        onDismissDialog={handleDialogVisibility}
+        onDismissDialog={handleDismiss}
       />
 
       {isCategoryLoading && <ScreenLoading />}
       {!isCategoryLoading && Boolean(categoryList.length) && (
         <>
-          <ScrollView
-            contentContainerStyle={styles.scrollContentContainer}
-            keyboardShouldPersistTaps="handled"
+          <FlatList
+            data={[{}]}
+            renderItem={() => (
+              <SafeAreaView style={styles.content}>
+                <FormCreateProduct
+                  categories={categoryList}
+                  isLoading={isProductLoading}
+                  onCancel={handleNavigateBack}
+                  onSubmit={createProduct}
+                />
+              </SafeAreaView>
+            )}
             style={styles.scrollContent}
-          >
-            <SafeAreaView style={styles.content}>
-              <FormCreateProduct
-                categories={categoryList}
-                isLoading={isProductLoading}
-                onCancel={handleNavigateBack}
-                onSubmit={createProduct}
-              />
-            </SafeAreaView>
-          </ScrollView>
+          />
         </>
       )}
     </Container>

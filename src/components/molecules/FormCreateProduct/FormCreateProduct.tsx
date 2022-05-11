@@ -2,9 +2,8 @@ import React from 'react';
 import { Image, StyleSheet, View } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
 import { Colors, TextInput } from 'react-native-paper';
-import DropDown from 'react-native-paper-dropdown';
 
-import { Button, Input } from '@/atoms/index';
+import { Button, Input, Select } from '@/atoms/index';
 import { ProductStatus } from '@/constants/index';
 
 interface Props {
@@ -29,20 +28,16 @@ export const FormCreateProduct: React.FC<Props> = ({
   const [name, setName] = React.useState('');
   const [category, setCategory] = React.useState('');
   const [description, setDescription] = React.useState('');
+  const [options, setOptions] = React.useState<
+    {
+      label: string;
+      value: string;
+    }[]
+  >([]);
   const [price, setPrice] = React.useState('');
-  const [isDropdownVisible, setIsDropdownVisible] = React.useState(false);
 
   const isCreateProductButtonDisabled =
     isLoading || !name || !category || !description || !price || !assets.length;
-
-  const options = categories.map((item) => ({
-    label: item.name,
-    value: item.name,
-  }));
-
-  const handleCategoryChange = (text: string) => {
-    setCategory(text);
-  };
 
   const handleChooseImage = () => {
     ImagePicker.launchImageLibrary(
@@ -64,9 +59,6 @@ export const FormCreateProduct: React.FC<Props> = ({
     setDescription(text);
   };
 
-  const handleDropdownVisibility = () =>
-    setIsDropdownVisible(!isDropdownVisible);
-
   const handleNameChange = (text: string) => {
     setName(text);
   };
@@ -85,6 +77,15 @@ export const FormCreateProduct: React.FC<Props> = ({
       status: ProductStatus.UNSOLD,
     });
   };
+
+  React.useEffect(() => {
+    setOptions(
+      categories.map((item) => ({
+        label: item.name,
+        value: item.name,
+      })),
+    );
+  }, [categories]);
 
   return (
     <View style={styles.form}>
@@ -117,7 +118,7 @@ export const FormCreateProduct: React.FC<Props> = ({
         </View>
 
         <View style={styles.inputWrapper}>
-          <DropDown
+          {/* <DropDown
             dropDownContainerHeight={options.length * 50}
             dropDownContainerMaxHeight={options.length * 50 + 50}
             label="Category"
@@ -128,6 +129,12 @@ export const FormCreateProduct: React.FC<Props> = ({
             value={category}
             visible={isDropdownVisible}
             onDismiss={handleDropdownVisibility}
+          /> */}
+          <Select
+            items={options}
+            setItems={setOptions}
+            setValue={setCategory}
+            value={category}
           />
         </View>
 

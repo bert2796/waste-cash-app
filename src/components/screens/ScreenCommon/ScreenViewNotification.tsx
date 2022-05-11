@@ -28,6 +28,11 @@ export const ScreenViewNotification: React.FC<Props> = ({
   const { params } = route;
   const notification = params as Objects.Notification;
   const isRejected = notification.event.includes('rejected');
+  const hasChat = [
+    'accepted-product-offer',
+    'create-bidder-setup',
+    'update-bidder-setup',
+  ].includes(notification.event);
 
   const handleNavigateToViewProduct = (id: number) => {
     let productScreen = '';
@@ -43,6 +48,10 @@ export const ScreenViewNotification: React.FC<Props> = ({
     }
 
     navigation.navigate(productScreen, { id });
+  };
+
+  const handleNavigateToConversation = (user?: Objects.User) => {
+    navigation.navigate('BuyerViewConversationScreen', { recipient: user });
   };
 
   React.useEffect(() => {
@@ -76,6 +85,7 @@ export const ScreenViewNotification: React.FC<Props> = ({
 
               {Boolean(notification?.product) && (
                 <Button
+                  style={styles.viewProduct}
                   onPress={() =>
                     handleNavigateToViewProduct(
                       notification?.product?.id as number,
@@ -83,6 +93,16 @@ export const ScreenViewNotification: React.FC<Props> = ({
                   }
                 >
                   View Product
+                </Button>
+              )}
+
+              {hasChat && (
+                <Button
+                  onPress={() =>
+                    handleNavigateToConversation(notification?.from)
+                  }
+                >
+                  Chat Seller
                 </Button>
               )}
             </Card.Content>
@@ -128,5 +148,8 @@ const styles = StyleSheet.create({
     fontSize: 22,
     marginBottom: 20,
     textAlign: 'center',
+  },
+  viewProduct: {
+    marginBottom: 10,
   },
 });

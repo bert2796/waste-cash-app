@@ -2,7 +2,7 @@ import { NavigationProp, RouteProp } from '@react-navigation/native';
 import React from 'react';
 
 import { Container } from '@/atoms/index';
-import { AppbarViewProduct } from '@/molecules/index';
+import { AppBarBidderSetup, AppbarViewProduct } from '@/molecules/index';
 import { ProductContent } from '@/organisms/index';
 import { ScreenLoading } from '@/screens/ScreenLoading';
 
@@ -27,6 +27,18 @@ export const ScreenSellerViewProduct: React.FC<Props> = ({
     navigation.navigate('SellerListOffersScreen');
   };
 
+  const handleOffer = () => {
+    if (productData.bidder) {
+      // show sheet
+    } else {
+      handleNavigateToOffersScreen();
+    }
+  };
+
+  const handleNavigateToSetupBidder = () => {
+    navigation.navigate('SellerBidderSetup');
+  };
+
   React.useEffect(() => {
     getProduct(id);
   }, [id, getProduct]);
@@ -37,7 +49,15 @@ export const ScreenSellerViewProduct: React.FC<Props> = ({
       {!isLoading && Boolean(productData) && (
         <>
           <ProductContent product={productData} />
-          <AppbarViewProduct onOffer={handleNavigateToOffersScreen} />
+          <AppbarViewProduct
+            hasWinner={Boolean(productData.bidder)}
+            isOfferButtonDisabled={
+              !productData.offers.filter((offer) => offer.status !== 'rejected')
+                .length
+            }
+            onOffer={handleOffer}
+            onSetup={handleNavigateToSetupBidder}
+          />
         </>
       )}
     </Container>

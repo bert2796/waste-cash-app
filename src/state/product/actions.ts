@@ -13,6 +13,19 @@ export const setProductSuccess = createAction<string | null>(
   ProductActions.SET_PRODUCT_SUCCESS,
 );
 
+export const setProductBidderSetup = createAction<Objects.BidderSetup>(
+  ProductActions.SET_PRODUCT_BIDDER_SETUP,
+);
+
+export const setProductReview = createAction<Objects.Review>(
+  ProductActions.SET_PRODUCT_REVIEW,
+);
+
+export const acceptProductOffer = createAction<{
+  offerId: number;
+  buyer: Objects.User;
+}>(ProductActions.ACCEP_PRODUCT_OFFER);
+
 export const addProductOffer = createAction<Objects.ProductOffer>(
   ProductActions.ADD_PRODUCT_OFFER,
 );
