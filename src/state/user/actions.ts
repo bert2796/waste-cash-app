@@ -111,11 +111,11 @@ export const signIn = createAsyncThunk(
 export const signOut = createAsyncThunk(
   UserActions.SIGN_OUT,
   async (_, thunkAPI) => {
-    // clear user data
-    thunkAPI.dispatch(setUserData(null));
-
     // clear token
     thunkAPI.dispatch(setUserToken(null));
+
+    // clear user data
+    thunkAPI.dispatch(setUserData(null));
 
     // clear conversation data
     thunkAPI.dispatch(setConversationData(null));

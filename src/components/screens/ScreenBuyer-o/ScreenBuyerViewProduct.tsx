@@ -1,29 +1,29 @@
-import React from 'react';
-import { Socket } from 'socket.io-client';
-import { NavigationProp, RouteProp } from '@react-navigation/native';
-import { View, ScrollView, Image, StyleSheet } from 'react-native';
-import {
-  Colors,
-  Chip,
-  Title,
-  Subheading,
-  Paragraph,
-  ActivityIndicator,
-} from 'react-native-paper';
-import BottomSheet from 'react-native-raw-bottom-sheet';
-import numeral from 'numeral';
-
-import {
-  IProduct,
-  IProductOffer,
-  BuyerStackParam,
-  ProductStatus,
-} from '../../../types';
 import { AppbarBuyerViewProduct } from '@molecules/AppbarBuyerViewProduct/AppbarBuyerViewProduct';
 import { BottomSheetMakeOffer } from '@molecules/BottomSheetMakeOffer/BottomSheetMakeOffer';
 import { BottomSheetViewOffer } from '@molecules/BottomSheetViewOffer/BottomSheetViewOffer';
 import { DialogCreateProductOfferSuccess } from '@molecules/DialogCreateProductOfferSuccess/DialogCreateProductOfferSuccess';
 import { SkeletonViewProduct } from '@molecules/SkeletonSeller/SkeletonViewProduct';
+import { NavigationProp, RouteProp } from '@react-navigation/native';
+import numeral from 'numeral';
+import React from 'react';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Chip,
+  Colors,
+  Paragraph,
+  Subheading,
+  Title,
+} from 'react-native-paper';
+import BottomSheet from 'react-native-raw-bottom-sheet';
+import { Socket } from 'socket.io-client';
+
+import {
+  BuyerStackParam,
+  IProduct,
+  IProductOffer,
+  ProductStatus,
+} from '../../../types';
 
 interface Props {
   isLoadingProduct: boolean;
@@ -129,13 +129,11 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
 
   // Clear Product Data
   React.useEffect(() => {
-    console.log('clear product data');
     handleClearProductData();
   }, [handleClearProductData]);
 
   // Get Product Data
   React.useEffect(() => {
-    console.log('get product data');
     handleGetProductData();
   }, [handleGetProductData]);
 
@@ -153,15 +151,15 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
       {!isLoadingProduct && Boolean(productData?.name) && (
         <>
           <DialogCreateProductOfferSuccess
-            success={productOfferSuccess}
             isVisible={isDialogProductOfferSuccessVisible}
+            success={productOfferSuccess}
             onDismissDialog={handleDismissDialogProductOfferSuccess}
           />
 
           <AppbarBuyerViewProduct
+            hasOfferedAlready={hasOfferedAlready}
             isChatButtonDisabled={isActionButtonDisabled}
             isOfferButtonDisabled={isActionButtonDisabled}
-            hasOfferedAlready={hasOfferedAlready}
             onPressChat={handleOnPressChatButton}
             onPressOffer={handleOnPressOfferButton}
           />
@@ -197,9 +195,9 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
             )}
           </BottomSheet>
           <ScrollView
-            style={styles.scrollContent}
             contentContainerStyle={styles.scrollContentContainer}
             keyboardShouldPersistTaps="handled"
+            style={styles.scrollContent}
           >
             <Image
               source={{ uri: productData.thumbnail }}
@@ -208,8 +206,8 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
             <View style={styles.categoryContent}>
               <Chip
                 mode="outlined"
-                onPress={() => {}}
                 textStyle={styles.chipLabelStyle}
+                onPress={() => {}}
               >
                 {productData.category.name}
               </Chip>
@@ -233,14 +231,37 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
 };
 
 const styles = StyleSheet.create({
+  categoryContent: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 10,
+  },
+  chipLabelStyle: {
+    color: Colors.green400,
+  },
   container: {
-    flex: 1,
     backgroundColor: Colors.grey200,
+    flex: 1,
+  },
+  description: {
+    marginTop: 20,
+  },
+  heading: {
+    marginLeft: 20,
+    marginRight: 20,
+    marginTop: 15,
+  },
+  imageCover: {
+    height: 200,
+    width: '100%',
   },
   loadingContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
+    backgroundColor: '#fff',
+    flex: 1,
     justifyContent: 'center',
   },
   scrollContent: {
@@ -249,28 +270,5 @@ const styles = StyleSheet.create({
   },
   scrollContentContainer: {
     flexGrow: 1,
-  },
-  imageCover: {
-    width: '100%',
-    height: 200,
-  },
-  categoryContent: {
-    marginTop: 10,
-    marginLeft: 20,
-    marginRight: 20,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-  },
-  chipLabelStyle: {
-    color: Colors.green400,
-  },
-  heading: {
-    marginTop: 15,
-    marginLeft: 20,
-    marginRight: 20,
-  },
-  description: {
-    marginTop: 20,
   },
 });

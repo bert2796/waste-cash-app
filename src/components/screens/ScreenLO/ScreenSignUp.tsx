@@ -29,7 +29,6 @@ export const ScreenSignUp: React.FC<Props> = ({ role, navigation }) => {
       .catch((apiError) => {
         if (axios.isAxiosError(apiError)) {
           if (apiError?.response) {
-            console.log(apiError.response);
             const axiosError = apiError?.response as Objects.ServiceError;
             if (axiosError?.status && axiosError.status === 400) {
               setError(axiosError.data.message);

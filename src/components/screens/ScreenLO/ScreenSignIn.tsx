@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    marginTop: 80,
+    marginTop: 30,
   },
   scrollContent: {
     flex: 1,

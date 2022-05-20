@@ -12,7 +12,7 @@ export const Container: React.FC<Props> = ({ children }) => (
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.grey100,
+    backgroundColor: Colors.white,
     flex: 1,
   },
 });

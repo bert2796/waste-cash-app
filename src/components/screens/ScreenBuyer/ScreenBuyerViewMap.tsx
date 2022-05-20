@@ -45,12 +45,10 @@ export const ScreenBuyerViewMap: React.FC<Props> = ({
 
   const handleOpenBottomSheetViewOffer = () => {
     bottomSheetViewOffer.current.open();
-    console.log(bottomSheetViewOffer);
   };
 
   const handleCloseBottomSheetViewOffer = () => {
     bottomSheetViewOffer.current.close();
-    console.log(bottomSheetViewOffer);
   };
 
   const handleOpenBottomSheetRate = () => {

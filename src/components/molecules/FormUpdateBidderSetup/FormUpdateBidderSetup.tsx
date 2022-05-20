@@ -69,7 +69,6 @@ export const FormUpdateBidderSetup: React.FC<Props> = ({
 
   const handleOnChangeTime = (timeValue: Date) => {
     setTime(timeValue);
-    console.log(timeValue);
     handleTimePickerVisibility();
   };
 

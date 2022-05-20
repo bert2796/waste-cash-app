@@ -72,6 +72,6 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   image: {
-    marginTop: 150,
+    marginTop: 100,
   },
 });

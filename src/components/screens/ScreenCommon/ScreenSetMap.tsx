@@ -73,8 +73,6 @@ export const ScreenSetMap: React.FC<Props> = ({
 
       Geolocation.getCurrentPosition(
         async (position) => {
-          console.log(position);
-
           setGeoPosition(position);
           const currentLocation = await Geocoder.from({
             latitude: position.coords.latitude,
@@ -86,7 +84,6 @@ export const ScreenSetMap: React.FC<Props> = ({
         },
         (error) => {
           setGeoPosition(null);
-          console.log(error);
         },
         {
           accuracy: {
@@ -194,8 +191,6 @@ export const ScreenSetMap: React.FC<Props> = ({
                 latitude: e.nativeEvent.coordinate.latitude,
                 longitude: e.nativeEvent.coordinate.longitude,
               });
-
-              console.log(currentLocation);
 
               if (currentLocation.results.length) {
                 setAddress(currentLocation.results[0].formatted_address);

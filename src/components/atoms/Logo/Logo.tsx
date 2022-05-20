@@ -1,6 +1,18 @@
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 
 export const Logo: React.FC = () => (
-  <Image source={require('../../../assets/images/placeholder-logo-1.png')} />
+  <View
+    style={{ alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}
+  >
+    <Image
+      source={require('../../../assets/images/logo.png')}
+      style={{
+        alignItems: 'center',
+        height: 200,
+        justifyContent: 'center',
+        width: 200,
+      }}
+    />
+  </View>
 );
