@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Colors, Divider } from 'react-native-paper';
+import { Colors, Divider, Text } from 'react-native-paper';
 
 import { Button, Input, PasswordInput } from '@/atoms/index';
 interface Props {
