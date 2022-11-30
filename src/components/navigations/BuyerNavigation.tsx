@@ -1,22 +1,25 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
-import ContainerBuyerViewMap from 'containers/ContainerBuyerViewMap';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { Colors } from 'react-native-paper';
+import { Badge, Colors, IconButton, Title } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import ContainerBuyerBrowseMap from '@/containers/ContainerBuyerBrowseMap';
 import ContainerBuyerListProducts from '@/containers/ContainerBuyerListProducts';
 import ContainerBuyerListShops from '@/containers/ContainerBuyerListShops';
+import ContainerBuyerViewMap from '@/containers/ContainerBuyerViewMap';
 import ContainerBuyerViewProduct from '@/containers/ContainerBuyerViewProduct';
 import ContainerListConversations from '@/containers/ContainerCommonListConversations';
 import ContainerListNotifications from '@/containers/ContainerCommonListNotifications';
 import ContainerProfile from '@/containers/ContainerCommonProfile';
 import ContainerViewConversation from '@/containers/ContainerCommonViewConversation';
 import ContainerViewNotification from '@/containers/ContainerCommonViewNotification';
+import navigation from '@/state/navigation';
 
 interface Props {
+  hasUnseenConversation: boolean;
   hasNotificationBadge: boolean;
 }
 
@@ -26,7 +29,15 @@ const BuyerInitialScreenTabs =
 const BuyerNotificationScreenTabs =
   createMaterialTopTabNavigator<Screens.BuyerNotificationScreenTabs>();
 
-export const BuyerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
+export const BuyerNavigation: React.FC<Props> = ({
+  hasUnseenConversation,
+  hasNotificationBadge,
+}) => {
+  const handleNavigateToBrowseMap = () => {
+    // navigation.navigate('BuyerProductMapScreen');
+    navigation()?.navigate('BuyerProductMapScreen' as any);
+  };
+
   const NotificationsScreen = () => (
     <BuyerNotificationScreenTabs.Navigator
       screenOptions={{
@@ -45,7 +56,12 @@ export const BuyerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
       <BuyerNotificationScreenTabs.Screen
         component={ContainerListConversations}
         name="MessagesTabView"
-        options={{ title: 'Messages' }}
+        options={{
+          title: 'Messages',
+          ...(hasUnseenConversation && {
+            tabBarBadge: () => <Badge size={18} style={styles.badge} />,
+          }),
+        }}
       />
     </BuyerNotificationScreenTabs.Navigator>
   );
@@ -61,7 +77,16 @@ export const BuyerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
         component={ContainerBuyerListProducts}
         name="ProductsTabView"
         options={{
-          headerTitleAlign: 'center',
+          headerLeft: () => <Title style={styles.title}>Browse Products</Title>,
+          headerRight: () => (
+            <IconButton
+              color={Colors.green700}
+              icon={'map-marker'}
+              style={styles.browseMapButton}
+              onPress={handleNavigateToBrowseMap}
+            />
+          ),
+          headerTitle: '',
           tabBarIcon: ({ color, size, focused }) => (
             <Icon
               color={color}
@@ -70,7 +95,6 @@ export const BuyerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
             />
           ),
           tabBarLabel: 'Browse',
-          title: 'Browse Products',
         }}
       />
 
@@ -105,6 +129,7 @@ export const BuyerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
               size={size}
             />
           ),
+          title: 'Notifications',
         }}
       />
 
@@ -135,6 +160,12 @@ export const BuyerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
       />
 
       {/* View Screens */}
+      <BuyerStack.Screen
+        component={ContainerBuyerBrowseMap}
+        name="BuyerProductMapScreen"
+        options={{ headerShadowVisible: true, headerTitle: '' }}
+      />
+
       <BuyerStack.Screen
         component={ContainerBuyerViewProduct}
         name="BuyerViewProductScreen"
@@ -169,8 +200,20 @@ export const BuyerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
 };
 
 const styles = StyleSheet.create({
+  badge: {
+    left: -65,
+    position: 'absolute',
+    top: 8,
+  },
+  browseMapButton: {
+    backgroundColor: Colors.green100,
+    marginRight: 20,
+  },
   notificationTabIndicator: {
     backgroundColor: Colors.green500,
     height: 3,
+  },
+  title: {
+    marginLeft: 20,
   },
 });

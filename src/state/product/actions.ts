@@ -57,6 +57,9 @@ export const createProduct = createAsyncThunk(
       formData.append('category', params.category);
       formData.append('description', params.description);
       formData.append('price', params.price);
+      formData.append('location', params?.address?.location || '');
+      formData.append('latitude', params?.address?.latitude || '');
+      formData.append('longitude', params?.address?.longitude || '');
       formData.append('status', params.status);
 
       const createProductRes = await Product.createProduct({ formData, token });
@@ -64,6 +67,33 @@ export const createProduct = createAsyncThunk(
 
       return Promise.resolve({ data: product });
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error?.response) {
+          const axiosError = error?.response as Objects.ServiceError;
+          if (axiosError?.status && axiosError.status === 400) {
+            return thunkAPI.rejectWithValue(axiosError.data.message);
+          }
+        }
+      }
+
+      // set global error
+      thunkAPI.dispatch(setAppError('Server is busy. Please try again later.'));
+
+      return Promise.reject();
+    }
+  },
+);
+
+export const deleteProduct = createAsyncThunk(
+  ProductActions.DELETE_PRODUCT,
+  async (id: number, thunkAPI) => {
+    try {
+      await Product.deleteProduct(id);
+
+      return Promise.resolve(id);
+    } catch (error) {
+      console.error(error);
+
       if (axios.isAxiosError(error)) {
         if (error?.response) {
           const axiosError = error?.response as Objects.ServiceError;

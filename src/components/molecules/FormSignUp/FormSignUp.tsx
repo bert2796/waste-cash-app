@@ -28,6 +28,7 @@ export const FormSignUp: React.FC<Props> = ({
   const [email, setEmail] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [confirmPassword, setConfirmPassword] = React.useState('');
 
   const inputFirstName: any = React.useRef();
   const inputLastName: any = React.useRef();
@@ -38,10 +39,12 @@ export const FormSignUp: React.FC<Props> = ({
   const inputEmail: any = React.useRef();
   const inputUsername: any = React.useRef();
   const inputPassword: any = React.useRef();
+  const inputConfirmPassword: any = React.useRef();
 
   const isJunkShop = role === UserRoles.JUNKSHOP;
+  const isSamePassword = confirmPassword && password === confirmPassword;
 
-  const isSignUpButtonEnabled =
+  const isSignUpButtonDisabled =
     (isJunkShop && !junkShopName) ||
     (Boolean(email) && !isValidEmail(email)) ||
     !firstName ||
@@ -53,6 +56,7 @@ export const FormSignUp: React.FC<Props> = ({
     !email ||
     !username ||
     !password ||
+    !isSamePassword ||
     isLoading;
 
   // Handle changes
@@ -86,6 +90,9 @@ export const FormSignUp: React.FC<Props> = ({
   const handlePasswordChange = (text: string) => {
     setPassword(text);
   };
+  const handleConfirmPasswordChange = (text: string) => {
+    setConfirmPassword(text);
+  };
 
   // handle submit editting
   const handleJunkShopNameSubmitEditing = () => {
@@ -116,11 +123,18 @@ export const FormSignUp: React.FC<Props> = ({
     inputPassword.current.focus();
   };
   const handlePasswordSubmitEditing = () => {
+    inputConfirmPassword.current.focus();
+  };
+  const handleConfirmPasswordSubmitEditing = () => {
     handleSignUp();
   };
 
   // sign up
   const handleSignUp = () => {
+    if (isSignUpButtonDisabled) {
+      return;
+    }
+
     onSignUp({
       address,
       city,
@@ -132,6 +146,7 @@ export const FormSignUp: React.FC<Props> = ({
       role: `${role}`,
       username,
       zip,
+      ...(junkShopName && { junkShopName }),
     });
   };
 
@@ -276,16 +291,37 @@ export const FormSignUp: React.FC<Props> = ({
           />
         </View>
 
+        {/* password */}
+        <View style={styles.inputWrapper}>
+          <PasswordInput
+            innerRef={inputPassword}
+            label="Password"
+            placeHolder="Your Password"
+            returnKeyType="next"
+            onChangeText={handlePasswordChange}
+            onSubmitEditing={handlePasswordSubmitEditing}
+          />
+        </View>
+
+        {/* confirm password */}
         <PasswordInput
-          innerRef={inputPassword}
+          error={Boolean(confirmPassword) && !isSamePassword}
+          innerRef={inputConfirmPassword}
+          label="Confirm Password"
+          placeHolder="Confirm your Password"
           returnKeyType="done"
-          onChangeText={handlePasswordChange}
-          onSubmitEditing={handlePasswordSubmitEditing}
+          onChangeText={handleConfirmPasswordChange}
+          onSubmitEditing={handleConfirmPasswordSubmitEditing}
         />
+        {Boolean(confirmPassword) && !isSamePassword && (
+          <HelperText visible type="error">
+            Password does not match
+          </HelperText>
+        )}
       </View>
 
       <Button
-        disabled={isSignUpButtonEnabled}
+        disabled={isSignUpButtonDisabled}
         loading={isLoading}
         style={styles.button}
         onPress={handleSignUp}

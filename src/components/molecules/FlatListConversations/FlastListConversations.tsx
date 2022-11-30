@@ -24,8 +24,8 @@ export const FlatListConversations: React.FC<Props> = ({
 }) => {
   const renderItem = ({ item }: { item: Objects.ConversationSummary }) => {
     const recipient =
-      item.recipient.id === me.id ? item.sender : item.recipient;
-    const isMessageWasSentByMe = item.sender.id === me.id;
+      item.recipient.id === me?.id ? item.sender : item.recipient;
+    const isMessageWasSentByMe = item.sender.id === me?.id;
     const isMessageWasSeen = isMessageWasSentByMe || item.message.isSeen;
 
     return (

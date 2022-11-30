@@ -1,5 +1,3 @@
-import 'react-native-gesture-handler';
-
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
@@ -46,7 +44,7 @@ export const MainNavigation: React.FC<Props> = ({
       console.log('Added createMessage listener');
 
       socket.on('createMessage', (payload: Objects.Message) => {
-        if (payload.sender.id !== me.id) {
+        if (payload.sender.id !== me?.id) {
           addConversationListMessage(payload);
         }
       });
@@ -72,7 +70,9 @@ export const MainNavigation: React.FC<Props> = ({
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator>
         {isAuth && me?.role === UserRoles.BUYER && (
-          <Stack.Group>{BuyerNavigation({ hasNotificationBadge })}</Stack.Group>
+          <Stack.Group>
+            {BuyerNavigation({ hasNotificationBadge, hasUnseenConversation })}
+          </Stack.Group>
         )}
 
         {isAuth && me?.role === UserRoles.JUNKSHOP && (
@@ -83,7 +83,7 @@ export const MainNavigation: React.FC<Props> = ({
 
         {isAuth && me?.role === UserRoles.SELLER && (
           <Stack.Group>
-            {SellerNavigation({ hasNotificationBadge })}
+            {SellerNavigation({ hasNotificationBadge, hasUnseenConversation })}
           </Stack.Group>
         )}
 

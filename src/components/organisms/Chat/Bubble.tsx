@@ -20,7 +20,7 @@ export const Bubble: React.FC<Props> = ({
   <View
     style={{
       backgroundColor:
-        `${me.id}` !== message.author.id ? Colors.grey300 : Colors.green500,
+        `${me?.id}` !== message.author.id ? Colors.grey300 : Colors.green500,
       borderRadius: 20,
       margin: 0,
       overflow: 'hidden',

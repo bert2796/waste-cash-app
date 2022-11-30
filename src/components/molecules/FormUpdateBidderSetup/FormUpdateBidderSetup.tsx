@@ -2,7 +2,6 @@ import * as dateFns from 'date-fns';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import { Colors, Text } from 'react-native-paper';
 
 import { Button, Input, Select } from '@/atoms/index';
 

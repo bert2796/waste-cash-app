@@ -7,6 +7,8 @@ import {
   categoryListSelector,
   isLoadingSelector as isCategoryLoadingSelector,
 } from '@/state/category/selectors';
+import { setMapData } from '@/state/map/actions';
+import { mapDataSelector } from '@/state/map/selectors';
 import { createProduct, setProductSuccess } from '@/state/product/actions';
 import {
   isLoadingSelector,
@@ -15,6 +17,9 @@ import {
 import { AppDispatch, RootState } from '@/state/store';
 
 const mapActionCreators = (dispatch: AppDispatch) => ({
+  clearMapData(): void {
+    dispatch(setMapData(undefined));
+  },
   createProduct(
     params: Partial<Omit<Objects.Product, 'category'>> & {
       category: string;
@@ -36,6 +41,7 @@ const mapStateToProps = (state: RootState) => {
     categoryList: categoryListSelector(state),
     isCategoryLoading: isCategoryLoadingSelector(state),
     isProductLoading: isLoadingSelector(state),
+    mapData: mapDataSelector(state),
     success: productSuccessSelector(state),
   };
 };

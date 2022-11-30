@@ -2,43 +2,92 @@ import React from 'react';
 import { Image, ScrollView, StyleSheet, View } from 'react-native';
 import { Chip, Colors, Paragraph, Subheading, Title } from 'react-native-paper';
 
+import { Button, MessageBox } from '@/atoms/index';
+import { DialogDeleteProduct } from '@/molecules/index';
 import { formatPrice } from '@/utils/index';
 
 interface Props {
   product: Objects.Product;
+  showActions?: boolean;
+  onDeleteProduct?: () => void;
 }
 
-export const ProductContent: React.FC<Props> = ({ product }) => (
-  <ScrollView
-    contentContainerStyle={styles.scrollContentContainer}
-    keyboardShouldPersistTaps="handled"
-    style={styles.scrollContent}
-  >
-    <Image source={{ uri: product.thumbnail }} style={styles.imageCover} />
-    <View style={styles.categoryContent}>
-      <Chip
-        mode="outlined"
-        textStyle={styles.chipLabelStyle}
-        onPress={() => {}}
-      >
-        {product.category.name}
-      </Chip>
-    </View>
+export const ProductContent: React.FC<Props> = ({
+  product,
+  showActions,
+  onDeleteProduct,
+}) => {
+  const [isDialogVisible, setIsDialogVisible] = React.useState(false);
 
-    <View style={styles.productDetails}>
-      <Title>{product.name}</Title>
-      <Subheading>{formatPrice(product.price)}</Subheading>
+  const handleDialogVisibility = () => setIsDialogVisible(!isDialogVisible);
 
-      <View style={styles.description}>
-        <Paragraph>{product.description}</Paragraph>
+  const handleDeleteproduct = () => {
+    if (onDeleteProduct) {
+      onDeleteProduct();
+    }
+
+    handleDialogVisibility();
+  };
+
+  return (
+    <>
+      <Image source={{ uri: product.thumbnail }} style={styles.imageCover} />
+      <View style={styles.categoryContent}>
+        <Chip
+          mode="outlined"
+          textStyle={styles.chipLabelStyle}
+          onPress={() => {}}
+        >
+          {product.category.name}
+        </Chip>
       </View>
-    </View>
 
-    <View style={styles.randomBlock} />
-  </ScrollView>
-);
+      <View style={styles.productDetails}>
+        <View style={styles.messageBox}>
+          {showActions && Boolean(product.deletedAt) && (
+            <MessageBox
+              message="This product is already deleted!"
+              type="error"
+            />
+          )}
+
+          {!showActions && product.status === 'sold' && (
+            <MessageBox
+              message="This product is no longer available!"
+              type="error"
+            />
+          )}
+        </View>
+
+        <Title>{product.name}</Title>
+        <Subheading>{formatPrice(product.price)}</Subheading>
+
+        <View style={styles.description}>
+          <Paragraph>{product.description}</Paragraph>
+        </View>
+
+        {showActions && product.status === 'unsold' && !product.deletedAt && (
+          <Button style={styles.button} onPress={handleDialogVisibility}>
+            Delete
+          </Button>
+        )}
+      </View>
+
+      <View style={styles.randomBlock} />
+
+      <DialogDeleteProduct
+        isVisible={isDialogVisible}
+        onAccept={handleDeleteproduct}
+        onDismiss={handleDialogVisibility}
+      />
+    </>
+  );
+};
 
 const styles = StyleSheet.create({
+  button: {
+    marginTop: 50,
+  },
   categoryContent: {
     alignItems: 'center',
     flexDirection: 'row',
@@ -57,6 +106,10 @@ const styles = StyleSheet.create({
     height: 200,
     width: '100%',
   },
+  messageBox: {
+    marginBottom: 10,
+    marginTop: 10,
+  },
   productDetails: {
     marginLeft: 20,
     marginRight: 20,
@@ -64,12 +117,5 @@ const styles = StyleSheet.create({
   },
   randomBlock: {
     height: 60,
-  },
-  scrollContent: {
-    flex: 1,
-    marginBottom: 60,
-  },
-  scrollContentContainer: {
-    flexGrow: 1,
   },
 });

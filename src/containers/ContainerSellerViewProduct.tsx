@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { ScreenSellerViewProduct } from '@/components/screens/ScreenSeller/ScreenSellerViewProduct';
-import { getProduct } from '@/state/product/actions';
+import { deleteProduct, getProduct } from '@/state/product/actions';
 import {
   isLoadingSelector,
   productDataSelector,
@@ -10,6 +10,9 @@ import {
 import { AppDispatch, RootState } from '@/state/store';
 
 const mapActionCreators = (dispatch: AppDispatch) => ({
+  deleteProduct(id: number): void {
+    dispatch(deleteProduct(id));
+  },
   getProduct(id: number): void {
     dispatch(getProduct(id));
   },

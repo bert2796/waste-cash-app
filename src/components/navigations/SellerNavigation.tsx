@@ -3,7 +3,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { Colors } from 'react-native-paper';
+import { Badge, Colors } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import ContainerListConversations from '@/containers/ContainerCommonListConversations';
@@ -19,6 +19,7 @@ import ContainerSellerListProducts from '@/containers/ContainerSellerListProduct
 import ContainerSellerViewProduct from '@/containers/ContainerSellerViewProduct';
 
 interface Props {
+  hasUnseenConversation: boolean;
   hasNotificationBadge: boolean;
 }
 
@@ -28,7 +29,10 @@ const SellerInitialScreenTabs =
 const SellerNotificationScreenTabs =
   createMaterialTopTabNavigator<Screens.SellerNotificationScreenTabs>();
 
-export const SellerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
+export const SellerNavigation: React.FC<Props> = ({
+  hasUnseenConversation,
+  hasNotificationBadge,
+}) => {
   const NotificationsScreen = () => (
     <SellerNotificationScreenTabs.Navigator
       screenOptions={{
@@ -47,7 +51,12 @@ export const SellerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
       <SellerNotificationScreenTabs.Screen
         component={ContainerListConversations}
         name="MessagesTabView"
-        options={{ title: 'Messages' }}
+        options={{
+          title: 'Messages',
+          ...(hasUnseenConversation && {
+            tabBarBadge: () => <Badge size={18} style={styles.badge} />,
+          }),
+        }}
       />
     </SellerNotificationScreenTabs.Navigator>
   );
@@ -90,6 +99,7 @@ export const SellerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
               size={size}
             />
           ),
+          title: 'Notifications',
         }}
       />
 
@@ -174,6 +184,11 @@ export const SellerNavigation: React.FC<Props> = ({ hasNotificationBadge }) => {
 };
 
 const styles = StyleSheet.create({
+  badge: {
+    left: -65,
+    position: 'absolute',
+    top: 8,
+  },
   notificationTabIndicator: {
     backgroundColor: Colors.green500,
     height: 3,

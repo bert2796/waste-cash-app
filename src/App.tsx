@@ -1,3 +1,5 @@
+import 'react-native-gesture-handler';
+
 import React from 'react';
 import Geocoder from 'react-native-geocoding';
 import { ReduxNetworkProvider } from 'react-native-offline';
@@ -16,7 +18,7 @@ import { websocket } from './config';
 const App: React.FC = () => {
   const socket = io.connect(websocket);
 
-  Geocoder.init('AIzaSyDX0uDf-xuv9sHyljHUSiBtJDQACQkgblI', { language: 'en' });
+  Geocoder.init('AIzaSyBNxWWbvboL9bLF7NAPysYvYP54xuNFVec', { language: 'en' });
 
   return (
     <Provider store={store}>

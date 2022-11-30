@@ -1,5 +1,5 @@
 import React from 'react';
-import { Portal, Dialog, Text, Button } from 'react-native-paper';
+import { Button, Dialog, Portal, Text } from 'react-native-paper';
 
 interface Props {
   isVisible: boolean;

@@ -92,7 +92,7 @@ export const ScreenViewConversation: React.FC<Props> = ({
       console.log('Added directMessage listener');
 
       socket.on('directMessage', (payload: Objects.Message) => {
-        if (payload.sender.id !== me.id) {
+        if (payload.sender.id !== me?.id) {
           addConversationDataMessage(payload);
         }
       });
@@ -119,7 +119,7 @@ export const ScreenViewConversation: React.FC<Props> = ({
       conversationData?.id &&
       conversationData.messages.filter(
         (conversationMessage) =>
-          conversationMessage.sender.id !== me.id &&
+          conversationMessage.sender.id !== me?.id &&
           !conversationMessage.isSeen,
       )?.length
     ) {

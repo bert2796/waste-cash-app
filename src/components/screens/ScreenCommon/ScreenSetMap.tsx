@@ -29,12 +29,14 @@ export const ScreenSetMap: React.FC<Props> = ({
 
   const autoCompleteRef: any = React.useRef();
 
-  const region = {
-    latitude: geoPosition?.coords.latitude || 0,
-    latitudeDelta: 0.01,
-    longitude: geoPosition?.coords.longitude || 0,
-    longitudeDelta: 0.01 * (width / height),
-  };
+  const region = React.useMemo(() => {
+    return {
+      latitude: geoPosition?.coords.latitude || 0,
+      latitudeDelta: 0.01,
+      longitude: geoPosition?.coords.longitude || 0,
+      longitudeDelta: 0.01 * (width / height),
+    };
+  }, [geoPosition, height, width]);
 
   const handleWarningVisiblity = () => setIsWarningVisible(!isWarningVisible);
 
@@ -136,6 +138,20 @@ export const ScreenSetMap: React.FC<Props> = ({
     }
   }, [autoCompleteRef, address, params]);
 
+  // set address whenever region changed
+  React.useEffect(() => {
+    if (region.latitude && region.longitude) {
+      Geocoder.from({
+        latitude: region.latitude,
+        longitude: region.longitude,
+      }).then((res) => {
+        if (res.results.length) {
+          setAddress(res.results[0].formatted_address);
+        }
+      });
+    }
+  }, [region.latitude, region.longitude]);
+
   return (
     <Container>
       <Snackbar visible={isWarningVisible} onDismiss={handleWarningVisiblity}>
@@ -150,7 +166,7 @@ export const ScreenSetMap: React.FC<Props> = ({
           placeholder="Search"
           query={{
             components: 'country:ph',
-            key: 'AIzaSyDX0uDf-xuv9sHyljHUSiBtJDQACQkgblI',
+            key: 'AIzaSyBNxWWbvboL9bLF7NAPysYvYP54xuNFVec',
             language: 'en',
           }}
           ref={autoCompleteRef}
@@ -201,7 +217,10 @@ export const ScreenSetMap: React.FC<Props> = ({
       </MapView>
 
       <View style={styles.buttonWrapper}>
-        <Button disabled={!address} onPress={handleOnSetMap}>
+        <Button
+          disabled={!address || params?.currentAddress === address}
+          onPress={handleOnSetMap}
+        >
           Set
         </Button>
       </View>

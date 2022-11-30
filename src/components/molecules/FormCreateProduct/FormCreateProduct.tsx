@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import * as ImagePicker from 'react-native-image-picker';
 import { Colors, TextInput } from 'react-native-paper';
 
@@ -9,7 +9,9 @@ import { ProductStatus } from '@/constants/index';
 interface Props {
   categories: Objects.Category[];
   isLoading: boolean;
+  mapData?: Objects.Map;
   onCancel: () => void;
+  onNavigateToSetMap: () => void;
   onSubmit: (
     params: Partial<Omit<Objects.Product, 'category'>> & {
       category: string;
@@ -21,7 +23,9 @@ interface Props {
 export const FormCreateProduct: React.FC<Props> = ({
   categories,
   isLoading,
+  mapData,
   onCancel,
+  onNavigateToSetMap,
   onSubmit,
 }) => {
   const [assets, setAssets] = React.useState<any>([]);
@@ -35,6 +39,7 @@ export const FormCreateProduct: React.FC<Props> = ({
     }[]
   >([]);
   const [price, setPrice] = React.useState('');
+  const [location, setLocation] = React.useState('');
 
   const isCreateProductButtonDisabled =
     isLoading || !name || !category || !description || !price || !assets.length;
@@ -67,8 +72,17 @@ export const FormCreateProduct: React.FC<Props> = ({
     setPrice(text);
   };
 
+  const handleNavigateToSetMap = () => onNavigateToSetMap();
+
   const handleSubmit = () => {
     onSubmit({
+      ...(mapData && {
+        address: {
+          latitude: mapData.latitude,
+          location: mapData.streetAddress,
+          longitude: mapData.longitude,
+        },
+      }),
       category,
       description,
       name,
@@ -86,6 +100,12 @@ export const FormCreateProduct: React.FC<Props> = ({
       })),
     );
   }, [categories]);
+
+  React.useEffect(() => {
+    if (mapData?.streetAddress) {
+      setLocation(mapData.streetAddress);
+    }
+  }, [mapData]);
 
   return (
     <View style={styles.form}>
@@ -162,6 +182,17 @@ export const FormCreateProduct: React.FC<Props> = ({
             value={price}
             onChangeText={handlePriceChange}
           />
+        </View>
+
+        <View style={styles.inputWrapper}>
+          <TouchableOpacity onPress={handleNavigateToSetMap}>
+            <Input
+              multiline
+              editable={false}
+              label="Location"
+              value={location}
+            />
+          </TouchableOpacity>
         </View>
       </View>
       <Button

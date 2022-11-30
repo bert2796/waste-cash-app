@@ -37,6 +37,12 @@ export const getProducts = async () =>
     url: `${url}?status=unsold`,
   })) as unknown as AxiosResponse<Objects.Product[]>;
 
+export const deleteProduct = async (id: number) =>
+  (await axios({
+    method: 'DELETE',
+    url: `${url}/${id}`,
+  })) as unknown as AxiosResponse<Objects.Product>;
+
 // export const createProduct = async (params: {
 //   token: string;
 //   formData: FormData;

@@ -101,7 +101,7 @@ export const ScreenSellerChat: React.FC<Props> = ({
     if (!hasDirectMessageListener) {
       console.log('Added directMessage listener');
       socket.on('directMessage', (payload: IMessage) => {
-        if (payload.sender.id !== me.id) {
+        if (payload.sender.id !== me?.id) {
           onAddConversationDataMessage(payload);
         }
       });

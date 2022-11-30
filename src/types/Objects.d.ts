@@ -69,6 +69,7 @@ declare module Objects {
 
   interface Product {
     id: number;
+    address?: Address;
     name: string;
     slug: string;
     category: Category;
@@ -78,6 +79,7 @@ declare module Objects {
     offers: ProductOffer[];
     owner: User;
     thumbnail: string;
+    deletedAt?: string;
     bidder?: User;
     bidderSetup?: BidderSetup;
     offer?: ProductOffer;

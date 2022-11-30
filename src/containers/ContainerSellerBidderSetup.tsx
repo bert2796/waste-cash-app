@@ -13,7 +13,6 @@ import {
 } from '@/state/bidderSetup/selectors';
 import { setMapData } from '@/state/map/actions';
 import { mapDataSelector } from '@/state/map/selectors';
-import { getProduct } from '@/state/product/actions';
 import { productDataSelector } from '@/state/product/selectors';
 import { AppDispatch, RootState } from '@/state/store';
 

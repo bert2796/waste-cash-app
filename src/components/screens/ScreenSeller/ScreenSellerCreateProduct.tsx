@@ -10,7 +10,9 @@ interface Props {
   categoryList: Objects.Category[];
   isCategoryLoading: boolean;
   isProductLoading: boolean;
+  mapData?: Objects.Map;
   success: string;
+  clearMapData: () => void;
   createProduct: (
     params: Partial<Omit<Objects.Product, 'category'>> & {
       category: string;
@@ -26,7 +28,9 @@ export const ScreenSellerCreateProduct: React.FC<Props> = ({
   categoryList,
   isCategoryLoading,
   isProductLoading,
+  mapData,
   success,
+  clearMapData,
   createProduct,
   getCategories,
   setProductSuccess,
@@ -49,8 +53,9 @@ export const ScreenSellerCreateProduct: React.FC<Props> = ({
   };
 
   React.useEffect(() => {
+    clearMapData();
     getCategories();
-  }, [getCategories]);
+  }, [clearMapData, getCategories]);
 
   // open dialog for successfull product creation
   React.useEffect(() => {
@@ -65,6 +70,18 @@ export const ScreenSellerCreateProduct: React.FC<Props> = ({
     }
 
     navigation.goBack();
+  };
+
+  const handleNavigateToSetMap = () => {
+    navigation.navigate('SellerSetMap', {
+      ...(mapData && {
+        currentAddress: {
+          latitude: mapData?.latitude as number,
+          location: mapData?.streetAddress || '',
+          longitude: mapData?.longitude as number,
+        },
+      }),
+    });
   };
 
   return (
@@ -85,7 +102,9 @@ export const ScreenSellerCreateProduct: React.FC<Props> = ({
                 <FormCreateProduct
                   categories={categoryList}
                   isLoading={isProductLoading}
+                  mapData={mapData}
                   onCancel={handleNavigateBack}
+                  onNavigateToSetMap={handleNavigateToSetMap}
                   onSubmit={createProduct}
                 />
               </SafeAreaView>

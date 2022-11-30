@@ -61,6 +61,8 @@ export const FormSignIn: React.FC<Props> = ({
         <PasswordInput
           error={Boolean(error)}
           innerRef={inputPassword}
+          label="Password"
+          placeHolder="Your Password"
           returnKeyType="done"
           onChangeText={handlePasswordChange}
         />

@@ -29,8 +29,8 @@ export const hasUnseenConversationSelector = createSelector(
   ): boolean =>
     conversationList.some(
       (conversation) =>
-        !conversation.message.isSeen &&
-        conversation.recipient.id === userData.id,
+        !conversation?.message?.isSeen &&
+        conversation?.recipient?.id === userData?.id,
     ),
 );
 

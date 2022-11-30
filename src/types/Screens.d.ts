@@ -8,6 +8,7 @@ declare module Screens {
   // Buyer
   type BuyerStackParams = {
     BuyerInitialScreen: undefined;
+    BuyerProductMapScreen: undefined;
     BuyerViewConversationScreen: {
       conversationId?: number;
       recipient?: Objects.User;

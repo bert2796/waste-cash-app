@@ -105,7 +105,7 @@ export const ScreenBuyerViewProduct: React.FC<Props> = ({
           <ProductContent product={productData} />
           {(productData.status === ProductStatus.UNSOLD ||
             (Boolean(productData?.bidder) &&
-              productData?.bidder?.id === me.id)) && (
+              productData?.bidder?.id === me?.id)) && (
             <AppbarViewProduct
               isBuyer
               hasWinner={Boolean(productData.bidder)}

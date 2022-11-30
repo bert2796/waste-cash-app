@@ -3,7 +3,10 @@ import { TextInput } from 'react-native-paper';
 
 import { Input } from '../Input/Input';
 
-type Props = React.ComponentProps<typeof Input>;
+type Props = React.ComponentProps<typeof Input> & {
+  label: string;
+  placeHolder: string;
+};
 
 export const PasswordInput: React.FC<Props> = ({ ...props }) => {
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
@@ -13,8 +16,6 @@ export const PasswordInput: React.FC<Props> = ({ ...props }) => {
 
   return (
     <Input
-      label="Password"
-      placeholder="Your Password"
       right={
         <TextInput.Icon
           name={isPasswordVisible ? 'eye-outline' : 'eye-off-outline'}

@@ -6,6 +6,7 @@ import {
   acceptProductOffer,
   addProductOffer,
   createProduct,
+  deleteProduct,
   getProduct,
   getProducts,
   removeProductOffer,
@@ -77,6 +78,33 @@ export const productSlice = createSlice({
       list: action.payload.list,
     }),
     [`${getProducts.rejected}`]: (state) => ({
+      ...state,
+      isLoading: false,
+    }),
+
+    // Delete Product
+    [`${deleteProduct.pending}`]: (state) => ({
+      ...state,
+      isLoading: true,
+    }),
+    [`${deleteProduct.fulfilled}`]: (state, action: { payload: number }) => {
+      const { payload: id } = action;
+
+      const productList = state.list.filter((product) => product.id !== id);
+
+      return {
+        ...state,
+        ...(state?.data && {
+          data: {
+            ...state.data,
+            deletedAt: `${new Date()}`,
+          },
+        }),
+        isLoading: false,
+        list: productList,
+      };
+    },
+    [`${deleteProduct.rejected}`]: (state) => ({
       ...state,
       isLoading: false,
     }),

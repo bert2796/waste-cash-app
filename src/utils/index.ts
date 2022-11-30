@@ -17,3 +17,17 @@ export const calculateDelta = (params: {
     longitudeDelta: longDelta,
   };
 };
+
+export const isPointNear = (params: {
+  checkPoint: { lat: number; lng: number };
+  centerPoint: { lat: number; lng: number };
+  km: number;
+}) => {
+  const { checkPoint, centerPoint, km } = params;
+
+  const ky = 40000 / 360;
+  const kx = Math.cos((Math.PI * centerPoint.lat) / 180.0) * ky;
+  const dx = Math.abs(centerPoint.lng - checkPoint.lng) * kx;
+  const dy = Math.abs(centerPoint.lat - checkPoint.lat) * ky;
+  return Math.sqrt(dx * dx + dy * dy) <= km;
+};
